@@ -71,7 +71,7 @@ const state = {
   view: "todos",
   accessFilter: "all",
   archiveAccess: "all",
-  selection: ["cenis", "chalet", "carroz-inicio"],
+  selection: ["chalet", "loft", "orelle"],
   archiveKind: "Todas",
 };
 const hasSpa = (p) => [p.sauna, p.jacuzzi].some((value) => value && value !== "No");
@@ -82,11 +82,12 @@ function budget(p) {
   const parts = [
     p.night == null ? null : (p.night / n) * scale,
     pass * scale,
-    p.gear[0] * scale,
+    p.gear[0] == null ? null : p.gear[0] * scale,
     ((p.card || 0) + (p.fee || 0) / n) * scale,
+    p.storagePending ? null : ((p.storageFee || 0) / n) * scale,
   ];
-  const upper = parts[2] + (p.gear[1] - p.gear[0]) * scale;
-  const low = p.night == null ? null : parts.reduce((a, b) => a + b, 0);
+  const upper = parts[2] == null ? null : parts[2] + (p.gear[1] - p.gear[0]) * scale;
+  const low = p.night == null || parts[2] == null ? null : parts.reduce((a, b) => a + (b || 0), 0);
   return {
     parts,
     upper,
@@ -102,7 +103,9 @@ function range(a, b) {
 }
 function labelPrice(p) {
   const b = budget(p);
-  return range(b.low, b.high);
+  if (p.gear[0] == null) return "Alquiler por cotizar";
+  const price = range(b.low, b.high);
+  return p.storagePending && b.low != null ? price + " + consigna" : price;
 }
 function unit(p) {
   return state.unit === "group" ? "grupo de " + person(p) : "persona";
@@ -203,7 +206,7 @@ function facts() {
     "Ecla Archamps</span></div>"
   );
 }
-const categories = ["Alojamiento", "Forfait", "Material", "Soporte y gestión"];
+const categories = ["Alojamiento", "Forfait", "Material", "Soporte y gestión", "Consigna"];
 function legend() {
   return (
     '<div class="legend">' +
@@ -250,27 +253,27 @@ function budgetChart(list) {
     '<div class="chart">' +
     legend() +
     list.map((p) => chartRow(p, max)).join("") +
-    '<p class="fine">Las barras usan el extremo inferior. El intervalo recoge las opciones de material.</p></div>'
+    '<p class="fine">Las barras usan el extremo inferior. Los importes que indican «+ consigna» necesitan ese suplemento. Las opciones con alquiler por cotizar se consultan en su ficha.</p></div>'
   );
 }
 const recommendations = [
   {
-    id: "cenis",
-    name: "Val Cenis · noche en Modane",
-    why: "La opción más barata para siete. El forfait de 49 € incluye los dos días y el concierto del sábado.",
-    tradeoff: "Unos 30 min en coche de la casa a Vieux Moulin. El material presupuestado se recoge en Orelle.",
-  },
-  {
     id: "chalet",
     name: "Avoriaz · chalet de Arâches",
-    why: "Por 11,86 € más por persona que el loft tenéis 160 m² de madera, chimenea y jacuzzi privado para la tarde.",
-    tradeoff: "Calculad unos 50 min en coche desde Arâches hasta el teleférico de Les Prodains.",
+    why: "El chalet de 160 m² con chimenea y jacuzzi privado. Aparcáis en Prodains y recogéis el material arriba, en Place Centrale.",
+    tradeoff: "Unos 50 min en coche al teleférico. Reservad consigna en Intersport para dejar los esquís el sábado. Falta su suplemento.",
   },
   {
-    id: "carroz-inicio",
-    name: "Les Carroz · Les Flocons Verts",
-    why: "El más práctico si estáis aprendiendo. Hay 80 m a pie hasta la cinta y sauna de pago en el hotel.",
-    tradeoff: "El pase cubre la zona de iniciación. Comprobaría qué remontes abren el sábado antes de reservar.",
+    id: "loft",
+    name: "Avoriaz · loft de Cluses",
+    why: "La alternativa más barata con alquiler ya cotizado en Avoriaz. Comparte tienda y consigna con el plan del chalet.",
+    tradeoff: "Unos 40–45 min en coche hasta Prodains. Ahorráis 11,86 € por persona. Falta el suplemento de consigna.",
+  },
+  {
+    id: "orelle",
+    name: "Orelle · noche en Modane",
+    why: "Conducís 15 min hasta Francoz y recogéis allí el equipo. El precio incluye dos casilleros de cuatro para una noche.",
+    tradeoff: "El forfait estudiante exige carné y compra en taquilla. Reservad los dos casilleros para siete.",
   },
 ];
 function recommendationsSection() {
@@ -289,14 +292,17 @@ function recommendationsSection() {
     <a class="textlink" href="#comparar/recomendaciones">Comparar las tres ${icon("forward")}</a></div>
     <ol class="recommendations-list">${cards}</ol>
     <details class="rec-question"><summary>¿Y el chalet de seis plazas en Les Gets?</summary>
-    <p>El Fleur des Alpes os acerca a Les Prodains (unos 20 min en coche) e incluye el spa del Hôtel Alpina, a 900 m. Los 241 € eran para seis. Si el propietario acepta a siete por ese importe, el viaje saldría a 145,89 € por persona, solo 0,29 € menos que el chalet de Arâches.</p>
+    <p>El Fleur des Alpes os acerca a Les Prodains (unos 20 min en coche) e incluye el spa del Hôtel Alpina, a 900 m. Los 241 € eran para seis. Si el propietario acepta a siete por ese importe, la base sería 145,89 € por persona, solo 0,29 € menos que el chalet de Arâches. La consigna en Avoriaz se añade a ambos planes.</p>
     <p>En el calendario para siete, el sábado 12 figura como día de salida. Si se pudiera entrar ese sábado, elegiría Fleur antes que Arâches para esquiar en Avoriaz y pasar menos tiempo en coche.</p>
     <a class="textlink" href="#plan/fleur">Ver Fleur des Alpes ${icon("forward")}</a></details>
     <details class="rec-question"><summary>¿Y si queréis pasar menos tiempo en coche?</summary>
-    <p>Si estáis aprendiendo, el mismo chalet con forfait de Les Carroz sale a 148,71–156,71 € por persona. Son unos 4 min en coche al remonte frente a los 50 min de Avoriaz.</p>
+    <p>Si estáis aprendiendo, el mismo chalet con forfait de Les Carroz os deja a unos 4 min en coche de Kédeuze. Ahora se propone Ski Plus frente al remonte y dos casilleros por 44 € la noche. Falta cotizar el alquiler con esa tienda.</p>
     <a class="textlink" href="#plan/chalet-inicio">Ver chalet con forfait de iniciación ${icon("forward")}</a>
-    <p>Si ya esquiáis y preferís ir andando, el hotel Flocons Verts con forfait Villages sale a 191,43–199,43 € por persona. El pase permite recorrer los sectores abiertos de Les Carroz y Samoëns.</p>
-    <a class="textlink" href="#plan/carroz">Ver hotel con forfait Villages ${icon("forward")}</a></details></section>`;
+    <p>Si preferís ir andando, Flocons Verts permite recoger en Ski Plus y volver al hotel con los esquís a pie. La noche cuesta 115 € para siete. La nueva tarifa de material aún se tiene que cotizar.</p>
+    <a class="textlink" href="#plan/carroz">Ver hotel con forfait Villages ${icon("forward")}</a></details>
+    <details class="rec-question"><summary>¿Por qué ha bajado Val Cenis?</summary>
+    <p>Su antiguo total usaba alquiler en Orelle, que exigía llevar el material en coche. Jeannot Sports de Lanslevillard sí ofrece recogida local y consigna gratuita, pero falta la tarifa de alquiler para siete. Casa y forfait siguen costando 62,57 € por persona en el plan de Modane.</p>
+    <a class="textlink" href="#plan/cenis">Ver Val Cenis corregido ${icon("forward")}</a></details></section>`;
 }
 function homePage() {
   return (
@@ -305,6 +311,7 @@ function homePage() {
       "Una noche en los Alpes franceses y dos días en pistas.",
     ) +
     facts() +
+    '<p class="trip-constraint">' + icon("gear") + 'Material en la estación y guardado allí si volvéis en coche a dormir.</p>' +
     recommendationsSection() +
     '<section><div class="sectionhead"><h2>El precio de un vistazo</h2><a class="textlink" href="#comparar">Comparar planes ' +
     icon("forward") +
@@ -313,7 +320,7 @@ function homePage() {
     budgetChart(
       ["cenis", "carroz-inicio", "loft", "chalet", "orelle"].map(lookup),
     ) +
-    '<p class="fine">Cada total cubre una noche, dos días de forfait y material y los cargos conocidos. Para incluir la estimación inicial de comida, sumad 30 € por persona. Desplazamientos y extras opcionales van aparte.</p></section>' +
+    '<p class="fine">El cálculo reúne una noche, dos días de forfait y material. Orelle incluye 32 € de consigna para siete. En Avoriaz falta cotizar ese suplemento. En Val Cenis, Les Carroz y Flaine el nuevo alquiler local está por cotizar. Para incluir la estimación inicial de comida, sumad 30 € por persona. Desplazamientos y extras opcionales van aparte.</p></section>' +
     '<section class="notes"><h2>Cuándo reservaría</h2><div><b>Ahora</b><p>Elegiría una casa con cancelación para siete y reservaría el material al confirmar las tallas.</p></div><div><b>7–10 de diciembre</b><p>Revisaría qué remontes abren antes de pagar los forfaits o una casa no reembolsable. Las tarifas de apertura pueden agotarse antes.</p></div></section>'
   );
 }
@@ -489,16 +496,19 @@ function priceDetails(p) {
     rows(
       categories.map((x, i) => [
         x,
-        i === 2
-          ? range(b.parts[i], b.upper)
+        i === 4 && p.storagePending
+          ? "Por cotizar"
+          : i === 2
+          ? (b.parts[i] == null ? "Por cotizar" : range(b.parts[i], b.upper))
           : b.parts[i] == null
             ? "Sin tarifa"
             : money(b.parts[i]),
       ]),
     ) +
-    '<div class="total"><span>Total</span><strong>' +
+    '<div class="total"><span>' + (p.storagePending ? "Base + consigna" : "Total") + "</span><strong>" +
     e(labelPrice(p)) +
-    "</strong></div>"
+    "</strong></div>" +
+    (p.gear[0] == null ? '<p class="fine">Alojamiento, forfait y cargos conocidos ' + e(money(b.parts.reduce((sum, part) => sum + (part || 0), 0))) + '. Falta añadir el alquiler en la tienda de esta estación.</p>' : "")
   );
 }
 function figure(items, kind) {
@@ -631,6 +641,14 @@ function reviewTable(review, when = "") {
     </section>`;
 }
 
+function gearPanel(logistics) {
+  return `<section class="gear-logistics" aria-label="Material sin llevar esquís en el coche"><h2>Alquiler y noche del sábado</h2>
+  <strong>${e(logistics.title)}</strong><dl>
+  <div><dt>Recogida</dt><dd>${e(logistics.pickup)}</dd></div>
+  <div><dt>Sábado al acabar</dt><dd>${e(logistics.night)}</dd></div>
+  <div><dt>Domingo</dt><dd>${e(logistics.return)}</dd></div></dl>
+  <p class="fine">${e(logistics.booking)}</p></section>`;
+}
 function detail(p) {
   const r = getRoute(p);
   const review = window.SKI_PLAN_REVIEW(p);
@@ -669,6 +687,7 @@ function detail(p) {
     "</span></div>" +
     controls() +
     bookingActions(actions) +
+    gearPanel(window.SKI_GEAR_LOGISTICS.forPlan(p)) +
     accessPanel("plan/" + p.id, window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null)) +
     (p.id === "chalet"
       ? '<section aria-label="Elegir estación desde el chalet"><h2>¿Avoriaz o Les Carroz?</h2>' +
@@ -676,7 +695,7 @@ function detail(p) {
           ["Avoriaz", "≈50 min en coche hasta Les Prodains + 4 min en teleférico."],
           ["Les Carroz · Kédeuze", "≈4 min en coche (1,8 km) o ≈23 min a pie (1,7 km)."],
         ]) +
-        '<p>Para aprovechar más la casa y el jacuzzi, elegiría Les Carroz. Hace falta el forfait correspondiente. Las variantes de abajo incluyen alquiler local. Sus enlaces van hacia otros sectores de Grand Massif, como Flaine y Samoëns.</p>' +
+        '<p>Para aprovechar más la casa y el jacuzzi, elegiría Les Carroz. Hace falta el forfait correspondiente. Las variantes de abajo proponen alquiler en Ski Plus, junto a Kédeuze, con tarifa por cotizar. Desde Les Carroz se puede esquiar hacia otros sectores de Grand Massif cuando las conexiones estén abiertas y el forfait los cubra.</p>' +
         '<p class="fine">Esta ficha presupuesta Avoriaz. Les Carroz, Flaine y Samoëns tienen apertura prevista el 12 de diciembre, según la nieve. Las conexiones dependen de los remontes abiertos y del forfait elegido. Hay skibus gratuito por Arâches, pero falta confirmar el servicio del 12–13 de diciembre. Las distancias parten de la ubicación aproximada del chalet. El trayecto a pie incluye un camino cuyo acceso invernal falta comprobar.</p>' +
         '<div class="planrelated"><a class="entrylink" href="#plan/chalet-inicio">Ver chalet + forfait de iniciación ' + icon("forward") + '</a><a class="entrylink" href="#plan/chalet-villages">Ver chalet + forfait Villages ' + icon("forward") + '</a></div></section>'
       : "") +
@@ -758,6 +777,8 @@ function compare() {
     ["Total", (p) => labelPrice(p)],
     ["Personas cotizadas", (p) => String(person(p))],
     ["Del alojamiento a las pistas", (p) => window.SKI_ACCESS.plans[p.id].text],
+    ["Recogida del material", (p) => window.SKI_GEAR_LOGISTICS.forPlan(p).pickup],
+    ["Material el sábado por la noche", (p) => window.SKI_GEAR_LOGISTICS.forPlan(p).night],
     ["Horario de pistas y remontes", (p) => window.skiLiftHours(p.id, null).map((row) => row.label + " · " + row.text).join(" ")],
     ["Principal ventaja", (p) => window.SKI_PLAN_REVIEW(p).pros[0] || "—"],
     [
@@ -768,8 +789,10 @@ function compare() {
       x,
       (p) => {
         const b = budget(p);
-        return i === 2
-          ? range(b.parts[i], b.upper)
+        return i === 4 && p.storagePending
+          ? "Por cotizar"
+          : i === 2
+          ? (b.parts[i] == null ? "Por cotizar" : range(b.parts[i], b.upper))
           : b.parts[i] == null
             ? "Sin tarifa"
             : money(b.parts[i]);
@@ -823,6 +846,7 @@ function archiveLinks(a) {
   const images = [...(media[a.media] || []), ...(media[a.slope] || [])];
   const review = window.SKI_ARCHIVE_REVIEW(a);
   return [
+    ...window.SKI_GEAR_LOGISTICS.forArchive(a).sources,
     ...accessSourceLinks(window.SKI_ACCESS.archive[archive.indexOf(a)], window.skiLiftHours(null, archive.indexOf(a))),
     ...(a.links || []),
     ...(review.links || []),
@@ -844,6 +868,7 @@ function archiveBody(item, index, compact = false) {
     e(item.description) +
     "</p>" +
     (photos ? '<div class="duogallery">' + photos + "</div>" : "") +
+    gearPanel(window.SKI_GEAR_LOGISTICS.forArchive(item)) +
     accessPanel("otras/" + index, window.SKI_ACCESS.archive[index], window.skiLiftHours(null, index)) +
     (item.sauna ? rows([["Sauna del alojamiento", item.sauna], ["Jacuzzi del alojamiento", item.jacuzzi]]) : "") +
     reviewTable(review) +
@@ -914,6 +939,7 @@ function more() {
 function linksFor(p) {
   const r = getRoute(p);
   return [
+    ...window.SKI_GEAR_LOGISTICS.forPlan(p).sources,
     ...accessSourceLinks(window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null)),
     p.houseLink,
     ...window

@@ -152,7 +152,7 @@
       .map((p) => budget(p).low)
       .filter((price) => price !== null && Number.isFinite(price));
     const price = prices.length
-      ? "Desde " + money(Math.min(...prices))
+      ? "Desde " + money(Math.min(...prices)) + (station.areas.includes("Avoriaz") ? " + consigna" : "")
       : "Pendiente";
     return (
       '<a class="station-row" href="' +
@@ -180,7 +180,7 @@
     return (
       heading(
         "Planes por estación",
-        "El precio mínimo incluye alojamiento para siete, dos días de forfait y alquiler de material.",
+        "Base de alojamiento para siete, dos días de forfait y material. El suplemento de consigna se indica en cada plan.",
       ) +
       controls() +
       '<div class="station-list">' +

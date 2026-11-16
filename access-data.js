@@ -70,7 +70,7 @@
     "Una estación cada día": access("drive", "El sábado, dejad el coche en Les Prodains y subid en teleférico a Avoriaz. El domingo os desplazáis en coche a Le Grand-Bornand o La Clusaz. La noche en el valle sigue por elegir, así que la distancia exacta cambia con la casa.", prodains),
     "Dos excursiones desde Archamps": access("drive", "Desde Ecla al P1 de Les Prodains hay unos 76 km y 1 h 15 min en coche por trayecto. Cada día subís en teleférico 4 min a Avoriaz y al terminar volvéis a Archamps por la misma ruta.", prodains),
     "Añadir sauna al loft": plans.loft,
-    "Otras tiendas de alquiler": access("unknown", "Esta opción compara únicamente tiendas de material. Si alquiláis arriba en Avoriaz, el teleférico de Les Prodains os acerca a la estación. Recoger material en Annemasse no determina cómo se llega a pistas desde el alojamiento.", prodains),
+    "Otras tiendas de alquiler": access("unknown", "Esta opción compara únicamente tiendas de material. Si alquiláis arriba en Avoriaz, el teleférico de Les Prodains os acerca a la estación. La recogida y la devolución deben hacerse junto al acceso de la estación. La consigna nocturna se acuerda con la tienda elegida.", prodains),
   };
 
   // The public map reproduces each measured route from the entrance or the published area.

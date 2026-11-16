@@ -547,7 +547,7 @@
       name: "Dos excursiones desde Archamps",
       area: "Avoriaz",
       kind: variant,
-      price: "111,47 €/persona antes de viaje",
+      price: "111,47 €/persona + consigna",
       description:
         "Sin pagar alojamiento: 50,50 € de forfait, 3 € de tarjeta y 57,97 € por el equipo con casco. Volver a la residencia implica hacer la ruta hasta Prodains dos veces. Solo encaja si renunciáis a la noche fuera.",
       links: [
@@ -560,7 +560,7 @@
       name: "Añadir sauna al loft",
       area: "Morzine / Avoriaz",
       kind: variant,
-      price: "146–150 €/persona en total",
+      price: "146–150 €/persona + consigna",
       description:
         "Sobre el plan de Cluses, la piscina con saunas y hammams cuesta 16 € o 12 € entrando la última hora. Sábado de 12 a 19 h según el calendario consultado. Acceso al bienestar desde 18 años y reserva para grupos.",
       links: [
@@ -571,11 +571,11 @@
     },
     {
       name: "Otras tiendas de alquiler",
-      area: "Avoriaz / Annemasse",
+      area: "Avoriaz",
       kind: variant,
       price: "Desde 55,09 € con casco en Avoriaz",
       description:
-        "Intersport Bronze: 54,80 € más 2 € de gestión entre siete. Skimium: iniciación 59,20 € o progresión 72 € con casco. Sport 2000 ofrece TRIBU desde siete packs elegibles. SkiTruck Annemasse permite recoger en el valle; precio para siete pendiente. Los tests del festival duran unos 90 min por equipo.",
+        "Intersport Bronze: 54,80 € más 2 € de gestión entre siete. Skimium: iniciación 59,20 € o progresión 72 € con casco. Sport 2000 ofrece TRIBU desde siete packs elegibles. Los tests del festival duran unos 90 min por equipo.",
       links: [
         gearAv,
         ["Fidelidad · Intersport", "https://www.intersport-rent.fr/fr/faq"],
@@ -586,10 +586,6 @@
         [
           "Descuento TRIBU · Sport 2000",
           "https://location-ski.sport2000.fr/nos-avantages/les-promotions/offre-groupe",
-        ],
-        [
-          "Servicio · SkiTruck Annemasse",
-          "https://skitruck-decathlon-annemasse.lokki.rent/",
         ],
         passAv,
       ],

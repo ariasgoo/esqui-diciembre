@@ -11,8 +11,20 @@
     carroz: {
       kind: "gear",
       label: "Alquilar material",
-      url: "https://www.caranvasports.fr/products/location-ski-les-carroz",
-      note: "Caranva Sports · recogida en Les Carroz.",
+      url: "https://ski-plus.fr/categorie-produit/ski/",
+      note: "Ski Plus · frente a Kédeuze. Cotizar dos días con casco y confirmar apertura del 12–13.",
+    },
+    cenis: {
+      kind: "gear",
+      label: "Alquilar material",
+      url: "https://www.intersport-rent.fr/fr/stations-ski/maurienne/val-cenis/val-cenis-lanslevillard/rue-de-la-mairie",
+      note: "Jeannot Sports · Lanslevillard. Alquiler junto a pistas y consigna gratuita publicada. Precio para siete pendiente.",
+    },
+    flaine: {
+      kind: "gear",
+      label: "Alquilar material",
+      url: "https://www.simond-sports.com/location-ski",
+      note: "Elegid Flaine Forum. Consigna gratuita publicada. Cotizar dos días con casco y comprobar servicio el 12–13.",
     },
     orelle: {
       kind: "gear",
@@ -122,7 +134,7 @@
       case "avoriaz":
         return [lodging, equipment.avoriaz, forfaits.avoriaz];
       case "cenis":
-        return [lodging, equipment.orelle, forfaits.cenis];
+        return [lodging, equipment.cenis, forfaits.cenis];
       case "orelle":
         return [
           lodging,
@@ -136,7 +148,7 @@
           plan.id.endsWith("-inicio") ? forfaits.debutant : forfaits.villages,
         ];
       case "flaine":
-        return [lodging, equipment.carroz, forfaits.flaine];
+        return [lodging, equipment.flaine, forfaits.flaine];
       default:
         return [lodging];
     }

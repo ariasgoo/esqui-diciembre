@@ -30,7 +30,7 @@
       ],
       cons: [
         "El evento abre parte del dominio. Desde Ecla son unas 2 h 30 hasta Vieux Moulin y el pase se recoge el sábado por la mañana.",
-        "El alquiler presupuestado se recoge en Orelle. El apartamento pide llevar sábanas y toallas.",
+        "Se retira el precio de alquiler de Orelle. Falta cotizar el material de Jeannot Sports en la propia estación. El apartamento pide llevar sábanas y toallas.",
       ],
     },
     loft: {
@@ -88,7 +88,7 @@
       ],
       cons: [
         "El anuncio prevé estrenar el dúplex el 11 de diciembre y mostraba fotos provisionales.",
-        "El precio del equipo corresponde a recogida en Orelle. Alquilar en la propia estación requiere otra cotización.",
+        "Falta cotizar el equipo en Jeannot Sports de Lanslevillard, donde podéis dejarlo la noche del sábado.",
       ],
     },
     carroz: {
@@ -146,7 +146,7 @@
         "Apartamento con balcón y dos baños. El chalet incluye acceso al spa del Hôtel Alpina, con sauna y jacuzzi.",
       ],
       cons: [
-        "Los 241 € eran para seis. El calendario para siete indica «solo salida» el sábado 12. Si aceptaran esa noche a siete por 241 €, el viaje completo saldría a 145,89 € por persona.",
+        "Los 241 € eran para seis. El calendario para siete indica «solo salida» el sábado 12. Si aceptaran esa noche a siete por 241 €, la base sería 145,89 € por persona más la consigna en Avoriaz.",
         "El spa queda a 900 m y el acceso de Avoriaz a unos 20 min en coche.",
       ],
       links: [skiSpa],

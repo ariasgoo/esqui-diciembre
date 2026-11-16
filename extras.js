@@ -103,6 +103,8 @@
       adultPass,
       card,
       gear,
+      storageFee,
+      storagePending,
       fee,
       passInfo,
       gearInfo,
@@ -130,6 +132,8 @@
       adultPass,
       card,
       gear,
+      storageFee,
+      storagePending,
       fee,
       passInfo,
       gearInfo,
@@ -253,6 +257,8 @@
       pass,
       card,
       gear,
+      storagePending: false,
+      storageFee: 44,
       fee: 0,
       passInfo,
       gearInfo,
@@ -264,7 +270,7 @@
         ([label]) => !label.startsWith("Hotel") && !label.startsWith("Sauna"),
       ),
       pro: "Conserváis el jacuzzi privado y esquiáis en el dominio de las pistas cercanas al chalet.",
-      con: "El presupuesto parte del material de iniciación. El pack intermedio de Les Carroz cuesta 72–80 € con casco. Revisad el parte de apertura.",
+      con: "El alquiler de Ski Plus está por cotizar. Se incluyen 44 € para dos casilleros de cuatro equipos en Kédeuze, una noche.",
       when:
         reference === "carroz-inicio"
           ? "Si todos sois principiantes y queréis pasar la tarde en el chalet. El forfait da acceso a una selección de remontes de Les Carroz."

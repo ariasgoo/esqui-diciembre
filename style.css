@@ -13,6 +13,7 @@
   --s1: #79948e;
   --s2: #b2c5bd;
   --s3: #e3c38c;
+  --s4: #bdafcc;
   --shadow: 0 2px 6px #20282209;
   font-family:
     Inter,
@@ -39,6 +40,7 @@
   --s1: #86a49a;
   --s2: #b7cabe;
   --s3: #dfbd86;
+  --s4: #c3afd9;
 }
 * {
   box-sizing: border-box;
@@ -521,6 +523,7 @@ th a:hover {
 .s3 {
   background: var(--s3);
 }
+.s4 { background: var(--s4); }
 .chartrow {
   display: grid;
   grid-template-columns: minmax(132px, 185px) minmax(40px, 1fr) 130px;
@@ -1571,3 +1574,15 @@ button.slide {
     display: inline;
   }
 }
+
+.trip-constraint { margin: 18px 0 0; display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 13px; }
+.trip-constraint .ico { flex: none; width: 16px; height: 16px; }
+.gear-logistics { margin: 20px 0; border-left: 2px solid var(--accent); padding: 1px 0 1px 14px; }
+.gear-logistics h2 { font-size: 17px; margin: 0 0 6px; }
+.gear-logistics > strong { font-size: 13px; color: var(--accent); }
+.gear-logistics dl { margin: 10px 0; }
+.gear-logistics dl > div { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 12px; padding: 6px 0; font-size: 13px; }
+.gear-logistics dt { font-weight: 550; }
+.gear-logistics dd { margin: 0; }
+.gear-logistics .fine { margin: 7px 0 0; font-size: 12px; }
+@media (max-width: 650px) { .gear-logistics dl > div { grid-template-columns: 1fr; gap: 2px; } }

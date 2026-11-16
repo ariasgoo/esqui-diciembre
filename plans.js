@@ -34,21 +34,18 @@
     "Forfaits · Grand Massif",
     "https://www.grand-massif.com/offres-ski/tarifs-forfaits-ski/",
   ];
-  const cv = [
-    "Material · tarifas Les Carroz",
-    "https://www.caranvasports.fr/products/location-ski-les-carroz",
-  ];
   const av = {
     area: "Avoriaz",
     slope: "avoriaz",
     pass: 50.5,
     card: 3,
     gear: [57.68, 57.68],
+    storagePending: true,
     fee: 2,
     passInfo:
       "Forfait local Rock On Snow para sábado y domingo. Soporte nuevo, 3 €; reutilizable si ya tenéis uno compatible.",
     gearInfo:
-      "Intersport Place Centrale. Pack rojo con esquís, botas, bastones y casco, 57,68 € por persona. Una sola reserva añade 2 € al grupo. Precio visto en la primera consulta; faltan las siete tallas.",
+      "Intersport Place Centrale. Pack rojo con esquís, botas, bastones y casco, 57,68 € por persona. Una sola reserva añade 2 € al grupo. Precio visto en la primera consulta; faltan las siete tallas y el suplemento de consigna de la noche del sábado.",
     sources: [
       [
         "Forfait · tienda oficial Avoriaz",
@@ -94,30 +91,21 @@
   const cen = {
     area: "Val Cenis",
     slope: "cenis",
+    gear: [null, null],
     gearInfo:
-      maur.gearInfo +
-      " También podéis alquilar en Jeannot Sports, en Lanslevillard. Falta cotizar allí dos días con casco y las siete tallas.",
+      "Recogida en Jeannot Sports, 49 rue de la Mairie, Lanslevillard. El comercio está a menos de 300 m de pistas y anuncia consigna gratuita. Abre el sábado a las 8:30 y el domingo a las 8:30. Falta cotizar dos días con casco para siete y confirmar espacio en la consigna. La antigua tarifa de Orelle se ha retirado porque exigía transportar el material en coche.",
     pass: 49,
     passInfo:
       "Tous en Piste incluye los dos días de remontes en el dominio abierto, actividades y concierto. El selector mostraba 343 € para siete. Recogida el sábado de 8:00 a 12:00 en Vieux Moulin.",
     sources: [
       ticket,
-      [
-        "Programa y apertura parcial",
-        "https://www.valcenis.com/agenda/agenda-des-evenements/tous-en-piste/",
-      ],
-      equip,
-      [
-        "Alquiler en la estación · Jeannot Sports de Lanslevillard",
-        "https://www.intersport-rent.fr/fr/stations-ski/maurienne/val-cenis/val-cenis-lanslevillard/rue-de-la-mairie",
-      ],
-      [
-        "Alquiler alternativo en Modane",
-        "https://www.intersport-modane.com/location-de-materiel-de-sport/",
-      ],
+      ["Programa y apertura parcial", "https://www.valcenis.com/agenda/agenda-des-evenements/tous-en-piste/"],
+      ["Jeannot Sports · alquiler y consigna gratuita", "https://www.valcenis.com/commerce-et-service/jeannot-sports-val-cenis/"],
+      ["Reservar material en Lanslevillard", "https://www.intersport-rent.fr/fr/stations-ski/maurienne/val-cenis/val-cenis-lanslevillard/rue-de-la-mairie"],
     ],
   };
   const ore = {
+    storageFee: 32,
     area: "Val Thorens–Orelle",
     slope: "orelle",
     pass: 92.4,
@@ -139,9 +127,9 @@
     capacity: "7 plazas · habitación familiar",
     night: 115,
     card: 2,
-    gear: [56, 64],
+    gear: [null, null],
     gearInfo:
-      "Pack de iniciación 44 € los dos días + casco 12 €. La tienda también enumera los bastones a 8 € aunque describe el pack como completo. Se muestra el margen hasta confirmarlo. Intermedio con casco: 72–80 €.",
+      "Recogida en Ski Plus, frente a Kédeuze, con acceso a pie a la cabina. El alquiler de dos días con casco y la apertura del 12–13 deben cotizarse con esta tienda. La tarifa anterior de Caranva se retira porque el intermediario no publica el comercio exacto de recogida.",
     house:
       "Habitación familiar de 30 m², 115 € no reembolsables. También se ofrecía dúplex para siete por 139 € con cancelación gratuita, unos 3,43 € más por persona.",
     sauna: "En el hotel · de pago",
@@ -155,7 +143,7 @@
         "https://www.ternelia-lm.com/en/hotel/the-flocons-verts-grand-massif/frequently-asked-questions/",
       ],
       gm,
-      cv,
+      ["Material junto a Kédeuze · Ski Plus", "https://ski-plus.fr/le-magasin/"],
       [
         "Apertura por sectores",
         "https://www.grand-massif.com/ouverture-domaine/",
@@ -194,9 +182,9 @@
       route: "mod-cenis",
       title: "Tous en Piste + Modane",
       short: "Val Cenis · Modane",
-      tag: "Menor precio",
+      tag: "Material local por cotizar",
       pro: "El forfait del festival incluye actividades y concierto. La noche cuesta 13,57 € por persona.",
-      con: "Se duerme en el valle y el dominio abre parcialmente. Material presupuestado en Orelle, no en la propia estación.",
+      con: "Se duerme en el valle y el dominio abre parcialmente. Falta cotizar el alquiler en Jeannot Sports de Lanslevillard.",
       when: "Si el precio manda y os apetece un fin de semana de apertura con ambiente.",
     },
     {
@@ -356,13 +344,14 @@
       route: "flocons-flaine",
       area: "Flaine",
       slope: "flaine",
+      gearInfo: "Recogida en Simond Sports de Flaine Forum, junto al frente de nieve. El comercio publica consigna gratuita. Falta cotizar dos días con casco para siete y confirmar servicio y apertura el 12–13. Se retira el alquiler de Les Carroz, que obligaba a llevar los esquís en coche.",
       title: "Les Flocons Verts + Flaine",
       short: "Flaine · Flocons Verts",
       pass: 121.4,
       passInfo:
         "Dos pases de un día del sector Flaine, 60,70 € cada uno. Soporte nuevo 2 €. El pase local de Flaine no cubre el acceso desde las pistas de Les Carroz.",
       pro: "Mantiene la noche de 115 € para siete y permite elegir el sector de Flaine según la nieve.",
-      con: "Se duerme y se alquila el material en Les Carroz, pero se esquía en Flaine.",
+      con: "Se duerme en Les Carroz y se alquila en Flaine Forum. Falta cotizar el material local.",
       when: "Si el parte de apertura favorece claramente a Flaine. Para Grand Massif completo, el forfait público sube a 126 €.",
     },
     {

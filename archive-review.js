@@ -482,7 +482,7 @@
           })),
           ...independent("cenis", ["gear"]).map((x) => ({
             ...x,
-            label: "Alquiler en Orelle · Val Cenis",
+            label: "Alquiler · Val Cenis Lanslevillard",
           })),
         ],
         "Estos formatos tienen estancias mínimas más largas. Para vuestra noche, los pases sueltos de ambos eventos están en Recursos.",
@@ -497,10 +497,7 @@
         ],
         [
           searchStay("Cluses, France"),
-          gear(
-            "Alquiler en el valle · SkiTruck Annemasse",
-            "https://skitruck-decathlon-annemasse.lokki.rent/",
-          ),
+          ...inAvoriaz().filter((action) => action.kind === "gear"),
           pass(
             "Día 1 · Avoriaz Rock On Snow",
             "https://www.skipass-avoriaz.com/fr/hiver/forfait/forfait-avoriaz-hiver",
@@ -513,7 +510,7 @@
     "Dos excursiones desde Archamps": () =>
       review(
         [
-          "Dormir en la residencia evita pagar una noche de alojamiento. El cálculo queda en 111,47 € por persona antes de los desplazamientos.",
+          "Dormir en la residencia evita pagar una noche de alojamiento. La base queda en 111,47 € por persona más la consigna de Avoriaz.",
         ],
         [
           "Implica dos idas y vueltas a Les Prodains y renunciar a la noche de grupo en la montaña.",
@@ -524,7 +521,7 @@
     "Añadir sauna al loft": () =>
       review(
         [
-          "Podéis combinar el loft de Cluses con una sesión de sauna y hammam por unos 146–150 € por persona en total.",
+          "Podéis combinar el loft de Cluses con una sesión de sauna y hammam por una base de unos 146–150 € por persona más la consigna de Avoriaz.",
         ],
         [
           "El spa está en Morzine, fuera del alojamiento. Para grupos requiere reserva y el precio reducido solo vale la última hora.",
@@ -538,7 +535,7 @@
           "El pack con casco sale a 55,09 € por persona con fidelidad y gestión compartida. Sport 2000 tiene promoción para grupos elegibles de siete.",
         ],
         [
-          "Faltan las siete tallas y el presupuesto de SkiTruck. Las pruebas del festival duran unos 90 minutos por equipo.",
+          "Hay que confirmar las siete tallas, la consigna nocturna y su suplemento en la tienda elegida. Las pruebas del festival duran unos 90 minutos por equipo.",
         ],
         [
           ...independent("chalet", ["gear"]).map((x) => ({
@@ -547,7 +544,6 @@
           })),
           gear("Alquiler · Skimium", a.links[2][1]),
           gear("Grupo · Sport 2000", a.links[3][1]),
-          gear("Alquiler · SkiTruck", a.links[4][1]),
         ],
         "Esta ficha compara tiendas para el mismo viaje. Elegid el alojamiento y el forfait en el plan correspondiente.",
       ),
