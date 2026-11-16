@@ -44,7 +44,7 @@
   ];
   const houses = window.SKI_LODGINGS;
   const byId = new Map(accesses.map((a) => [a.id, a]));
-  const featuredRoutes = ["avoriaz", "orelle", "les-carroz"].map((id) => byId.get(id));
+  const featuredRoutes = ["avoriaz", "orelle", "val-thorens", "les-carroz"].map((id) => byId.get(id));
   const selectedHouse = (key = "") => key.startsWith("casa-") ? houses.byId(key.slice(5)) : undefined;
   const stationHref = (a) => "#estacion/" + (a.station || a.id);
   const planById = new Map(window.PLANS.filter(window.SKI_PLAN_ALLOWED).map((plan) => [plan.id, plan]));

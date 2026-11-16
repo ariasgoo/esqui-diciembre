@@ -419,7 +419,7 @@
       spa: "El chalet incluye el spa del Hôtel Alpina, a 900 m. El hotel anuncia spa de 8:00 a 19:00 y sauna de 15:00 a 19:00.",
       pro: "El ambiente de chalet que os gustó y acceso al spa del hotel.",
       con: "La tarifa anterior cubría seis. Para siete, el calendario directo marcaba el sábado 12 solo para salidas.",
-      when: "Guardadlo para otra fecha o si el propietario confirma otra unidad para los siete.",
+      when: "Si os gusta el chalet y el spa, votadlo. Si sale elegido, consultad al propietario la séptima plaza y la llegada el sábado.",
       houseLink: [
         "Oferta anterior · Booking para seis",
         bk("chalet-fleur-des-alpes", 6),

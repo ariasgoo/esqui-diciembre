@@ -13,8 +13,9 @@
     {key: "flaine", label: "Flaine", areas: ["Flaine"], image: "flaine", access: "flaine",
       pro: "Pistas de altura a poco más de una hora de Ecla.", con: "El hotel está en Les Carroz. Falta el precio del material."},
   ];
-  const featuredIds = ["loft", "chalet", "orelle", "carroz"];
+  const featuredIds = ["loft", "chalet", "fleur", "orelle", "cosy", "saintmichel-apto", "saintmichel", "carroz", "chalet-villages"];
   const featuredResorts = resorts.slice(0, 3);
+  const expandedStations = new Set();
 
   const summaries = {
     loft: {title: "Loft de Cluses", pro: "Tres dormitorios. El plan más barato para siete.", con: "40–45 min en coche hasta el teleférico."},
@@ -26,9 +27,9 @@
     wahou: {title: "Maison Wahou", pro: "Una cama para cada persona.", con: "30 min en coche hasta el teleférico."},
     grinza: {title: "Dúplex La Grinza", pro: "Dos baños y 10 min en coche al acceso del festival.", con: "Alojamiento de estreno. Falta cotizar el material."},
     flaine: {title: "Les Flocons Verts · Flaine", pro: "La habitación cuesta 115 € para siete.", con: "20 min en coche a Flaine. Falta cotizar el material."},
-    cosy: {title: "Cosy Val Tho", pro: "Salida y vuelta con esquís si abre la pista de la residencia.", con: "El paquete publicado admite seis personas."},
+    cosy: {title: "Cosy Val Tho", pro: "A pie de pista si abre el acceso. Desde Ecla, 2 h 20 en coche.", con: "Paquete para seis. Consultar la séptima plaza."},
     cheval: {title: "Résidence Cheval Blanc", pro: "Acceso directo si abre la pista de la residencia.", con: "El paquete publicado admite seis personas."},
-    fleur: {title: "Chalet Fleur des Alpes", pro: "Balcón, dos baños y acceso al spa del Hôtel Alpina.", con: "Oferta para seis. La llegada el sábado para siete sigue por confirmar."},
+    fleur: {title: "Chalet Fleur des Alpes", pro: "Balcón, dos baños y acceso al spa del Hôtel Alpina.", con: "Seis plazas. Consultar la séptima y la llegada el sábado."},
     saintmichel: {title: "Hotel Ô Saint Michel", pro: "Desayuno incluido y 6 min en coche a la cabina.", con: "Distribución y tarifa para siete por confirmar."},
     "four-seasons": {title: "Four Seasons de Taninges", pro: "Tres dormitorios y terraza.", con: "30 min en coche al acceso de Avoriaz."},
     lesgets50: {title: "Apartamento de Les Gets", pro: "Siete plazas y 20 min en coche al acceso de Avoriaz.", con: "Las pistas junto al pueblo requieren otro forfait."},
@@ -74,7 +75,7 @@
         <div class="choice-option-copy"><h3>${e(summary.title)} ${icon("arrow")}</h3>
           ${tradeoffs(summary.pro, summary.con)}</div>
       </a>
-      <div class="choice-action"><div class="choice-price"><strong>${e(labelPrice(plan))}</strong><small>/ ${e(priceUnit)}</small></div>
+      <div class="choice-action"><div class="choice-price"><strong>${e(labelPrice(plan))}</strong><small>/ ${e(priceUnit)}${person(plan) === 6 ? ' · tarifa para seis' : ''}</small></div>
         ${voteControl(plan.id)}</div>
     </article>`;
   }
@@ -83,7 +84,7 @@
     const trip = guideFor(station).trips[0], facts = factsFor(station);
     const [distance, duration] = trip.value.split(" · ");
     const journey = duration ? duration + " · " + distance : distance;
-    return `<dl class="choice-stats"><div><dt>Desde Ecla Archamps</dt><dd>${e(journey)}</dd></div>
+    return `<dl class="choice-stats"><div><dt>${station.key === "val-thorens-orelle" ? 'Ecla Archamps → Orelle' : 'Desde Ecla Archamps'}</dt><dd>${e(journey)}</dd></div>
       ${facts ? `<div><dt>12–13 dic · estimación propia</dt><dd>${e(facts.opening)} <small>de ${e(facts.km.split(" · ")[0])}</small></dd></div>` : ""}</dl>`;
   }
 
@@ -95,11 +96,18 @@
 
   function choiceGroup(station, matching) {
     if (!matching.length) return "";
-    return `<section class="choice-group" aria-label="${e(station.label)}">
-      <div class="choice-resort"><div class="choice-resort-title"><h2><a href="#estacion/${station.key}">${e(station.label)} ${icon("arrow")}</a></h2>${mapLink(station)}</div>
-        ${stationFacts(station)}${tradeoffs(station.pro, station.con)}</div>
-      <div class="choice-options">${matching.map(optionRow).join("")}</div>
-    </section>`;
+    return `<details class="choice-group" data-station-toggle="${e(station.key)}"${expandedStations.has(station.key) ? " open" : ""}>
+      <summary class="choice-resort-toggle">
+        ${picture(station.image, station.label, true)}
+        <div class="choice-resort"><div class="choice-resort-title"><h2>${e(station.label)}</h2>
+          <span class="choice-toggle-label"><span>${matching.length} ${matching.length === 1 ? "opción" : "opciones"}</span>${icon("arrow")}</span></div>
+          ${stationFacts(station)}${tradeoffs(station.pro, station.con)}</div>
+      </summary>
+      <div class="choice-expanded"><nav class="choice-resort-links" aria-label="Más sobre ${e(station.label)}">
+        <a class="choice-route" href="#estacion/${e(station.key)}">Sobre la estación ${icon("forward")}</a>${mapLink(station)}</nav>
+        <div class="choice-options">${matching.map(optionRow).join("")}</div>
+      </div>
+    </details>`;
   }
 
   function isAccessMatch(plan) {
@@ -116,7 +124,7 @@
     return `<header class="choice-intro">${heading("Elige tus planes") + '<p data-selection-hint>' + e(window.SKI_VOTING?.selectionHint() || "Cargando votos…") + '</p>'}<a class="choice-result-link" href="#votaciones">Ver votos ${icon("forward")}</a></header>
       <div class="choice-toolbar"><p>Precio por persona · Una noche, dos días de forfait y material. Consigna aparte.</p>${filterControl("planes")}</div>
       <div class="choice-list">${selected.length ? featuredResorts.map(s => choiceGroup(s, selected.filter(p => forPlan(p) === s))).join("") :
-        `<p class="choice-empty">Ningún favorito tiene este acceso. <a href="#planes">Ver los cuatro planes</a></p>`}</div>
+        `<p class="choice-empty">Ninguna opción principal tiene este acceso. <a href="#planes">Ver todos los accesos</a></p>`}</div>
       <div class="choice-foot"><a href="#otras${state.accessFilter !== "all" ? "/" + state.accessFilter : ""}">${icon("archive")} Otras opciones ${icon("arrow")}</a>
       <small>Precios orientativos. Kilómetros abiertos según estimación propia.</small></div>`;
   }
@@ -163,5 +171,11 @@
     const station = stations.find(s => s.key === key);
     return station ? detailPage(station) : indexPage();
   }
+  document.addEventListener("toggle", event => {
+    const details = event.target;
+    if (!details.isConnected || !details.matches("details[data-station-toggle]")) return;
+    if (details.open) expandedStations.add(details.dataset.stationToggle);
+    else expandedStations.delete(details.dataset.stationToggle);
+  }, true);
   window.SKI_STATIONS = {stations, secondaryStations, featuredIds, forPlan, planSummary: id => summaries[id], optionRow, page, resources};
 })();
