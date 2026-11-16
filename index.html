@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fafaf8" />
+    <meta
+      name="description"
+      content="Comparador del fin de semana de esquí del 12 y 13 de diciembre de 2026 desde Archamps. Alojamiento, forfait, material, rutas y spa."
+    />
+    <title>Esquí en diciembre · Cuaderno de viaje</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="plans.js"></script>
+    <script defer src="routes.js"></script>
+    <script defer src="media.js"></script>
+    <script defer src="archive.js"></script>
+    <script defer src="extras.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Saltar al contenido</a>
+    <div id="shell">
+      <aside id="side">
+        <a href="#inicio" class="brand"
+          ><img src="icon.svg" width="33" height="33" alt="" /><span
+            >Cuaderno de viaje</span
+          ></a
+        >
+        <nav id="nav" aria-label="Navegación principal"></nav>
+        <div class="sidefoot">
+          <span class="season">Temporada 2026 / 27</span
+          ><button id="theme" class="navitem"></button>
+        </div>
+      </aside>
+      <div id="page">
+        <header id="top">
+          <a class="mobilebrand" aria-label="Inicio" href="#inicio"
+            ><img src="icon.svg" width="27" height="27" alt=""
+          /></a>
+          <div class="crumb">
+            Viajes <span>/</span> <strong id="crumb"></strong>
+          </div>
+          <button class="quiet" id="sourceTop"></button>
+        </header>
+        <main id="main" tabindex="-1"></main>
+        <footer>
+          <span>Cuaderno de viaje</span
+          ><span>Precios consultados el 16 nov 2026</span>
+        </footer>
+      </div>
+    </div>
+    <dialog id="sources" aria-labelledby="resourcetitle">
+      <div class="dialogtop">
+        <h2 id="resourcetitle">Recursos</h2>
+        <button class="close" id="close" aria-label="Cerrar recursos">×</button>
+      </div>
+      <div id="sourcebody"></div>
+    </dialog>
+    <dialog id="lightbox" aria-label="Imagen ampliada">
+      <div class="lighttop">
+        <b id="lightlabel"></b
+        ><button class="close" id="lightclose" aria-label="Cerrar imagen">
+          ×
+        </button>
+      </div>
+      <div class="lightphoto"><img id="lightimg" alt="" /></div>
+      <div class="lightfoot">
+        <button id="lightprev" aria-label="Imagen anterior">‹</button
+        ><span id="lightcount"></span
+        ><button id="lightnext" aria-label="Imagen siguiente">›</button>
+      </div>
+    </dialog>
+    <noscript>Activa JavaScript para explorar el comparador.</noscript>
+  </body>
+</html>
