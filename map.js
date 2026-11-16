@@ -42,6 +42,11 @@
       route: "mod-cenis",
     },
   ];
+  const houses = window.SKI_LODGINGS;
+  const forAccess = (active) => active ? houses.list.filter((h) => h.accesses.includes(active.id)) : houses.list;
+  const selectedHouse = (key = "") => key.startsWith("casa-") ? houses.byId(key.slice(5)) : undefined;
+  const houseKey = (h) => "casa-" + h.id;
+  const houseHref = (h) => "#mapa/" + houseKey(h);
   const byId = new Map(accesses.map((a) => [a.id, a]));
   const earth =
     "https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/";
@@ -86,6 +91,10 @@
     const height = small ? 370 : 500;
     const visible = active ? [active] : accesses;
     const bounds = visible.map((a) => data.routes[a.id].bounds);
+    for (const h of forAccess(active)) {
+      const [x, y] = coords(h.lon, h.lat);
+      bounds.push([x, y, x, y]);
+    }
     const x1 = Math.min(...bounds.map((b) => b[0])),
       y1 = Math.min(...bounds.map((b) => b[1]));
     const x2 = Math.max(...bounds.map((b) => b[2])),
@@ -103,8 +112,8 @@
   function drawMap(active, small) {
     const { width, height, scale, dx, dy, pixel } = projection(active, small);
     const title = active
-      ? "De Ecla Archamps a " + active.access + ", " + active.name
-      : "Rutas desde Ecla Archamps a seis accesos de esquí";
+      ? "De Ecla Archamps a " + active.access + ", " + active.name + ", con los alojamientos de esa ruta"
+      : "Alojamientos y rutas desde Ecla Archamps a seis accesos de esquí";
     const positions = [
       { label: "Ecla Archamps", point: pixel(data.start), home: true },
       ...(active ? [active] : accesses).map((a) => ({
@@ -132,96 +141,125 @@
       !blocked.some(
         (b) => b[0] < box[2] && b[2] > box[0] && b[1] < box[3] && b[3] > box[1],
       );
+    // Cerca de una estación hay varios edificios en unos cientos de metros.
+    // La línea une cada chincheta desplazada con su ubicación real.
+    const placePins = () => forAccess(active).map((h) => {
+      const [x, y] = pixel(coords(h.lon, h.lat));
+      let cx = x, cy = y - 13;
+      let box;
+      for (let step = 0; step < 920; step++) {
+        const radius = step === 0 ? 0 : 3.1 * Math.sqrt(step);
+        const angle = step * 2.399963;
+        cx = km(x + Math.cos(angle) * radius);
+        cy = km(y - 13 + Math.sin(angle) * radius);
+        box = [cx - 11, cy - 11, cx + 11, cy + 15];
+        if (isClear(box)) break;
+      }
+      blocked.push(box);
+      const name = h.number + ". " + h.name + (h.approximate ? " · zona aproximada" : "");
+      return {
+        line: '<path class="sm-pin-line" d="M' + x + ',' + y + ' L' + cx + ',' + cy + '"/><circle class="sm-anchor" cx="' + x + '" cy="' + y + '" r="1.8"/>',
+        mark: '<a class="sm-pin' + (h.approximate ? ' sm-pin-zone' : '') + '" href="' + houseHref(h) +
+          '" aria-label="' + esc(name) + '"><title>' + esc(name) + '</title><g transform="translate(' + cx + ' ' + cy +
+          ')"><rect x="-12" y="-12" width="24" height="28" fill="transparent"/><path class="sm-pin-body" d="M0 13 C-2 9 -9.5 4 -9.5 -1 A9.5 9.5 0 1 1 9.5 -1 C9.5 4 2 9 0 13Z"/><text text-anchor="middle" y="2.5">' +
+          h.number + '</text></g></a>',
+      };
+    });
     const labels = [];
-    for (const p of [...positions, ...places]) {
-      const [x, y] = p.point;
-      if (x < 6 || x > width - 6 || y < 6 || y > height - 6) continue;
-      const size = p.town ? 10 : small ? 12 : 13;
-      const labelWidth = size * p.label.length * 0.57;
-      const offsets = p.home
-        ? [
-            [-11, -11],
-            [11, -11],
-            [-11, 17],
-            [11, 17],
-          ]
-        : p.town
+    function placeLabels(points) {
+      for (const p of points) {
+        const [x, y] = p.point;
+        if (x < 6 || x > width - 6 || y < 6 || y > height - 6) continue;
+        const size = p.town ? 10 : small ? 12 : 13;
+        const labelWidth = size * p.label.length * 0.57;
+        const offsets = p.home
           ? [
-              [6, -6],
-              [6, 12],
-              [-6, 12],
-              [-6, -6],
+              [-11, -11],
+              [11, -11],
+              [-11, 17],
+              [11, 17],
             ]
-          : [
-              [11, -7],
-              [11, 15],
-              [-11, -7],
-              [-11, 15],
-              [14, 30],
-              [-14, 30],
-              [14, -23],
-              [-14, -23],
-              [-23, 42],
-              [23, 42],
-            ];
-      for (const [ox, oy] of offsets) {
-        const tx = km(x + ox),
-          ty = km(y + oy);
-        const left = ox < 0 ? tx - labelWidth : tx,
-          top = ty - size;
-        const box = [left - 3, top - 1, left + labelWidth + 3, ty + 4];
-        if (!isClear(box)) continue;
-        blocked.push(box);
-        const text =
-          '<text x="' +
-          tx +
-          '" y="' +
-          ty +
-          '" text-anchor="' +
-          (ox < 0 ? "end" : "start") +
-          '" font-size="' +
-          size +
-          '" class="' +
-          (p.town ? "sm-town" : "sm-label") +
-          '">' +
-          esc(p.label) +
-          "</text>";
-        if (p.town)
-          labels.push(
-            '<g><circle class="sm-town-dot" cx="' +
-              x +
-              '" cy="' +
-              y +
-              '" r="1.5"/>' +
-              text +
-              "</g>",
-          );
-        else if (p.home) labels.push(text);
-        else {
-          const leader =
-            Math.abs(oy) > 19
-              ? '<path class="sm-leader" d="M' +
+          : p.town
+            ? [
+                [6, -6],
+                [6, 12],
+                [-6, 12],
+                [-6, -6],
+              ]
+            : [
+                [11, -7],
+                [11, 15],
+                [-11, -7],
+                [-11, 15],
+                [14, 30],
+                [-14, 30],
+                [14, -23],
+                [-14, -23],
+                [-23, 42],
+                [23, 42],
+              ];
+        for (const [ox, oy] of offsets) {
+          const tx = km(x + ox),
+            ty = km(y + oy);
+          const left = ox < 0 ? tx - labelWidth : tx,
+            top = ty - size;
+          const box = [left - 3, top - 1, left + labelWidth + 3, ty + 4];
+          if (!isClear(box)) continue;
+          blocked.push(box);
+          const text =
+            '<text x="' +
+            tx +
+            '" y="' +
+            ty +
+            '" text-anchor="' +
+            (ox < 0 ? "end" : "start") +
+            '" font-size="' +
+            size +
+            '" class="' +
+            (p.town ? "sm-town" : "sm-label") +
+            '">' +
+            esc(p.label) +
+            "</text>";
+          if (p.town)
+            labels.push(
+              '<g><circle class="sm-town-dot" cx="' +
                 x +
-                "," +
+                '" cy="' +
                 y +
-                " L" +
-                (tx + (ox < 0 ? 3 : -3)) +
-                "," +
-                (ty - 4) +
-                '"/>'
-              : "";
-          labels.push(
-            '<a href="#mapa/' +
-              p.id +
-              '" tabindex="-1">' +
-              leader +
-              text +
-              "</a>",
-          );
+                '" r="1.5"/>' +
+                text +
+                "</g>",
+            );
+          else if (p.home) labels.push(text);
+          else {
+            const leader =
+              Math.abs(oy) > 19
+                ? '<path class="sm-leader" d="M' +
+                  x +
+                  "," +
+                  y +
+                  " L" +
+                  (tx + (ox < 0 ? 3 : -3)) +
+                  "," +
+                  (ty - 4) +
+                  '"/>'
+                : "";
+            labels.push(
+              '<a href="#mapa/' +
+                p.id +
+                '" tabindex="-1">' +
+                leader +
+                text +
+                "</a>",
+            );
+          }
+          break;
         }
-        break;
       }
     }
+    placeLabels(positions);
+    const pins = placePins();
+    placeLabels(places);
     function road(a, cls) {
       return (
         '<path class="' +
@@ -244,7 +282,7 @@
         const [x, y] = p.point;
         if (p.home)
           return (
-            '<g><circle class="sm-home-edge" cx="' +
+            '<a href="#mapa/casa-ecla" aria-label="Residencia Ecla Archamps"><title>Ecla Archamps</title><circle class="sm-home-edge" cx="' +
             x +
             '" cy="' +
             y +
@@ -252,7 +290,7 @@
             x +
             '" cy="' +
             y +
-            '" r="3.5"/></g>'
+            '" r="3.5"/></a>'
           );
         return (
           '<a href="#mapa/' +
@@ -299,7 +337,7 @@
       width +
       " " +
       height +
-      '" role="img" aria-label="' +
+      '" role="group" aria-label="' +
       esc(title) +
       '">' +
       '<g transform="translate(' +
@@ -324,8 +362,10 @@
       '<g class="sm-roads">' +
       routes +
       "</g></g>" +
+      pins.map((pin) => pin.line).join("") +
       labels.join("") +
       marks +
+      pins.map((pin) => pin.mark).join("") +
       north +
       scaleBar +
       "</svg>"
@@ -334,12 +374,16 @@
 
   function resources(id) {
     const active = byId.get(id);
+    const house = selectedHouse(id);
+    if (house) return [["Ubicación · " + house.name, house.source], ["Cartografía · OpenStreetMap", osm]];
     const routes = (active ? [active] : accesses).map((a) => [
       "Cómo llegar · " + a.name,
       window.ROUTES[a.route].links[1][1],
     ]);
     return [
       ...routes,
+      ...forAccess(active).map((h) => ["Ubicación · " + h.name, h.source]),
+      ["Punto de salida · Ecla Archamps", houses.origin.source],
       ["Rutas por carretera · OSRM", "https://project-osrm.org/"],
       ["Cartografía de carreteras · OpenStreetMap y licencia ODbL", osm],
       ["Lagos · Natural Earth", earth],
@@ -359,63 +403,73 @@
     '</small></span><span class="sm-measure">' +
     esc(distance(a)) +
     "</span></a>";
+  function houseIndex(visible) {
+    return '<details class="sm-houses"><summary>Alojamientos <span>' + visible.length + '</span></summary><div>' +
+      visible.map((h) => '<a class="sm-index-row" href="' + houseHref(h) + '"><b>' + h.number +
+        '</b><span><strong>' + esc(h.name) + '</strong><small>' + esc(h.town) +
+        (h.approximate ? ' · Zona aproximada' : '') + '</small></span></a>').join('') +
+      '</div></details>';
+  }
+
+  function chooser(active, house) {
+    const option = (id, name, chosen) => '<option value="' + id + '"' + (chosen ? ' selected' : '') + '>' + esc(name) + '</option>';
+    return '<div class="sm-switch"><label for="sm-destination">Ver en el mapa</label><select id="sm-destination" data-ski-map-select>' +
+      option('', 'Vista general', !active && !house) +
+      '<optgroup label="Alojamientos">' + houses.list.map((h) => option(houseKey(h), h.number + '. ' + h.name + ' · ' + h.town, h === house)).join('') +
+      '</optgroup><optgroup label="Salida">' + option(houseKey(houses.origin), houses.origin.name, house === houses.origin) +
+      '</optgroup><optgroup label="Rutas a pistas">' + accesses.map((a) => option(a.id, a.name, a === active)).join('') +
+      '</optgroup></select></div>';
+  }
+
+  function areaMap(active) {
+    return '<figure class="sm-frame">' + drawMap(active, false) + drawMap(active, true) +
+      '<figcaption class="sm-credit"><a href="' + osm +
+      '" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a><span>·</span>Natural Earth<span>·</span><a href="' +
+      relief + '" target="_blank" rel="noopener noreferrer">EU-DEM / Copernicus</a></figcaption></figure>';
+  }
+
+  const external = (url, label) => '<a class="sm-plans" href="' + esc(url) +
+    '" target="_blank" rel="noopener noreferrer">' + esc(label) + ' ↗</a>';
+
+  function streetMap(h) {
+    const half = h.approximate ? 0.009 : 0.005;
+    const bbox = [h.lon - half * 2, h.lat - half, h.lon + half * 2, h.lat + half]
+      .map((v) => v.toFixed(6)).join(',');
+    const marker = h.lat + ',' + h.lon;
+    const embed = 'https://www.openstreetmap.org/export/embed.html?' + new URLSearchParams({bbox, layer: 'mapnik', marker});
+    const full = 'https://www.openstreetmap.org/?mlat=' + h.lat + '&mlon=' + h.lon + '#map=' + (h.approximate ? 15 : 17) + '/' + h.lat + '/' + h.lon;
+    const origin = houses.origin;
+    const route = 'https://www.google.com/maps/dir/?' + new URLSearchParams({
+      api: '1', origin: origin.lat + ',' + origin.lon, destination: marker, travelmode: 'driving',
+    });
+    return '<section class="sm-lodging-detail"><div class="sm-lodging-title"><span class="sm-serial">' +
+      (h.number || 'E') + '</span><div><h2>' + esc(h.name) + '</h2><p>' + esc(h.town) +
+      (h.approximate ? ' · <strong>Zona aproximada</strong>' : '') + '</p></div></div>' +
+      '<p class="sm-location">' + esc(h.location) + '</p><iframe class="sm-street" title="' +
+      esc('Mapa de ' + h.name + (h.approximate ? ', zona aproximada' : '')) + '" src="' + esc(embed) +
+      '" loading="lazy"></iframe><nav class="sm-house-actions" aria-label="Ver ubicación">' + external(full,'Ampliar mapa') +
+      (h === origin ? '' : external(route, h.approximate ? 'Ruta a la zona desde Ecla' : 'Ruta desde Ecla')) +
+      '<a class="sm-plans" href="#mapa">Vista general</a></nav><h3>Opciones en este lugar</h3><div class="sm-related">' +
+      h.options.map((o) => '<a href="#' + o.ref + '">' + esc(o.title) + arrow + '</a>').join('') +
+      '</div></section>';
+  }
+
   function render(id) {
     const active = byId.get(id);
-    const selected = active ? active.id : "";
-    const options = accesses
-      .map(
-        (a) =>
-          '<option value="' +
-          a.id +
-          '" ' +
-          (a === active ? "selected" : "") +
-          ">" +
-          esc(a.name) +
-          "</option>",
-      )
-      .join("");
-    const list = accesses
-      .map((a) => routeLink({ ...a, active: a === active }))
-      .join("");
-    const overview =
-      '<a href="#mapa" class="sm-all" ' +
-      (!active ? 'aria-current="page"' : "") +
-      ">Ver todas las rutas</a>";
-    const trip = active
-      ? '<div class="sm-trip"><div><span>Desde Ecla hasta ' +
-        esc(active.name) +
-        "</span><strong>" +
-        esc(distance(active)) +
-        "</strong><small>" +
-        esc(active.access) +
-        '</small></div><a class="sm-plans" href="#estacion/' +
-        (active.station || active.id) +
-        '">Ver planes ' +
-        arrow +
-        "</a></div>"
-      : "";
-    return (
-      '<div class="heading"><h1>Mapa de rutas</h1><p>Desde la residencia Ecla Archamps hasta el acceso de cada estación.</p></div>' +
-      '<div class="sm-switch"><label for="sm-destination">Destino</label><select id="sm-destination" data-ski-map-select><option value="" ' +
-      (!selected ? "selected" : "") +
-      ">Todas las rutas</option>" +
-      options +
-      "</select></div>" +
-      '<div class="sm-layout"><div class="sm-left"><figure class="sm-frame">' +
-      drawMap(active, false) +
-      drawMap(active, true) +
-      '<figcaption class="sm-credit"><a href="' +
-      osm +
-      '" target="_blank" rel="noopener noreferrer">© OpenStreetMap</a><span>·</span>Natural Earth<span>·</span><a href="' +
-      relief +
-      '" target="_blank" rel="noopener noreferrer">EU-DEM / Copernicus</a></figcaption></figure>' +
-      trip +
-      '</div><aside class="sm-list" aria-label="Destinos"><h2>Accesos en coche</h2>' +
-      list +
-      overview +
-      "</aside></div>" +
-      '<p class="fine sm-footnote">Distancias de ida y tiempos aproximados sin tráfico ni nieve. Orelle y Val Thorens dan acceso al mismo dominio por carreteras distintas.</p>'
-    );
+    const house = selectedHouse(id);
+    const list = accesses.map((a) => routeLink({ ...a, active: a === active })).join('');
+    const visible = forAccess(active);
+    const trip = active ? '<div class="sm-trip"><div><span>Desde Ecla hasta ' + esc(active.name) +
+      '</span><strong>' + esc(distance(active)) + '</strong><small>' + esc(active.access) +
+      '</small></div><a class="sm-plans" href="#estacion/' + (active.station || active.id) +
+      '">Ver planes ' + arrow + '</a></div>' : '';
+    const map = house ? streetMap(house) : areaMap(active) +
+      '<div class="sm-map-key"><span><i class="sm-key-house"></i>Alojamiento</span><span><i class="sm-key-zone"></i>Zona aproximada</span><span><i class="sm-key-stop"></i>Acceso a pistas</span></div>' + trip;
+    return '<div class="heading"><h1>Mapa de rutas y alojamientos</h1><p>Elige una chincheta para ver la casa, su ubicación y los planes que empiezan allí.</p></div>' +
+      chooser(active, house) + '<div class="sm-layout"><div class="sm-left">' + map + houseIndex(visible) +
+      '</div><aside class="sm-list" aria-label="Destinos"><h2>Accesos en coche</h2>' + list +
+      '<a href="#mapa" class="sm-all">Vista general</a></aside></div>' +
+      '<p class="fine sm-footnote">Las rutas a las estaciones salen de Ecla. Distancias de ida y tiempos aproximados sin tráfico ni nieve.</p>';
   }
   document.addEventListener("change", (event) => {
     if (event.target.matches("[data-ski-map-select]"))

@@ -145,8 +145,8 @@
       con,
       when,
       route: id,
-      sauna: "Sin confirmar",
-      jacuzzi: "Sin confirmar",
+      sauna: "No",
+      jacuzzi: "No",
       houseLink,
     });
     window.ROUTES[id] = {
@@ -196,9 +196,35 @@
   laVoraz.description =
     "Airbnb mostraba 475 € para siete. La anfitriona pide confirmar el importe y publica fuera de temporada 400 € para cuatro más 70 € por persona adicional. Para siete serían 610 € si aplica, 87,14 € cada uno. Sauna privada y jacuzzi compartido, cuatro dormitorios para ocho. Falta forfait y equipo. Desde Ecla al centro de Châtel hay unos 85 km.";
 
+  const spaByStay = {
+    "Avoreaz G": ["No", "Compartido · en invierno"],
+    "Apartamento con sauna · 103 m²": ["Compartida · en el edificio", "No"],
+    "Ceiba · Carmine Lodge": ["No", "Privado · en el balcón"],
+    "Chalet La Voraz · L’Ourson": ["Privada · en el chalet", "Compartido"],
+    "Auberge HI Valmeinier": ["No", "No"],
+    "Le Shantoné": ["No", "No"],
+    "UCPA · Pack Mini": ["No", "No"],
+    "Añadir sauna al loft": ["No", "No"],
+    "Cómo cambiaba la noche de 6 a 7": [
+      "Fleur · Hôtel Alpina a 900 m. La Turche · No",
+      "Fleur · Hôtel Alpina a 900 m. La Turche · No",
+    ],
+    "Dos reservas de Esquiades": [
+      "Cheval Blanc · No. Hôtel des 3 Vallées y residencia de Cosy · compartida",
+      "Cheval Blanc · No. Hôtel des 3 Vallées y residencia de Cosy · compartido",
+    ],
+  };
+  for (const item of window.ARCHIVE) {
+    if (spaByStay[item.name]) [item.sauna, item.jacuzzi] = spaByStay[item.name];
+  }
+  archiveEntry("Dos reservas de Esquiades").links.push(
+    ["Spa del Hôtel des 3 Vallées", "https://www.hotel3vallees.com/fr/spa-val-thorens.html"],
+    ["Spa de la residencia de Cosy", "https://www.pierreetvacances.com/fr-fr/fp_VTL_location-residence-les-temples-du-soleil"],
+  );
+
   const cosy = original.find((plan) => plan.id === "cosy");
-  cosy.sauna = "Compartida · acceso por confirmar";
-  cosy.jacuzzi = "Compartido · acceso por confirmar";
+  cosy.sauna = "Compartida · en la residencia, de pago";
+  cosy.jacuzzi = "Compartido · en la residencia, de pago";
   cosy.spa =
     "La residencia Les Temples du Soleil anuncia sauna, hammam y dos jacuzzis de pago. Falta confirmar si los huéspedes del apartamento privado Cosy pueden entrar, el horario del 12 de diciembre y el suplemento.";
   cosy.extra = [

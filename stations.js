@@ -222,8 +222,7 @@
     );
   }
 
-  function catalogueSection(station) {
-    const links = linksForStation(station);
+  function catalogueSection(station, links) {
     if (!links.length) return "";
     const singleStation = !!station.reference && links.length === 1;
     const title = station.reference
@@ -252,7 +251,11 @@
   }
 
   function detailPage(station) {
-    const all = plansFor(station);
+    const original = plansFor(station);
+    const originalCatalogue = linksForStation(station);
+    const active = state.accessFilter;
+    const all = original.filter((plan) => matchesAccess(window.SKI_ACCESS.plans[plan.id], active));
+    const alternatives = originalCatalogue.filter(({index}) => matchesAccess(window.SKI_ACCESS.archive[index], active));
     const mapLinks = station.access
       .map(
         (access) =>
@@ -277,7 +280,9 @@
           mapLinks +
           "</nav>"
         : "") +
-      (all.length ? controls() : "") +
+      (original.length ? controls() : "") +
+      accessControls("estacion") + accessNote(active) +
+      (!all.length && !alternatives.length ? emptyOptions() : "") +
       planSection(
         "Para siete",
         all.filter((p) => person(p) === 7),
@@ -286,7 +291,7 @@
         "Ofertas para seis",
         all.filter((p) => person(p) !== 7),
       ) +
-      catalogueSection(station)
+      catalogueSection(station, alternatives)
     );
   }
 

@@ -146,7 +146,7 @@
         "Apartamento con balcón y dos baños. El chalet incluye acceso al spa del Hôtel Alpina, con sauna y jacuzzi.",
       ],
       cons: [
-        "Los 241 € correspondían a seis. Para siete, el calendario del alojamiento solo admitía salidas el sábado 12.",
+        "Los 241 € eran para seis. El calendario para siete indica «solo salida» el sábado 12. Si aceptaran esa noche a siete por 241 €, el viaje completo saldría a 145,89 € por persona.",
         "El spa queda a 900 m y el acceso de Avoriaz a unos 20 min en coche.",
       ],
       links: [skiSpa],

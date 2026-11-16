@@ -57,7 +57,7 @@
           "La pista Retour des Nants pasa junto al edificio. El Pléney queda a 500 m.",
         ],
         [
-          "La vuelta esquiando depende de la apertura de esa pista. Para la promoción de Avoriaz hay que llegar a Les Prodains.",
+          "La preapertura del Pléney depende de la nieve y faltan las pistas de retorno. Con el forfait de Avoriaz hay que volver a la casa por carretera desde Les Prodains.",
           "Precio y estancia mínima pendientes para una noche.",
         ],
         [house(a), ...inAvoriaz()],
@@ -241,10 +241,8 @@
       ),
     "Praz de Lys–Sommand": () =>
       review(
-        [],
-        [
-          "La apertura regular está anunciada para el 19, una semana después del viaje.",
-        ],
+        ["La Fest’Hiv anuncia esquí el sábado y el domingo de vuestro viaje, antes de la apertura regular."],
+        ["Faltan la tarifa de la Fest’Hiv 2026, los remontes participantes y un presupuesto completo para siete."],
         [
           searchStay(
             "Praz de Lys–Sommand",
@@ -259,7 +257,7 @@
             "https://espacedeslys.com/",
           ),
         ],
-        "Antes de contratar, comprobad que la estación venda forfait para el 12–13.",
+        "Consultad el forfait de preapertura y la disponibilidad de material para esas dos jornadas.",
       ),
     "Tignes–Val d’Isère": () =>
       review(
@@ -395,7 +393,7 @@
         [
           "Desde Ecla, Lélex queda a unos 62 km, Thollon a 67 km y Les Houches a 79 km.",
         ],
-        ["Faltan apertura, precio y alojamiento para las fechas del viaje."],
+        ["Lélex y Thollon anuncian apertura regular el 19. En Les Houches, la preapertura del 12–13 depende de la nieve. Falta cotizar el viaje."],
         [
           searchStay("Lélex, France"),
           searchStay("Thollon-les-Mémises, France"),

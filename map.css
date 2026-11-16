@@ -308,3 +308,146 @@
     font-size: 8.5px;
   }
 }
+
+.sm-switch {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 19px;
+}
+.sm-switch label,
+.sm-map-key {
+  color: var(--muted);
+  font-size: 12px;
+}
+.sm-switch select {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  padding: 7px 28px 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  background: var(--paper);
+  font: inherit;
+  font-size: 13px;
+}
+.sm-frame {
+  --pin-ink: #3c5048;
+  --pin-paper: #fffefa;
+}
+.sm-pin-line {
+  fill: none;
+  stroke: var(--pin-ink);
+  stroke-width: 0.9;
+  opacity: 0.8;
+  pointer-events: none;
+}
+.sm-anchor { fill: var(--pin-ink); }
+.sm-pin-body {
+  fill: var(--pin-ink);
+  stroke: var(--pin-paper);
+  stroke-width: 1.4;
+}
+.sm-pin text {
+  fill: var(--pin-paper);
+  font: 650 9px system-ui, sans-serif;
+  pointer-events: none;
+}
+.sm-pin-zone .sm-pin-body {
+  fill: var(--pin-paper);
+  stroke: var(--pin-ink);
+}
+.sm-pin-zone text { fill: var(--pin-ink); }
+.sm-pin:hover .sm-pin-body,
+.sm-pin:focus-visible .sm-pin-body { stroke-width: 3; }
+.sm-pin:focus-visible { outline: 2px solid var(--text); }
+.sm-map-key,
+.sm-house-actions {
+  display: flex;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 10px 0;
+}
+.sm-map-key span { display: inline-flex; align-items: center; gap: 6px; }
+.sm-map-key i {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid currentColor;
+}
+.sm-key-house,
+.sm-key-zone {
+  border-radius: 50% 50% 50% 2px;
+  transform: rotate(-45deg);
+}
+.sm-key-house { background: currentColor; }
+.sm-key-stop { border-radius: 50%; }
+.sm-houses { margin: 17px 0 0; border-block: 1px solid var(--line); }
+.sm-houses summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.sm-houses summary span { margin-left: 6px; color: var(--muted); font-size: 12px; }
+.sm-houses > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 4px 12px;
+  padding-bottom: 12px;
+}
+.sm-index-row, .sm-lodging-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sm-index-row { padding: 5px; border-radius: 5px; }
+.sm-index-row:hover, .sm-related a:hover { background: var(--fill); }
+.sm-index-row b,
+.sm-serial {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+  font-size: 11px;
+  color: var(--text);
+  background: var(--fill);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+.sm-index-row strong, .sm-index-row small { display: block; }
+.sm-index-row strong { font-size: 12px; font-weight: 600; }
+.sm-index-row small { font-size: 11px; color: var(--muted); }
+.sm-lodging-title h2 { font-size: clamp(19px, 3vw, 24px); margin: 0; }
+.sm-lodging-title p,
+.sm-location { margin: 3px 0; color: var(--muted); font-size: 13px; }
+.sm-location { margin: 10px 0; }
+.sm-street {
+  display: block;
+  width: 100%;
+  height: clamp(280px, 42vh, 390px);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--fill);
+}
+.sm-house-actions { gap: 6px; }
+.sm-lodging-detail h3 { font-size: 14px; margin: 19px 0 5px; }
+.sm-related a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 2px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+.sm-related svg { flex-shrink: 0; }
+@media (max-width: 650px) {
+  .sm-switch select { flex: 1 1 220px; }
+  .sm-map-key { gap: 6px 10px; font-size: 10px; }
+}

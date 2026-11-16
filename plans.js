@@ -79,8 +79,8 @@
     capacity: "Hasta 8 · 3 dormitorios",
     house:
       "Apartamento de 74 m² con cocina en Modane. El anuncio ofrecía la noche para los siete por 95 €. Llevad sábanas y toallas.",
-    sauna: "Sin confirmar",
-    jacuzzi: "Sin confirmar",
+    sauna: "No",
+    jacuzzi: "No",
     houseLink: [
       "Alojamiento · apartamento de Modane",
       air("1608687334953694597"),
@@ -145,7 +145,7 @@
     house:
       "Habitación familiar de 30 m², 115 € no reembolsables. También se ofrecía dúplex para siete por 139 € con cancelación gratuita, unos 3,43 € más por persona.",
     sauna: "En el hotel · de pago",
-    jacuzzi: "Sin confirmar",
+    jacuzzi: "No",
     spa: "Sauna de 30 minutos, 5 € por sesión y máximo cuatro personas. Para siete hacen falta dos turnos. La piscina exterior es de verano.",
     houseLink: hotel,
     sources: [
@@ -182,8 +182,8 @@
       "Paquete de Esquiades con dos jornadas Val Thorens–Orelle. El desglose asigna al forfait la diferencia entre el pack y el precio de la misma casa sin forfait.",
     gearInfo:
       "40–50 € estimados para dos días en el plan original de Sport 2000. Casco y precio final pendientes de confirmar.",
-    sauna: "Sin confirmar",
-    jacuzzi: "Sin confirmar",
+    sauna: "No",
+    jacuzzi: "No",
   };
   window.PLANS = [
     {
@@ -212,11 +212,11 @@
       tag: "Avoriaz económica",
       house:
         "Loft entero, tres dormitorios y cuatro camas. 160 € en la ficha para los siete.",
-      sauna: "Externa · Morzine",
-      jacuzzi: "Sin confirmar",
+      sauna: "No",
+      jacuzzi: "No",
       spa: "La piscina municipal de Morzine ofrece sauna el sábado de 12:00 a 19:00. Entrada 16 €, o 12 € la última hora. El centro pide reserva de grupo. Extra opcional.",
       pro: "Un apartamento entero por 22,86 € por persona y el forfait de apertura de Avoriaz.",
-      con: "Cluses está en el valle, fuera de la estación. Sin spa confirmado en el loft.",
+      con: "Cluses está en el valle, fuera de la estación.",
       when: "Si queréis esquiar en Avoriaz al menor precio entre estos alojamientos.",
       houseLink: ["Alojamiento · Grand Loft", air("1616645430087654991")],
       extra: [aqua],
@@ -234,7 +234,7 @@
       tag: "Jacuzzi privado",
       house:
         "Antigua granja alpina de 160 m² con chimenea, jardín, cuatro camas y dos baños. El anuncio mostraba 243 € por la noche para siete.",
-      sauna: "Sin confirmar",
+      sauna: "No",
       jacuzzi: "Privado · en el chalet",
       spa: "El anuncio incluye jacuzzi privado entre los servicios. Un huésped menciona toallas de pago. Revisad ese extra al reservar.",
       pro: "Cuesta 11,86 € más por persona que el loft y todo el grupo tiene su propio jacuzzi.",
@@ -268,9 +268,9 @@
       capacity: "7 plazas · 60 m²",
       house:
         "Apartamento para siete con dos dormitorios y dos baños, en la ruta de La Turche. Booking mostró 246 €; el precio no se pudo reconfirmar en la última búsqueda.",
-      sauna: "Externa · Morzine",
-      jacuzzi: "Sin confirmar",
-      spa: "Sin spa confirmado en la casa. Acceso público al centro de Morzine por 12–16 €, aparte.",
+      sauna: "No",
+      jacuzzi: "No",
+      spa: "La sauna municipal de Morzine cuesta 12–16 € por persona.",
       pro: "Siete plazas y una base en Les Gets por unos 35 € por persona.",
       con: "La tarifa vista era no reembolsable y requería aceptación del anfitrión. Ropa de cama posiblemente aparte.",
       when: "Si queréis dormir en Les Gets y la oferta de 246 € vuelve a aparecer.",
@@ -292,8 +292,8 @@
       capacity: "Casa para 11 · consulta para 7",
       house:
         "Casa de dos apartamentos y siete camas. Airbnb mostró 332 € para el grupo. La cotización anterior de Booking era 327 €, con condiciones distintas.",
-      sauna: "Sin confirmar",
-      jacuzzi: "Sin confirmar",
+      sauna: "No",
+      jacuzzi: "No",
       pro: "Mucho espacio para cocinar y compartir el fin de semana. Algo menos de 48 € por persona de alojamiento.",
       con: "Está en Taninges, en el valle. La política de cancelación depende del canal y la tarifa.",
       when: "Si valoráis la casa amplia y os encaja mejor el alojamiento que la proximidad al remonte.",
@@ -318,8 +318,8 @@
       capacity: "Hasta 8 · 80 m²",
       house:
         "Dúplex con dos dormitorios, cinco camas y dos baños. La ficha incluye sábanas y toallas. 207 € para siete.",
-      sauna: "Sin confirmar",
-      jacuzzi: "Sin confirmar",
+      sauna: "No",
+      jacuzzi: "No",
       pro: "Dormís en un pueblo del municipio de Val Cenis y conserváis el pase del festival a 49 €.",
       con: "Anuncio nuevo con fotos provisionales y estreno previsto el 11 de diciembre. El punto de recogida del festival es Vieux Moulin, no Termignon.",
       when: "Si queréis quedaros en Val Cenis y aceptáis que es un alojamiento recién estrenado.",
@@ -393,6 +393,8 @@
       route: "cheval",
       title: "Résidence Cheval Blanc V24",
       short: "Val Thorens · Cheval Blanc",
+      spa: "Fuera del alojamiento, Village Montana anuncia acceso bajo petición a su spa por 15 € por adulto. Consultad si la reserva privada V24 admite este extra.",
+      extra: [["Spa externo · condiciones de Village Montana", "https://www.village-montana.com/welcomeVT"]],
       media: "cheval",
       night: 456,
       pass: 109,
@@ -427,7 +429,7 @@
         "Apartamento de madera con balcón, cocina y dos baños. La antigua oferta de 241 € era para seis. El propietario comercializa varias unidades dentro del chalet.",
       sauna: "Compartida · Hotel Alpina",
       jacuzzi: "Compartido · Hotel Alpina",
-      spa: "Acceso publicado al spa Alpina a 900 m: sauna, jacuzzi, hammam y piscina. Sujeto a apertura y condiciones del alojamiento.",
+      spa: "El chalet incluye el spa del Hôtel Alpina, a 900 m. El hotel anuncia spa de 8:00 a 19:00 y sauna de 15:00 a 19:00.",
       pro: "El ambiente de chalet que os gustó y acceso al spa del hotel.",
       con: "La tarifa anterior cubría seis. Para siete, el calendario directo marcaba el sábado 12 solo para salidas.",
       when: "Guardadlo para otra fecha o si el propietario confirma otra unidad para los siete.",
@@ -478,8 +480,8 @@
       capacity: "3 habitaciones cotizadas para 6",
       house:
         "222 € las tres habitaciones para seis, con desayuno en la oferta anterior. No se renovó precio para siete.",
-      sauna: "Sin confirmar",
-      jacuzzi: "Sin confirmar",
+      sauna: "No",
+      jacuzzi: "No",
       pro: "Desayuno incluido y acceso al dominio de Val Thorens desde Orelle.",
       con: "Con siete viajeros hace falta una nueva distribución de habitaciones y un precio nuevo.",
       when: "Si preferís hotel con desayuno y el establecimiento ofrece plazas a todo el grupo.",

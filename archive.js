@@ -70,7 +70,7 @@
       kind: accommodation,
       price: "148 €/persona",
       description:
-        "257 € la casa para siete. Sumando 53,50 € de forfait y tarjeta y 57,97 € de equipo con casco, sale a 148,18 € por persona. Terraza y tres dormitorios. Ecla–Taninges centro ≈53 km. El anuncio sitúa remontes a 5 min, sin precisar el acceso. Para Avoriaz se sube por Prodains. Spa sin confirmar.",
+        "257 € la casa para siete. Sumando 53,50 € de forfait y tarjeta y 57,97 € de equipo con casco, sale a 148,18 € por persona. Terraza y tres dormitorios. Ecla–Taninges centro ≈53 km. El anuncio sitúa remontes a 5 min, sin precisar el acceso. Para Avoriaz se sube por Prodains.",
       links: [
         stays("1450139159352270205"),
         passAv,
@@ -85,7 +85,7 @@
       kind: accommodation,
       price: "160 €/persona",
       description:
-        "339 € para siete más 53,50 € de forfait y tarjeta y 57,97 € de material por persona. Dos dormitorios, sábanas y toallas incluidas. Perrières a 5 min en coche, parada de bus a 150 m. Para esquiar en Avoriaz hay que llegar a Prodains. Ecla–Les Gets centro ≈65 km. Spa sin confirmar.",
+        "339 € para siete más 53,50 € de forfait y tarjeta y 57,97 € de material por persona. Dos dormitorios, sábanas y toallas incluidas. Perrières a 5 min en coche, parada de bus a 150 m. Para esquiar en Avoriaz hay que llegar a Prodains. Ecla–Les Gets centro ≈65 km.",
       links: [
         stays("709895215411690566"),
         passAv,
@@ -101,7 +101,7 @@
       kind: accommodation,
       price: "169–180 €/persona",
       description:
-        "167 € para siete, 92,40 € de forfait estudiante y 53–64 € de equipo con casco. Posible soporte aparte. Ocho plazas y tres dormitorios. El anfitrión sitúa Orelle a 10 min en coche. Ecla–Saint-Michel centro ≈164 km. Spa sin confirmar.",
+        "167 € para siete, 92,40 € de forfait estudiante y 53–64 € de equipo con casco. Posible soporte aparte. Ocho plazas y tres dormitorios. El anfitrión sitúa Orelle a 10 min en coche. Ecla–Saint-Michel centro ≈164 km.",
       links: [
         stays("768534789971067703"),
         passOr,
@@ -116,7 +116,7 @@
       kind: accommodation,
       price: "Una noche por cotizar",
       description:
-        "Siete plazas, tres dormitorios y jacuzzi compartido en invierno. La pista de regreso Retour des Nants pasa por la casa y el telecabina del Pléney queda a 500 m. El regreso con esquís depende de la apertura local. Para el forfait Avoriaz se usa Prodains. Desde Ecla ≈71 km.",
+        "Siete plazas, tres dormitorios y jacuzzi compartido en invierno. La pista de regreso Retour des Nants pasa por la casa y el telecabina del Pléney queda a 500 m. Morzine prevé una apertura parcial según la nieve. Para el forfait de Avoriaz se sube por Les Prodains y se vuelve a la casa por carretera. Desde Ecla ≈71 km.",
       links: [
         [
           "Alojamiento, fotos y distancias · Cimalpes",
@@ -186,7 +186,7 @@
       kind: accommodation,
       price: "119 € para 6",
       description:
-        "Precio observado para el dormitorio del 12 al 13. Falta cotizar cama para la séptima persona. Un apartamento distinto figuraba a 80 € para seis (5,8/10), sin oferta identificada para siete. El albergue anuncia un remonte local a 300 m. Para Val Thorens hay que bajar en coche a Orelle. Ecla–pueblo ≈175 km. Spa sin confirmar.",
+        "Precio observado para el dormitorio del 12 al 13. Falta cotizar cama para la séptima persona. Un apartamento distinto figuraba a 80 € para seis (5,8/10), sin oferta identificada para siete. El albergue anuncia un remonte local a 300 m. Para Val Thorens hay que bajar en coche a Orelle. Ecla–pueblo ≈175 km.",
       links: [
         [
           "Alojamiento y acceso · HI France",
@@ -204,7 +204,7 @@
       kind: accommodation,
       price: "161 € para 6",
       description:
-        "Dormitorio en el pueblo de Beaune, por encima de Saint-Michel. La consulta fue para seis. Falta sumar la séptima plaza, forfait y equipo. Hay que bajar por carretera para esquiar en Orelle. Spa sin confirmar.",
+        "Dormitorio en el pueblo de Beaune, por encima de Saint-Michel. La consulta fue para seis. Falta sumar la séptima plaza, forfait y equipo. Hay que bajar por carretera para esquiar en Orelle.",
       links: [
         ["Alojamiento y fotos · Le Shantoné", "https://www.leshantone.fr/"],
         passOr,
@@ -316,10 +316,14 @@
       name: "Praz de Lys–Sommand",
       area: "Taninges",
       kind: station,
-      price: "Apertura regular el 19",
+      price: "Fest’Hiv el 12–13 · forfait por publicar",
       description:
-        "El calendario regular empieza la semana siguiente. Para el 12–13, una casa en Taninges solo da acceso al esquí local si la estación confirma una preapertura. Pendientes forfait y material para esas fechas.",
+        "La estación anuncia dos días de preapertura por la Fest’Hiv. El programa y la tarifa especial de 2026 están pendientes. La temporada regular empieza el 19.",
       links: [
+        [
+          "Fest’Hiv · programa y preapertura",
+          "https://www.prazdelys-sommand.com/activites/evenements/festhiv/",
+        ],
         [
           "Calendario y pistas · estación",
           "https://www.prazdelys-sommand.com/explorer/la-station/le-domaine-skiable/infos-pistes/",
@@ -435,9 +439,9 @@
       name: "Monts Jura, Thollon y Les Houches",
       area: "Jura y Alta Saboya",
       kind: station,
-      price: "Apertura por confirmar",
+      price: "Les Houches · preapertura según nieve",
       description:
-        "Opciones cercanas sujetas al calendario de cada sector y a la nieve. Desde Ecla al pueblo de Lélex ≈62 km, a Thollon ≈67 km y a Les Houches ≈79 km. Sin presupuesto completo para el 12–13.",
+        "Les Houches prevé una preapertura el 12–13 según la nieve. Lélex y Thollon anuncian apertura regular el 19. Desde Ecla al pueblo de Lélex ≈62 km, a Thollon ≈67 km y a Les Houches ≈79 km. Sin presupuesto completo para el 12–13.",
       links: [
         ["Monts Jura", "https://www.paysdegex-montsjura.com/"],
         ["Thollon-les-Mémises", "https://www.esfthollon.com/fr/les-forfaits/"],

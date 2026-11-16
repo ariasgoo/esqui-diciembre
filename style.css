@@ -1319,86 +1319,23 @@ button.slide {
 .mobile-label {
   display: none;
 }
-.podium .sectionhead {
-  margin-bottom: 16px;
-}
-.podium-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  grid-template-rows: 1fr 1fr;
-  gap: 0 clamp(20px, 2.6vw, 40px);
-}
-.podium-first {
-  grid-row: 1/3;
-  display: flex;
-  flex-direction: column;
-}
-.podium-first .hero {
-  flex: 1;
-  min-height: 285px;
-}
-.podium-first .heroin p {
-  max-width: 46ch;
-  line-height: 1.5;
-}
-.podium-tradeoff {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 12px;
-  padding: 8px 1px 0;
-}
-.podium-tradeoff .ico {
-  width: 14px;
-  height: 14px;
-}
-.podium-runner {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  height: 100%;
-  padding: 15px 0;
-}
-.podium-list > li:nth-child(3) {
-  border-top: 1px solid var(--line);
-}
-.podium-rank {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--fill);
-  color: var(--muted);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.runner-body h3 {
-  font-size: 17px;
-}
-.runner-body b {
-  font-size: 15px;
-  font-variant-numeric: tabular-nums;
-}
-.runner-body small {
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 450;
-}
-.runner-body p {
-  margin: 6px 0 2px;
-  font-size: 13px;
-}
-.runner-note {
-  color: var(--muted);
-  font-size: 12px;
-}
-.podium-runner:hover h3,
+#recomendaciones .sectionhead { margin-bottom: 16px; }
+.recommendations-list { padding: 0; margin: 0; list-style: none; border-block: 1px solid var(--line); }
+.recommendations-list li + li { border-top: 1px solid var(--line); }
+.recommendation-card { display: grid; grid-template-columns: clamp(104px, 17vw, 180px) minmax(0, 1fr) 16px; gap: 16px; align-items: center; padding: 14px 0; }
+.recommendation-card > .picture { align-self: stretch; min-height: 110px; border-radius: 8px; }
+.recommendation-card .photo { object-fit: cover; }
+.recommendation-card > .ico { width: 15px; height: 15px; color: var(--muted); }
+.recommendation-card h3 { margin: 1px 0; font-size: 18px; }
+.recommendation-card b { font-size: 14px; font-variant-numeric: tabular-nums; }
+.recommendation-card small, .rec-order { font-size: 11px; font-weight: 550; color: var(--muted); }
+.recommendation-body p { font-size: 13px; margin: 4px 0 0; }
+.recommendation-body .rec-detail { color: var(--muted); font-size: 12px; }
+.rec-question { margin-top: 12px; color: var(--muted); font-size: 13px; }
+.rec-question summary { cursor: pointer; color: var(--text); font-weight: 560; }
+.rec-question p { max-width: 78ch; margin: 7px 0 0; }
+.rec-question .textlink { margin-top: 8px; display: inline-flex; }
+.recommendation-card:hover h3,
 .entrylink:hover {
   text-decoration: underline;
 }
@@ -1443,32 +1380,30 @@ button.slide {
   }
 }
 @media (max-width: 650px) {
-  .podium-list {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-  }
-  .podium-first {
-    grid-row: auto;
-    margin-bottom: 9px;
-  }
-  .podium-first .hero {
-    min-height: 232px;
-  }
-  .podium-runner {
-    padding: 12px 0;
-    gap: 10px;
-  }
-  .podium .sectionhead {
-    margin-bottom: 11px;
-  }
-  .runner-body h3 {
-    font-size: 16px;
-  }
-  .runner-body p {
-    margin-top: 3px;
-  }
+  .recommendation-card { grid-template-columns: 68px minmax(0,1fr); align-items: start; gap: 12px; }
+  .recommendation-card > .picture { height: 76px; min-height: 0; align-self: start; }
+  .recommendation-card > .ico { display: none; }
+  .recommendation-card h3 { font-size: 16px; }
+  #recomendaciones .sectionhead { flex-wrap: wrap; gap: 5px 16px; }
 }
-
+.access-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; width: fit-content; margin: 12px 0 16px; font-size: 13px; color: var(--muted); }
+.access-filter select { max-width: 100%; color: var(--text); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; font: inherit; padding: 6px 8px; }
+.fine.access-note { margin: -3px 0 16px; }
+.card-access { font-size: 12px; color: var(--accent); display: flex; align-items: center; gap: 4px; margin-top: 8px; }
+.card-access .ico { width: 14px; height: 14px; flex: none; }
+.slope-access { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px; padding: 16px 0; margin: 16px 0; border-block: 1px solid var(--line); }
+.slope-access h2 { margin: 0 0 6px; font-size: 17px; }
+.slope-access p { margin: 5px 0 0; font-size: 13px; }
+.slope-access .access-summary > strong { display: block; font-size: 13px; color: var(--accent); }
+.lift-hours p b { display: block; margin-top: 7px; font-weight: 580; }
+.lift-hours .minor { font-size: 12px; }
+.lift-hours .entrylink { margin-top: 9px; }
+.slope-access .planrelated { margin: 0; }
+.empty-options { color: var(--muted); padding: 12px 0; font-size: 14px; }
+@media (max-width: 650px) {
+  .slope-access { grid-template-columns: 1fr; gap: 14px; }
+  .lift-hours { border-top: 1px solid var(--line); padding-top: 12px; }
+}
 .booking-block {
   margin: 15px 0;
 }

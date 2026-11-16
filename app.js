@@ -69,11 +69,12 @@ const state = {
   unit: "person",
   student: true,
   view: "todos",
-  query: "",
-  selection: ["cenis", "loft", "chalet"],
+  accessFilter: "all",
+  archiveAccess: "all",
+  selection: ["cenis", "chalet", "carroz-inicio"],
   archiveKind: "Todas",
 };
-const hasSpa = (p) => !!p.spa && !p.sauna?.startsWith("Externa");
+const hasSpa = (p) => [p.sauna, p.jacuzzi].some((value) => value && value !== "No");
 function budget(p) {
   const n = person(p),
     scale = state.unit === "group" ? n : 1;
@@ -252,50 +253,50 @@ function budgetChart(list) {
     '<p class="fine">Las barras usan el extremo inferior. El intervalo recoge las opciones de material.</p></div>'
   );
 }
-const podium = [
-  {
-    id: "chalet",
-    name: "Chalet con jacuzzi · Avoriaz",
-    why: "Tenéis 160 m², chimenea y jacuzzi privado para los siete. Cuesta 11,86 € más por persona que el loft de Cluses.",
-    tradeoff: "Del chalet a Les Prodains, unos 50 min en coche.",
-  },
+const recommendations = [
   {
     id: "cenis",
-    name: "Val Cenis + noche en Modane",
-    why: "Es el más barato. La casa sale a 13,57 € por persona y el forfait incluye el concierto.",
-    tradeoff: "Desde Ecla al festival, unas 2 h 30. Material en Orelle.",
+    name: "Val Cenis · noche en Modane",
+    why: "La opción más barata para siete. El forfait de 49 € incluye los dos días y el concierto del sábado.",
+    tradeoff: "Unos 30 min en coche de la casa a Vieux Moulin. El material presupuestado se recoge en Orelle.",
+  },
+  {
+    id: "chalet",
+    name: "Avoriaz · chalet de Arâches",
+    why: "Por 11,86 € más por persona que el loft tenéis 160 m² de madera, chimenea y jacuzzi privado para la tarde.",
+    tradeoff: "Calculad unos 50 min en coche desde Arâches hasta el teleférico de Les Prodains.",
   },
   {
     id: "carroz-inicio",
-    name: "Les Carroz + Flocons Verts",
-    why: "Si estáis aprendiendo, dormís a 80 m de la cinta y tenéis sauna en el hotel.",
-    tradeoff: "Forfait de iniciación, sujeto a apertura. Sauna aparte.",
+    name: "Les Carroz · Les Flocons Verts",
+    why: "El más práctico si estáis aprendiendo. Hay 80 m a pie hasta la cinta y sauna de pago en el hotel.",
+    tradeoff: "El pase cubre la zona de iniciación. Comprobaría qué remontes abren el sábado antes de reservar.",
   },
 ];
-function podiumSection() {
-  const [first, ...runners] = podium;
-  const top = lookup(first.id);
-  const others = runners
-    .map((item, index) => {
-      const p = lookup(item.id);
-      return `<li><a class="podium-runner" href="#plan/${p.id}">
-      <span class="podium-rank" aria-label="Puesto ${index + 2}">${index + 2}</span>
-      <div class="runner-body"><h3>${e(item.name)}</h3><b>${e(labelPrice(p))} <small>/ ${e(unit(p))}</small></b>
-      <p>${e(item.why)}</p><span class="runner-note">${e(item.tradeoff)}</span></div></a></li>`;
-    })
-    .join("");
-  return `<section id="podio" class="podium" aria-labelledby="podium-title">
-    <div class="sectionhead"><h2 id="podium-title">Mi podio para los siete</h2>
-    <a class="textlink" href="#comparar/podio">Comparar los tres ${icon("forward")}</a></div>
-    <ol class="podium-list">
-      <li class="podium-first"><a class="hero" href="#plan/${top.id}">
-      ${picture(top.media, top.home, true)}<div class="heroshade"></div>
-      <div class="heroin"><span class="herotag">Primer puesto</span>
-      <h3>${e(first.name)}</h3><p>${e(first.why)}</p>
-      <div class="herolast"><b>${e(labelPrice(top))} <small>/ ${e(unit(top))}</small></b><span class="circle">${icon("forward")}</span></div>
-      </div></a><div class="podium-tradeoff">${icon("pin")}${e(first.tradeoff)}</div></li>
-      ${others}
-    </ol></section>`;
+function recommendationsSection() {
+  const ordinals = ["Primero", "Segundo", "Tercero"];
+  const cards = recommendations.map((choice, index) => {
+    const p = lookup(choice.id);
+    return `<li><a class="recommendation-card" href="#plan/${e(p.id)}">
+      ${picture(p.media, p.home, index === 0)}
+      <div class="recommendation-body"><span class="rec-order">${ordinals[index]}</span><h3>${e(choice.name)}</h3>
+      <b>${e(labelPrice(p))} <small>/ ${e(unit(p))}</small></b>
+      <p>${e(choice.why)}</p><p class="rec-detail">${e(choice.tradeoff)}</p></div>
+      ${icon("arrow")}</a></li>`;
+  }).join("");
+  return `<section id="recomendaciones" aria-labelledby="rec-title">
+    <div class="sectionhead"><h2 id="rec-title">Mis recomendaciones principales</h2>
+    <a class="textlink" href="#comparar/recomendaciones">Comparar las tres ${icon("forward")}</a></div>
+    <ol class="recommendations-list">${cards}</ol>
+    <details class="rec-question"><summary>¿Y el chalet de seis plazas en Les Gets?</summary>
+    <p>El Fleur des Alpes os acerca a Les Prodains (unos 20 min en coche) e incluye el spa del Hôtel Alpina, a 900 m. Los 241 € eran para seis. Si el propietario acepta a siete por ese importe, el viaje saldría a 145,89 € por persona, solo 0,29 € menos que el chalet de Arâches.</p>
+    <p>En el calendario para siete, el sábado 12 figura como día de salida. Si se pudiera entrar ese sábado, elegiría Fleur antes que Arâches para esquiar en Avoriaz y pasar menos tiempo en coche.</p>
+    <a class="textlink" href="#plan/fleur">Ver Fleur des Alpes ${icon("forward")}</a></details>
+    <details class="rec-question"><summary>¿Y si queréis pasar menos tiempo en coche?</summary>
+    <p>Si estáis aprendiendo, el mismo chalet con forfait de Les Carroz sale a 148,71–156,71 € por persona. Son unos 4 min en coche al remonte frente a los 50 min de Avoriaz.</p>
+    <a class="textlink" href="#plan/chalet-inicio">Ver chalet con forfait de iniciación ${icon("forward")}</a>
+    <p>Si ya esquiáis y preferís ir andando, el hotel Flocons Verts con forfait Villages sale a 191,43–199,43 € por persona. El pase permite recorrer los sectores abiertos de Les Carroz y Samoëns.</p>
+    <a class="textlink" href="#plan/carroz">Ver hotel con forfait Villages ${icon("forward")}</a></details></section>`;
 }
 function homePage() {
   return (
@@ -304,7 +305,7 @@ function homePage() {
       "Una noche en los Alpes franceses y dos días en pistas.",
     ) +
     facts() +
-    podiumSection() +
+    recommendationsSection() +
     '<section><div class="sectionhead"><h2>El precio de un vistazo</h2><a class="textlink" href="#comparar">Comparar planes ' +
     icon("forward") +
     "</a></div>" +
@@ -315,6 +316,60 @@ function homePage() {
     '<p class="fine">Cada total cubre una noche, dos días de forfait y material y los cargos conocidos. Para incluir la estimación inicial de comida, sumad 30 € por persona. Desplazamientos y extras opcionales van aparte.</p></section>' +
     '<section class="notes"><h2>Cuándo reservaría</h2><div><b>Ahora</b><p>Elegiría una casa con cancelación para siete y reservaría el material al confirmar las tallas.</p></div><div><b>7–10 de diciembre</b><p>Revisaría qué remontes abren antes de pagar los forfaits o una casa no reembolsable. Las tarifas de apertura pueden agotarse antes.</p></div></section>'
   );
+}
+const modeLabels = {
+  walk: "A pie hasta las pistas",
+  ski: "A pie de pista · con esquís",
+  drive: "En coche hasta el remonte",
+  shuttle: "En bus hasta el remonte",
+  unknown: "Acceso por concretar",
+};
+const accessFilters = {
+  all: "Todos los accesos",
+  "a-pie": "A pie hasta las pistas",
+  "con-esquis": "Con esquís desde casa",
+  "en-coche": "En coche al remonte",
+};
+function matchesAccess(access, filter) {
+  if (filter === "a-pie") return access.mode === "walk" || access.mode === "ski";
+  if (filter === "con-esquis") return access.mode === "ski";
+  if (filter === "en-coche") return access.mode === "drive";
+  return true;
+}
+function accessFilterFor(view) {
+  return view === "otras" ? state.archiveAccess : state.accessFilter;
+}
+function accessControls(view) {
+  const current = accessFilterFor(view);
+  const options = Object.entries(accessFilters).map(([key, label]) =>
+    `<option value="${key}" ${key === current ? "selected" : ""}>${e(label)}</option>`,
+  ).join("");
+  return `<label class="access-filter">Desde el alojamiento<select data-access-filter="${e(view)}">${options}</select></label>`;
+}
+function accessNote(filter) {
+  if (filter !== "a-pie" && filter !== "con-esquis") return "";
+  return '<p class="fine access-note">El filtro usa el sector del forfait de cada plan. La apertura de cada remonte depende de la nieve.</p>';
+}
+function accessSourceLinks(access, hours) {
+  return [
+    ...(access.source ? [["Acceso desde el alojamiento", access.source]] : []),
+    ...(access.sources || []),
+    ...hours.flatMap((row) => row.sources || []),
+  ];
+}
+function accessPanel(key, access, hours) {
+  const pins = window.SKI_LODGINGS.forOption(key);
+  const mapLinks = pins.map((pin) =>
+    `<a class="entrylink" href="#mapa/casa-${e(pin.id)}">${icon("pin")}${pins.length === 1 ? "Alojamiento en el mapa" : e(pin.name)} ${icon("forward")}</a>`,
+  ).join("");
+  return `<section class="slope-access" aria-label="Acceso y horarios"><div class="access-summary">
+    <h2>Del alojamiento a las pistas</h2><strong>${e(modeLabels[access.mode])}</strong>
+    <p>${e(access.text)}</p>${mapLinks ? '<div class="planrelated">' + mapLinks + '</div>' : ""}</div>
+    <div class="lift-hours"><h2>Horario de pistas y remontes</h2><span class="minor">Sábado 12 y domingo 13 de diciembre</span>
+    ${hours.map((row) => `<p><b>${e(row.label)}</b>${e(row.text)}</p>`).join("")}</div></section>`;
+}
+function emptyOptions() {
+  return '<p class="empty-options">Ninguna opción coincide con estos filtros.</p>';
 }
 function planCard(p) {
   const b = budget(p);
@@ -335,7 +390,7 @@ function planCard(p) {
     (b.low == null ? "" : "<small>/ " + unit(p) + "</small>") +
     '</div><div class="cardmeta">' +
     e(p.status || p.tag || p.capacity) +
-    "</div></div></a>"
+    '</div><div class="card-access">' + icon("pin") + e(modeLabels[window.SKI_ACCESS.plans[p.id].mode]) + "</div></div></a>"
   );
 }
 function plansPage() {
@@ -353,6 +408,7 @@ function plansPage() {
         (state.view === "seis" && p.cap6) ||
         (state.view === "spa" && hasSpa(p)),
     )
+    .filter((p) => matchesAccess(window.SKI_ACCESS.plans[p.id], state.accessFilter))
     .sort((a, b) => (budget(a).low ?? Infinity) - (budget(b).low ?? Infinity));
   return (
     heading(
@@ -378,9 +434,11 @@ function plansPage() {
           "</button>",
       )
       .join("") +
-    '</div><div class="gridcards">' +
-    matching.map(planCard).join("") +
-    "</div>"
+    "</div>" + accessControls("planes") + accessNote(state.accessFilter) +
+    (matching.length ? '<div class="gridcards">' + matching.map(planCard).join("") + "</div>" : emptyOptions()) +
+    (state.accessFilter !== "all" && archive.some((_, index) => matchesAccess(window.SKI_ACCESS.archive[index], state.accessFilter))
+      ? '<a class="entrylink" href="#otras/' + state.accessFilter + '">Más opciones con este acceso ' + icon("forward") + '</a>'
+      : "")
   );
 }
 function routeRows(p) {
@@ -600,6 +658,7 @@ function detail(p) {
     "</span></div>" +
     controls() +
     bookingActions(actions) +
+    accessPanel("plan/" + p.id, window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null)) +
     '<div class="duogallery">' +
     figure(media[p.media], "Alojamiento") +
     figure(media[p.slope], "Dominio esquiable") +
@@ -620,7 +679,7 @@ function detail(p) {
     '<p class="fine">Importes para ' +
     person(p) +
     " personas, sujetos a disponibilidad. Comidas y desplazamientos aparte.</p></div></section>" +
-    "<section><h2>Cómo llegáis a las pistas</h2>" +
+    "<section><h2>Distancias desde Ecla y el alojamiento</h2>" +
     rows(routeRows(p)) +
     '<p class="fine">' +
     e(
@@ -677,6 +736,8 @@ function compare() {
   const data = [
     ["Total", (p) => labelPrice(p)],
     ["Personas cotizadas", (p) => String(person(p))],
+    ["Del alojamiento a las pistas", (p) => window.SKI_ACCESS.plans[p.id].text],
+    ["Horario de pistas y remontes", (p) => window.skiLiftHours(p.id, null).map((row) => row.label + " · " + row.text).join(" ")],
     ["Principal ventaja", (p) => window.SKI_PLAN_REVIEW(p).pros[0] || "—"],
     [
       "Principal inconveniente",
@@ -741,6 +802,7 @@ function archiveLinks(a) {
   const images = [...(media[a.media] || []), ...(media[a.slope] || [])];
   const review = window.SKI_ARCHIVE_REVIEW(a);
   return [
+    ...accessSourceLinks(window.SKI_ACCESS.archive[archive.indexOf(a)], window.skiLiftHours(null, archive.indexOf(a))),
     ...(a.links || []),
     ...(review.links || []),
     ...review.actions.map((action) => [action.label, action.url]),
@@ -761,6 +823,8 @@ function archiveBody(item, index, compact = false) {
     e(item.description) +
     "</p>" +
     (photos ? '<div class="duogallery">' + photos + "</div>" : "") +
+    accessPanel("otras/" + index, window.SKI_ACCESS.archive[index], window.skiLiftHours(null, index)) +
+    (item.sauna ? rows([["Sauna del alojamiento", item.sauna], ["Jacuzzi del alojamiento", item.jacuzzi]]) : "") +
     reviewTable(review) +
     `<button class="${compact ? "quiet" : "resbtn"}" data-archive="${index}">${icon("book")} Recursos de esta opción</button>`
   );
@@ -801,8 +865,7 @@ function more() {
     "</div>";
   const items = archive
     .map((a, i) => {
-      if (state.archiveKind !== "Todas" && a.kind !== state.archiveKind)
-        return "";
+      if ((state.archiveKind !== "Todas" && a.kind !== state.archiveKind) || !matchesAccess(window.SKI_ACCESS.archive[i], state.archiveAccess)) return "";
       return (
         '<details><summary><div><span class="minor">' +
         e([a.area, a.kind].filter(Boolean).join(" · ")) +
@@ -823,15 +886,14 @@ function more() {
       "Otras opciones",
       "Estaciones, alojamientos y variantes con las condiciones que se encontraron para ese fin de semana.",
     ) +
-    filters +
-    '<div class="archives">' +
-    items +
-    "</div>"
+    filters + accessControls("otras") + accessNote(state.archiveAccess) +
+    (items ? '<div class="archives">' + items + "</div>" : emptyOptions())
   );
 }
 function linksFor(p) {
   const r = getRoute(p);
   return [
+    ...accessSourceLinks(window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null)),
     p.houseLink,
     ...window
       .SKI_PLAN_BOOKING(p, { student: state.student })
@@ -1043,6 +1105,17 @@ document.addEventListener("click", (ev) => {
   }
 });
 document.addEventListener("change", (ev) => {
+  if (ev.target.hasAttribute("data-access-filter")) {
+    const view = ev.target.dataset.accessFilter;
+    const filter = ev.target.value;
+    if (view === "otras") state.archiveAccess = filter;
+    else state.accessFilter = filter;
+    if (view === "planes" || view === "otras") {
+      history.replaceState(null, "", "#" + view + (filter === "all" ? "" : "/" + filter));
+    }
+    render();
+    $("#main [data-access-filter]")?.focus({ preventScroll: true });
+  }
   if (ev.target.hasAttribute("data-student")) {
     state.student = ev.target.checked;
     render();
@@ -1067,12 +1140,17 @@ document.addEventListener(
   true,
 );
 function enterView() {
-  if (recordHash() === "comparar/podio")
-    state.selection = podium.map((item) => item.id);
+  const [section, filter] = recordHash().split("/");
+  if ((section === "planes" || section === "otras") && (!filter || Object.hasOwn(accessFilters, filter))) {
+    if (section === "otras") state.archiveAccess = filter || "all";
+    else state.accessFilter = filter || "all";
+  }
+  if (["comparar/recomendaciones", "comparar/podio"].includes(recordHash()))
+    state.selection = recommendations.map((item) => item.id);
   render();
-  if (recordHash() === "podio")
+  if (["recomendaciones", "podio"].includes(recordHash()))
     requestAnimationFrame(() =>
-      $("#podio")?.scrollIntoView({ block: "start" }),
+      $("#recomendaciones")?.scrollIntoView({ block: "start" }),
     );
 }
 window.addEventListener("hashchange", () => {
