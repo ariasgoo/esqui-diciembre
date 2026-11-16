@@ -659,6 +659,12 @@ footer {
 .headprice span {
   font-size: 13px;
 }
+.plan-budget {
+  margin: 0 0 24px;
+}
+.plan-budget .legend {
+  margin: 14px 0 10px;
+}
 .pill {
   color: var(--accent) !important;
   background: var(--fill);

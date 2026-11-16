@@ -693,6 +693,7 @@ function detail(p) {
     icon("back") +
     " Todos los planes</a>" +
     heading(p.title, p.area + " · Noche en " + p.home) +
+    '<section id="presupuesto" class="plan-budget" aria-label="Desglose del precio">' +
     '<div class="headprice"><div><b>' +
     e(labelPrice(p)) +
     "</b><span> / " +
@@ -701,6 +702,10 @@ function detail(p) {
     e(p.status || p.tag || p.capacity) +
     "</span></div>" +
     controls() +
+    priceDetails(p) +
+    '<p class="fine">Importes para ' +
+    person(p) +
+    " personas, sujetos a disponibilidad. Comidas y desplazamientos aparte.</p></section>" +
     bookingActions(actions) +
     quickFacts(p) +
     '<p class="storage-summary">' + e(storageSummary(p)) + '</p>' +
@@ -719,7 +724,7 @@ function detail(p) {
     figure(media[p.slope], "Dominio esquiable") +
     "</div>" +
     '<div id="itinerario">' + window.SKI_ITINERARIES.panel("plan/" + p.id, window.SKI_ITINERARIES.forPlan(p)) + '</div>' +
-    '<div id="presupuesto"><section class="detailsgrid"><div><h2>La estancia</h2>' +
+    '<section class="stay-details"><h2>La estancia</h2>' +
     schematic(p.house) +
     rows([
       ["Capacidad", p.capacity],
@@ -728,11 +733,7 @@ function detail(p) {
       ["Jacuzzi", p.jacuzzi],
     ]) +
     (p.spa ? '<p class="fine">' + e(p.spa) + "</p>" : "") +
-    "</div><div>" +
-    priceDetails(p) +
-    '<p class="fine">Importes para ' +
-    person(p) +
-    " personas, sujetos a disponibilidad. Comidas y desplazamientos aparte.</p></div></section></div>" +
+    "</section>" +
     '<div id="opinion">' + reviewTable(review, p.when) + '</div>' +
     fold("Acceso, horarios y material · detalles", gearPanel(window.SKI_GEAR_LOGISTICS.forPlan(p)) + accessPanel("plan/" + p.id, window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null))) +
     fold("Distancias y rutas · detalles", "<section><h2>Distancias desde Ecla y el alojamiento</h2>" +
