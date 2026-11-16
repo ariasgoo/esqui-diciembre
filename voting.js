@@ -7,24 +7,69 @@ const ownBallot=()=>state.ballots.find(b=>b.key===state.key);
 const selected=id=>(ownBallot()?.planIds||[]).includes(id);
 function notify(){document.dispatchEvent(new Event('ski-voting-updated'));updateAccount();}
 function updateAccount(){const b=document.querySelector('#account-trigger');if(b)b.textContent=state.profile?.name||'Tu cuenta';const n=document.querySelector('#voting-notice');if(n){n.textContent=state.error||state.message||'';n.hidden=!n.textContent||!state.profile;n.classList.toggle('is-error',!!state.error);}}
-function button(id){
- const count=state.ballots.filter(b=>(b.planIds||[]).includes(id)).length;
- return '<button class="vote-button" data-vote="'+esc(id)+'" aria-pressed="'+selected(id)+'" '+(!state.ready||!state.member||state.saving?'disabled':'')+'>'+(selected(id)?'✓ Votado':'Votar')+(count?' <span class="vote-count">'+count+'</span>':'')+'</button>';
+function voteTitle(plan) {
+  return window.SKI_STATIONS?.planSummary?.(plan.id)?.title || plan.title;
 }
-function page(){
- let out='<div class="heading"><h1>Votaciones</h1><p>Marca varios planes. Puedes cambiar tus votos.</p></div>';
- if(!state.ready)return out+'<p class="fine">Cargando votos…</p>';
- if(!state.member)return out+'<p class="fine">Tu teléfono no está en el grupo de esquí. Puedes consultar los planes; solo los miembros pueden votar y ver los resultados.</p><a class="entrylink" href="#planes">Ver planes →</a>';
- const ranked=summarizeVotes(allPlans(),state.ballots),voted=ranked.filter(r=>r.voters.length),empty=ranked.filter(r=>!r.voters.length);
- out+='<div class="vote-summary"><strong>'+state.ballots.filter(b=>b.planIds?.length).length+' / '+config.electorate+'</strong><span>personas han votado</span></div>';
- if(state.error)out+='<p class="vote-error" role="alert">'+esc(state.error)+'</p>';
- const row=({plan,voters})=>'<article class="vote-result"><div class="vote-result-top"><a href="#plan/'+esc(plan.id)+'"><span class="minor">'+esc(plan.area)+'</span><h2>'+esc(plan.title)+'</h2></a><div>'+button(plan.id)+'</div></div><div class="vote-meter" role="meter" aria-label="Votos para '+esc(plan.title)+'" aria-valuemin="0" aria-valuemax="'+config.electorate+'" aria-valuenow="'+voters.length+'"><span style="width:'+Math.min(100,voters.length/config.electorate*100)+'%"></span></div>'+(voters.length?'<div class="vote-people">'+voters.map(v=>'<span class="vote-person" title="Móvil terminado en '+esc(v.suffix)+'">'+esc(v.name)+'</span>').join('')+'</div>':'<p class="vote-empty">Sin votos</p>')+'</article>';
- if(!voted.length)out+='<p class="fine">Todavía no hay votos. Elige tus favoritos.</p>';
- out+='<div class="vote-results">'+voted.map(row).join('')+'</div>';
- if(empty.length)out+='<details class="vote-more" '+(!voted.length?'open':'')+'><summary>Planes sin votos · '+empty.length+'</summary>'+empty.map(row).join('')+'</details>';
- return out;
+
+function selectionHint() {
+  if (!state.ready) return "Cargando votos…";
+  return state.member ? "Puedes votar varios planes." : "Puedes ver los planes. Solo el grupo de esquí puede votar.";
 }
-window.SKI_VOTING={button,page};
+
+function button(id) {
+  const plan = allPlans().find(option => option.id === id);
+  if (!plan) return "";
+  const checked = selected(id);
+  const action = checked ? "Votado. Quitar voto de " : "Votar por ";
+  const restricted = state.ready && !state.member;
+  const disabled = !state.ready || restricted || state.saving;
+  return `<button type="button" class="vote-button" data-vote="${esc(id)}"
+    aria-label="${action}${esc(voteTitle(plan))}" aria-pressed="${checked}"
+    ${restricted ? 'title="Votación reservada al grupo"' : ''} ${disabled ? 'disabled' : ''}>
+    <span class="vote-check" aria-hidden="true"></span>${checked ? 'Votado' : 'Votar'}
+  </button>`;
+}
+
+function resultRow({plan, voters}) {
+  const count = voters.length;
+  const width = Math.min(100, count / config.electorate * 100);
+  const featured = window.SKI_STATIONS?.featuredIds;
+  const secondary = featured && !featured.includes(plan.id);
+  const names = voters.map(voter => esc(voter.name)).join(", ");
+  return `<li class="vote-result">
+    <div class="vote-result-top">
+      <a href="#plan/${esc(plan.id)}">
+        <span class="vote-area">${esc(plan.area)}${secondary ? ' · Otras opciones' : ''}</span>
+        <h2>${esc(voteTitle(plan))}</h2>
+      </a>
+      <strong class="vote-total">${count} ${count === 1 ? 'voto' : 'votos'}</strong>
+    </div>
+    <div class="vote-meter" aria-hidden="true"><span style="width:${width}%"></span></div>
+    <div class="vote-result-bottom"><p class="vote-people">${names}</p>${button(plan.id)}</div>
+  </li>`;
+}
+
+function page() {
+  const heading = '<div class="heading"><h1>Votos del grupo</h1></div>';
+  const options = '<a class="vote-options" href="#planes">Elegir planes <span aria-hidden="true">→</span></a>';
+  if (!state.ready) return heading + '<p class="vote-intro" role="status">Cargando votos…</p>';
+  if (!state.member) {
+    const message = state.error || 'Solo los miembros del grupo de esquí pueden votar y ver los resultados.';
+    return heading + `<p class="vote-intro">${esc(message)}</p>
+      <a class="vote-options" href="#planes">Ver opciones <span aria-hidden="true">→</span></a>`;
+  }
+  const voted = summarizeVotes(allPlans(), state.ballots).filter(row => row.voters.length);
+  const error = state.error ? `<p class="vote-error" role="alert">${esc(state.error)}</p>` : "";
+  if (!voted.length) {
+    const empty = '<p class="vote-intro">Todavía no hay votos. Puedes elegir varios planes.</p>';
+    return heading + (error || empty) + options;
+  }
+  const people = state.ballots.filter(ballot => ballot.planIds?.length).length;
+  const participation = `${people === 1 ? 'Ha votado' : 'Han votado'} ${people} de ${config.electorate} personas.`;
+  return heading + error + `<div class="vote-summary"><p>${participation}</p>${options}</div>
+    <ol class="vote-results">${voted.map(resultRow).join("")}</ol>`;
+}
+window.SKI_VOTING={button,page,selectionHint};
 function clearCaptcha(){try{recaptcha?.clear();}catch{}recaptcha=null;recaptchaNode?.remove();recaptchaNode=null;}
 function renderGate(){
  const gate=document.querySelector('#auth-gate');
@@ -34,10 +79,10 @@ function renderGate(){
  let body;
  if(loading)body='<p role="status">Recuperando tu sesión…</p>';
  else if(failed)body='<p class="auth-error" role="alert">'+esc(state.error)+'</p><button class="auth-primary" data-auth-retry>Reintentar</button>';
- else if(profile)body='<p>Un nombre para que el grupo reconozca tus votos.</p><form id="profile-first"><label for="first-name">Tu nombre</label><input id="first-name" name="name" autocomplete="given-name" maxlength="50" required value="'+esc(state.draftName)+'"><p class="auth-error" role="alert">'+esc(state.error)+'</p><button class="auth-primary" '+(state.busy?'disabled':'')+'>Guardar y entrar</button></form>';
+ else if(profile)body='<p>El grupo verá este nombre junto a tus votos.</p><form id="profile-first"><label for="first-name">Tu nombre</label><input id="first-name" name="name" autocomplete="given-name" maxlength="50" required value="'+esc(state.draftName)+'"><p class="auth-error" role="alert">'+esc(state.error)+'</p><button class="auth-primary" '+(state.busy?'disabled':'')+'>Guardar y entrar</button></form>';
  else if(code)body='<p>Introduce el código enviado a <strong>'+esc(state.phone)+'</strong>.</p><form id="sms-confirm"><label for="sms-code">Código del SMS</label><input id="sms-code" class="auth-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus><p class="auth-error" role="alert">'+esc(state.error)+'</p><button class="auth-primary" '+(state.busy?'disabled':'')+'>'+(state.busy?'Verificando…':'Verificar y entrar')+'</button></form><button class="auth-edit" data-auth-edit '+(state.busy?'disabled':'')+'>Cambiar número o pedir otro SMS</button>';
- else body='<p>Entra con tu móvil. La sesión se recuerda en este navegador.</p><form id="sms-send"><label for="auth-name">Tu nombre</label><input id="auth-name" name="name" autocomplete="given-name" maxlength="50" required value="'+esc(state.draftName)+'"><label for="auth-phone">Móvil</label><div class="phone-field"><span>+34</span><input id="auth-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="600 000 000" required value="'+esc(state.phone.replace(/^\+34/,''))+'"></div><p class="auth-error" role="alert">'+esc(state.error)+'</p><button class="auth-primary" '+(state.busy?'disabled':'')+'>'+(state.busy?'Preparando SMS…':'Recibir código por SMS')+'</button></form><div id="auth-captcha" class="auth-captcha"></div><p class="auth-note">Cualquier móvil español puede entrar. Solo el grupo puede votar.<br>Se aplican la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacidad</a> y las <a href="https://policies.google.com/terms" target="_blank" rel="noopener">condiciones de Google</a>.</p>';
- gate.innerHTML='<div class="auth-panel"><div class="auth-brand"><img src="icon.svg" width="27" height="27" alt="">Esquí · diciembre</div><h1>'+(profile?'¿Cómo te llamas?':code?'Verifica tu móvil':'Vamos a la nieve.')+'</h1>'+body+'</div>';
+ else body='<p>Entra por SMS para elegir tus planes. La sesión queda guardada en este navegador.</p><form id="sms-send"><label for="auth-name">Tu nombre</label><input id="auth-name" name="name" autocomplete="given-name" maxlength="50" required value="'+esc(state.draftName)+'"><label for="auth-phone">Móvil</label><div class="phone-field"><span>+34</span><input id="auth-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="600 000 000" required value="'+esc(state.phone.replace(/^\+34/,''))+'"></div><p class="auth-error" role="alert">'+esc(state.error)+'</p><button class="auth-primary" '+(state.busy?'disabled':'')+'>'+(state.busy?'Preparando SMS…':'Recibir código por SMS')+'</button></form><div id="auth-captcha" class="auth-captcha"></div><p class="auth-note">Acceso con móvil español. Votación reservada al grupo.<br>Se aplican la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacidad</a> y las <a href="https://policies.google.com/terms" target="_blank" rel="noopener">condiciones de Google</a>.</p>';
+ gate.innerHTML='<div class="auth-panel"><div class="auth-brand"><img src="icon.svg" width="27" height="27" alt="">Esquí desde Archamps · 12–13 dic</div><h1>'+(profile?'¿Cómo te llamas?':code?'Verifica tu móvil':'Escapada de esquí')+'</h1>'+body+'</div>';
  if(code)document.querySelector('#sms-code')?.focus();
 }
 async function saveProfile(name){
@@ -53,11 +98,11 @@ function watchMembership(){
  stopMember=sdk.onSnapshot(sdk.doc(db,...root(),'members',state.key),snapshot=>{
   const member=snapshot.exists()&&snapshot.data().enabled===true;
   if(member===state.member&&stopBallots)return;
-  state.member=member;state.ready=true;state.error='';
+  state.member=member;state.ready=!member;state.error='';
   stopBallots?.();stopBallots=null;state.ballots=[];
   if(member)stopBallots=sdk.onSnapshot(sdk.collection(db,...root(),'ballots'),snap=>{
-   state.ballots=snap.docs.map(d=>({key:d.id,...d.data()}));state.error='';notify();
-  },error=>{state.ballots=[];state.error=authError(error);notify();});
+   state.ballots=snap.docs.map(d=>({key:d.id,...d.data()}));state.ready=true;state.error='';notify();
+  },error=>{state.ballots=[];state.ready=true;state.error=authError(error);notify();});
   notify();
  },error=>{state.ready=true;state.member=false;state.ballots=[];state.error=authError(error);notify();});
 }
@@ -124,7 +169,7 @@ async function vote(id){
    if(!ids.size){tx.delete(ref);return;}
    tx.set(ref,{name:state.profile.name,suffix:state.user.phoneNumber.slice(-4),planIds:[...ids],updatedAt:sdk.serverTimestamp()});
   });
-  state.message='Voto guardado.';setTimeout(()=>{state.message='';updateAccount();},3000);
+  state.message=include?'Voto guardado.':'Voto retirado.';setTimeout(()=>{state.message='';updateAccount();},3000);
  }catch(error){state.error=authError(error);}
  finally{state.saving=false;notify();}
 }

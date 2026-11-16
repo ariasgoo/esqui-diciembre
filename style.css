@@ -1589,3 +1589,133 @@ button.slide {
 .gear-logistics dd { margin: 0; }
 .gear-logistics .fine { margin: 7px 0 0; font-size: 12px; }
 @media (max-width: 650px) { .gear-logistics dl > div { grid-template-columns: 1fr; gap: 2px; } }
+
+/* A single navigation bar, shared by the catalogue, ballot and map. */
+:root {
+  --side: #f7f7f6;
+  --fill: #f6f6f4;
+  --line: #e4e5e2;
+  --text: #202220;
+  --muted: #60645f;
+}
+:root[data-theme="dark"] {
+  --side: #202120;
+  --fill: #242624;
+  --line: #3b3d3b;
+  --text: #f3f4f1;
+  --muted: #b2b6b0;
+}
+#shell { display: block; }
+#top { padding: 0; min-height: 0; background: var(--paper); }
+.top-inner {
+  width: min(1120px, 100%);
+  margin: auto;
+  min-height: 64px;
+  padding: 0 32px;
+  display: flex;
+  gap: clamp(18px, 4vw, 58px);
+  align-items: center;
+}
+.trip-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+#nav { margin: 0; display: flex; gap: 3px; }
+#nav .navitem { display: inline-flex; align-items: center; gap: 6px; padding: 8px 13px; font-size: 13px; }
+#nav .navitem.active { background: var(--fill); color: var(--text); }
+#nav .ico { width: 16px; height: 16px; }
+.top-tools { margin-left: auto; display: flex; align-items: center; gap: 5px; }
+.top-tools .quiet { min-height: 36px; color: var(--muted); border: 0; font-weight: 500; }
+.top-tools .theme-button { width: 36px; justify-content: center; padding: 0; }
+#top #account-trigger { border: 1px solid var(--line); padding: 6px 12px; max-width: 110px; }
+#top #sourceTop { margin: 0; }
+#main, footer { width: min(924px, 100%); padding-inline: 32px; }
+#main { padding-block: 40px 48px; min-height: calc(100vh - 132px); }
+footer { padding-block: 18px 24px; }
+h1 { font-size: clamp(30px, 3.3vw, 41px); letter-spacing: -.052em; }
+h2 { letter-spacing: -.038em; }
+.plan-sheet, .other-options { max-width: 760px; margin-inline: auto; }
+.plan-sheet .heading p { color: var(--muted); font-size: 14px; }
+.plan-sheet .back, .other-options .back { margin: 0 0 12px; min-height: 30px; }
+.plan-sheet .plan-budget {
+  margin: 20px 0 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.budget-heading, .plan-choice, .plan-access, .plan-choice a, .plan-access a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.budget-heading, .plan-choice { justify-content: space-between; }
+.budget-heading h2 { font-size: 15px; letter-spacing: -.02em; }
+.budget-heading .controls { margin: 0; }
+.budget-heading .switch button { min-height: 30px; }
+.budget-total { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; margin: 5px 0 13px; }
+.budget-total strong { font-size: clamp(26px, 4vw, 36px); line-height: 1.2; letter-spacing: -.05em; font-weight: 600; }
+.budget-total span, .budget-items dt { color: var(--muted); font-size: 12px; }
+.budget-band { display: flex; height: 6px; gap: 2px; border-radius: 4px; overflow: hidden; }
+.budget-items { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 12px 0 0; }
+.budget-items dt { display: flex; align-items: baseline; gap: 4px; }
+.budget-items dt i { flex: none; width: 7px; height: 7px; border-radius: 2px; }
+.budget-items dd { margin: 2px 0 0; font-size: 14px; font-weight: 560; font-variant-numeric: tabular-nums; }
+.plan-budget .fine { margin: 12px 0 0; font-size: 11px; }
+.plan-choice { margin: 0 0 20px; }
+.plan-choice a, .plan-access a { color: var(--muted); font-size: 13px; min-height: 40px; }
+.plan-choice a:hover, .plan-access a:hover { color: var(--text); text-decoration: underline; }
+.plan-choice a .ico, .plan-access a .ico { width: 15px; }
+.plan-sheet .option-review { margin: 14px 0; }
+.plan-sheet .option-review h2 { font-size: 16px; }
+.plan-sheet .review-frame { border: 0; border-radius: 0; }
+.plan-sheet .review-table td, .plan-sheet .review-table th { padding: 6px 0; }
+.plan-sheet .review-table th { width: 74px; background: transparent; color: var(--muted); }
+.plan-sheet .review-table tr + tr > * { border: 0; }
+.plan-access { justify-content: space-between; flex-wrap: wrap; padding-top: 5px; }
+.plan-access .quick-facts { display: flex; gap: 12px 24px; margin: 0; border: 0; border-radius: 0; flex-wrap: wrap; }
+.plan-access .quick-facts > div { padding: 0; border: 0; }
+.plan-access .quick-facts dt { margin-bottom: 1px; }
+.plan-sheet .storage-summary { margin: 6px 0; }
+.plan-sheet .duogallery { margin: 20px 0; }
+.plan-sheet .gallerybox { height: auto; aspect-ratio: 1.9; }
+.plan-sheet .photocaption { display: none; }
+.plan-sheet .booking-block { margin-block: 16px 22px; }
+.plan-sheet .plan-folds { border-bottom: 1px solid var(--line); }
+.other-options .heading { margin-bottom: 15px; }
+.archive-line { display: flex; padding: 12px 0; align-items: center; gap: 16px; justify-content: space-between; font-weight: 530; border-bottom: 1px solid var(--line); }
+.archive-line:hover span { text-decoration: underline; }
+.archive-line small { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
+.archive-line small:empty { display: none; }
+.archive-line .ico { color: var(--muted); width: 14px; }
+.archive-list { margin-bottom: 24px; }
+.archive-quote { margin: 14px 0; font-size: 18px; }
+@media (max-width: 800px) {
+  .top-inner { min-height: 55px; padding-inline: 18px; gap: 12px; }
+  #nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); }
+  #nav .navitem { font-size: 11px; gap: 2px; min-height: 46px; }
+  #nav .navitem.active { color: var(--text); }
+  #nav .ico { height: 20px; width: 20px; }
+  #main, footer { padding-inline: clamp(16px, 4vw, 30px); }
+  #main { padding-block: 24px 32px; min-height: calc(100vh - 200px); }
+  footer { padding-bottom: calc(75px + env(safe-area-inset-bottom)); }
+  .top-tools { gap: 1px; }
+  #top .top-tools .quiet { min-height: 40px; }
+  #top #sourceTop { padding: 8px; }
+  #top #sourceTop span { display: none; }
+}
+@media (max-width: 460px) {
+  .top-inner { padding-inline: 14px; }
+  .trip-brand { font-size: 14px; gap: 6px; }
+  .trip-brand img { width: 26px; height: 26px; }
+  #top #account-trigger { max-width: 80px; padding-inline: 8px; }
+  .plan-sheet .plan-budget { padding: 12px 14px; }
+  .budget-items { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 14px; }
+  .budget-heading .switch button { padding-inline: 8px; }
+  footer { align-items: flex-start; flex-wrap: wrap; row-gap: 3px; }
+}
