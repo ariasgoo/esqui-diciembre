@@ -61,8 +61,8 @@
   };
 
   function tradeoffs(pro, con) {
-    const line = (mark, label, value) => value ? `<div><dt><span aria-hidden="true">${mark}</span><span class="choice-sr">${label}</span></dt><dd>${e(value)}</dd></div>` : "";
-    return `<dl class="choice-trades">${line("+", "A favor", pro)}${line("−", "En contra", con)}</dl>`;
+    const line = (label, value) => value ? `<div><dt>${label}</dt><dd>${e(value)}</dd></div>` : "";
+    return `<dl class="choice-trades">${line("Pros", pro)}${line("Contras", con)}</dl>`;
   }
 
   function optionRow(plan) {

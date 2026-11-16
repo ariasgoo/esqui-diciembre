@@ -63,9 +63,9 @@
 .choice-stats dd { margin: 2px 0 0; font-size: 16px; font-weight: 550; letter-spacing: -.02em; }
 .choice-stats dd small { font-size: 12px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
 .choice-trades { margin: 0; font-size: 13px; line-height: 1.5; }
-.choice-trades > div { display: grid; grid-template-columns: 14px minmax(0,1fr); gap: 5px; }
+.choice-trades > div { display: grid; grid-template-columns: 4em minmax(0,1fr); gap: 6px; }
 .choice-trades > div + div { margin-top: 4px; color: var(--muted); }
-.choice-trades dt { font-weight: 500; color: var(--muted); }
+.choice-trades dt { font-weight: 600; }
 .choice-trades dd { margin: 0; }
 .choice-options { align-self: start; }
 .choice-option { padding: 16px 0; margin: 0; }
