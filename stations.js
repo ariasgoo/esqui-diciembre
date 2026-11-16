@@ -5,7 +5,7 @@
     {key: "avoriaz", label: "Avoriaz", areas: ["Avoriaz"], image: "avoriaz", access: "avoriaz",
       pro: "El forfait de apertura cuesta 50,50 € los dos días.", con: "Se duerme en el valle y se sube por Prodains."},
     {key: "val-thorens-orelle", label: "Val Thorens · Orelle", areas: ["Val Thorens–Orelle", "Val Thorens"], image: "orelle", access: "orelle",
-      pro: "150 km esquiables y esquí de altura.", con: "Es el viaje más largo desde Ecla."},
+      pro: "Esquí de altura y pistas variadas.", con: "Es el viaje más largo desde Ecla."},
     {key: "les-carroz", label: "Les Carroz", areas: ["Les Carroz"], image: "carroz", access: "les-carroz",
       pro: "El trayecto más corto. Podéis dormir a pie de remonte.", con: "Morillon y Sixt abren después del viaje."},
     {key: "val-cenis", label: "Val Cenis", areas: ["Val Cenis"], image: "cenis", access: "val-cenis",
@@ -15,7 +15,7 @@
   ];
   const featuredIds = ["loft", "chalet", "fleur", "orelle", "cosy", "saintmichel-apto", "saintmichel", "carroz", "chalet-villages"];
   const featuredResorts = resorts.slice(0, 3);
-  const expandedStations = new Set();
+  let expandedStation;
 
   const summaries = {
     loft: {title: "Loft de Cluses", pro: "Tres dormitorios. El plan más barato para siete.", con: "40–45 min en coche hasta el teleférico."},
@@ -72,11 +72,11 @@
     return `<article class="choice-option">
       <a class="choice-option-link" href="${link}">
         ${picture(plan.media, "", false)}
-        <div class="choice-option-copy"><h3>${e(summary.title)} ${icon("arrow")}</h3>
+        <div class="choice-option-copy"><h3 id="choice-title-${e(plan.id)}">${e(summary.title)} ${icon("arrow")}</h3>
           ${tradeoffs(summary.pro, summary.con)}</div>
       </a>
       <div class="choice-action"><div class="choice-price"><strong>${e(labelPrice(plan))}</strong><small>/ ${e(priceUnit)}${person(plan) === 6 ? ' · tarifa para seis' : ''}</small></div>
-        ${voteControl(plan.id)}</div>
+        ${voteCountControl(plan.id)}${voteControl(plan.id)}</div>
     </article>`;
   }
 
@@ -85,7 +85,7 @@
     const [distance, duration] = trip.value.split(" · ");
     const journey = duration ? duration + " en coche · " + distance : distance + " en coche";
     return `<dl class="choice-stats"><div><dt>${station.key === "val-thorens-orelle" ? 'Ecla Archamps → Orelle' : 'Desde Ecla Archamps'}</dt><dd>${e(journey)}</dd></div>
-      ${facts ? `<div><dt>12–13 dic · estimación propia</dt><dd>${e(facts.opening)} esquiables <small>de ${e(facts.km.split(" · ")[0])} totales</small></dd></div>` : ""}</dl>`;
+      ${facts ? `<div><dt>Dominio completo</dt><dd>${e(facts.km)} esquiables</dd></div>` : ""}</dl>`;
   }
 
   function mapLink(station) {
@@ -96,7 +96,7 @@
 
   function choiceGroup(station, matching) {
     if (!matching.length) return "";
-    return `<details class="choice-group" data-station-toggle="${e(station.key)}"${expandedStations.has(station.key) ? " open" : ""}>
+    return `<details class="choice-group" name="estaciones-principales" data-station-toggle="${e(station.key)}"${expandedStation === station.key ? " open" : ""}>
       <summary class="choice-resort-toggle">
         ${picture(station.image, station.label, true)}
         <div class="choice-resort"><div class="choice-resort-title"><h2>${e(station.label)}</h2>
@@ -126,7 +126,7 @@
       <div class="choice-list">${selected.length ? featuredResorts.map(s => choiceGroup(s, selected.filter(p => forPlan(p) === s))).join("") :
         `<p class="choice-empty">Ninguna opción principal tiene este acceso. <a href="#planes">Ver todos los accesos</a></p>`}</div>
       <div class="choice-foot"><a href="#otras${state.accessFilter !== "all" ? "/" + state.accessFilter : ""}">${icon("archive")} Otras opciones ${icon("arrow")}</a>
-      <small>Precios orientativos. Kilómetros esquiables abiertos según estimación propia.</small></div>`;
+      <small>Precios orientativos.</small></div>`;
   }
 
   function skiInfo(station) {
@@ -138,7 +138,6 @@
     const villages = station.key === "les-carroz" ? "<p>Villages suma 145 km esquiables y 78 pistas. El sector local de Les Carroz tiene 34 km esquiables.</p>" : "";
     const additionalTrips = guide.trips.slice(1).map(t => `<p>${e(t.label)} desde Ecla · ${e(t.value)} en coche</p>`).join("");
     return `${station.image ? picture(station.image, station.label) : ""}<div>${trail}${colors}${villages}<p>${e(guide.dates)}</p>
-      ${facts ? '<p class="fine">El rango de apertura es una estimación propia. El operador aún no ha confirmado los kilómetros de ese fin de semana.</p>' : ""}
       ${additionalTrips}<button class="choice-route" data-sources>${icon("book")} Recursos</button></div>`;
   }
   function detailPage(station) {
@@ -174,8 +173,9 @@
   document.addEventListener("toggle", event => {
     const details = event.target;
     if (!details.isConnected || !details.matches("details[data-station-toggle]")) return;
-    if (details.open) expandedStations.add(details.dataset.stationToggle);
-    else expandedStations.delete(details.dataset.stationToggle);
+    const station = details.dataset.stationToggle;
+    if (details.open) expandedStation = station;
+    else if (expandedStation === station) expandedStation = undefined;
   }, true);
   window.SKI_STATIONS = {stations, secondaryStations, featuredIds, forPlan, planSummary: id => summaries[id], optionRow, page, resources};
 })();

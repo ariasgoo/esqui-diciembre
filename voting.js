@@ -30,26 +30,38 @@ function button(id) {
   </button>`;
 }
 
+function formatCount(count) {
+  return `${count} ${count === 1 ? 'voto' : 'votos'}`;
+}
+
+function countLabel(id) {
+  if (!state.ready || !state.member || state.error) return "";
+  return formatCount(state.ballots.filter(ballot => ballot.planIds?.includes(id)).length);
+}
+
 function resultRow({plan, voters}) {
   const count = voters.length;
   const width = Math.min(100, count / config.electorate * 100);
   const featured = window.SKI_STATIONS?.featuredIds;
   const secondary = featured && !featured.includes(plan.id);
-  const names = voters.map(voter => esc(voter.name)).join(", ");
+  const names = voters.map(voter => esc(voter.name)).join(", ") || "Todavía no hay votos para este plan.";
   return `<li class="vote-result">
     <div class="vote-result-top">
-      <a href="#plan/${esc(plan.id)}">
-        <span class="vote-area">${esc(plan.area)}${secondary ? ' · Otras opciones' : ''}</span>
-        <h2>${esc(voteTitle(plan))}</h2>
+      <a class="vote-result-link" href="#plan/${esc(plan.id)}">
+        ${picture(plan.media, "")}
+        <div>
+          <span class="vote-area">${esc(plan.area)}${secondary ? ' · Otras opciones' : ''}</span>
+          <h2>${esc(voteTitle(plan))}</h2>
+        </div>
       </a>
-      <strong class="vote-total">${count} ${count === 1 ? 'voto' : 'votos'}</strong>
+      <strong class="vote-total">${formatCount(count)}</strong>
     </div>
     <div class="vote-meter" aria-hidden="true"><span style="width:${width}%"></span></div>
     <div class="vote-result-bottom"><p class="vote-people">${names}</p>${button(plan.id)}</div>
   </li>`;
 }
 
-function page() {
+function page(planId) {
   const heading = '<div class="heading"><h1>Votos del grupo</h1></div>';
   const options = '<a class="vote-options" href="#planes">Elegir planes <span aria-hidden="true">→</span></a>';
   if (!state.ready) return heading + '<p class="vote-intro" role="status">Cargando votos…</p>';
@@ -58,8 +70,15 @@ function page() {
     return heading + `<p class="vote-intro">${esc(message)}</p>
       <a class="vote-options" href="#planes">Ver opciones <span aria-hidden="true">→</span></a>`;
   }
-  const voted = summarizeVotes(allPlans(), state.ballots).filter(row => row.voters.length);
   const error = state.error ? `<p class="vote-error" role="alert">${esc(state.error)}</p>` : "";
+  if (error && !state.ballots.length) return heading + error + options;
+  const results = summarizeVotes(allPlans(), state.ballots);
+  const planResult = planId && results.find(row => row.plan.id === planId);
+  if (planResult) {
+    return heading + error + '<a class="vote-options" href="#votaciones">Ver todos los votos <span aria-hidden="true">→</span></a>' +
+      `<ol class="vote-results">${resultRow(planResult)}</ol>`;
+  }
+  const voted = results.filter(row => row.voters.length);
   if (!voted.length) {
     const empty = '<p class="vote-intro">Todavía no hay votos. Puedes elegir varios planes.</p>';
     return heading + (error || empty) + options;
@@ -69,7 +88,7 @@ function page() {
   return heading + error + `<div class="vote-summary"><p>${participation}</p>${options}</div>
     <ol class="vote-results">${voted.map(resultRow).join("")}</ol>`;
 }
-window.SKI_VOTING={button,page,selectionHint};
+window.SKI_VOTING={button,page,selectionHint,countLabel};
 function clearCaptcha(){try{recaptcha?.clear();}catch{}recaptcha=null;recaptchaNode?.remove();recaptchaNode=null;}
 function renderGate(){
  const gate=document.querySelector('#auth-gate');

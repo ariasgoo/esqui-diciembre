@@ -109,7 +109,8 @@
   justify-content: space-between;
   gap: 12px;
 }
-.vote-result-top a { min-width: 0; }
+.vote-result-link { display: flex; min-width: 0; align-items: center; gap: 12px; }
+.vote-result-link .picture { flex: none; width: 64px; height: 52px; border-radius: 7px; }
 .vote-result h2 { font-size: 18px; letter-spacing: -.025em; margin: 2px 0 0; }
 .vote-area { font-size: 12px; }
 .vote-total { white-space: nowrap; font-size: 15px; font-variant-numeric: tabular-nums; }

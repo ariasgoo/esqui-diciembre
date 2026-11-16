@@ -61,7 +61,6 @@
 .choice-stats { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 0 0 14px; }
 .choice-stats dt { font-size: 11px; color: var(--muted); }
 .choice-stats dd { margin: 2px 0 0; font-size: 16px; font-weight: 550; letter-spacing: -.02em; }
-.choice-stats dd small { font-size: 12px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
 .choice-trades { margin: 0; font-size: 13px; line-height: 1.5; }
 .choice-trades > div { display: grid; grid-template-columns: 4em minmax(0,1fr); gap: 6px; }
 .choice-trades > div + div { margin-top: 4px; color: var(--muted); }
@@ -79,6 +78,7 @@
 .choice-option-copy h3 .ico { height: 12px; width: 12px; margin-left: 3px; color: var(--muted); }
 .choice-option-copy .choice-trades { font-size: 12px; }
 .choice-action { margin: 10px 0 0 112px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.choice-vote-count:not([hidden]) { display: inline-flex; align-items: center; min-height: 44px; margin-inline-start: auto; color: var(--accent); font-size: 13px; white-space: nowrap; text-decoration: underline; text-underline-offset: 3px; }
 .choice-price strong { display: block; font-size: 20px; font-weight: 600; line-height: 1.3; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
 .choice-price small { font-size: 11px; color: var(--muted); }
 .choice-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 5px 20px; margin-top: 13px; }

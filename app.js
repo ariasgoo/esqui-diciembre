@@ -218,6 +218,11 @@ const categories = ["Alojamiento", "Forfait", "Material", "Soporte y gestión"];
 function voteControl(id) {
   return `<span class="vote-control" data-vote-control="${e(id)}">${window.SKI_VOTING?.button(id) || ""}</span>`;
 }
+function voteCountControl(id) {
+  const label = window.SKI_VOTING?.countLabel(id);
+  return `<a class="choice-vote-count" data-vote-count="${e(id)}" href="#votaciones/${e(id)}"
+    aria-describedby="choice-title-${e(id)}"${label ? "" : " hidden"}>${e(label || "")}</a>`;
+}
 const modeLabels = {
   walk: "A pie hasta las pistas",
   ski: "A pie de pista · con esquís",
@@ -669,7 +674,7 @@ function render() {
   if (p) main.innerHTML = detail(p);
   else if (view === "otras") main.innerHTML = item ? archiveDetail(item, Number(key)) : more();
   else if (section === "mapa") main.innerHTML = window.SKI_MAP.render(key);
-  else if (section === "votaciones") main.innerHTML = window.SKI_VOTING?.page() || heading("Votos", "Cargando votos…");
+  else if (section === "votaciones") main.innerHTML = window.SKI_VOTING?.page(view === "votaciones" ? key : undefined) || heading("Votos", "Cargando votos…");
   else main.innerHTML = window.SKI_STATIONS.page(station?.key);
   const title = p?.title || item?.name || station?.label || (view === "otras" ? "Otras opciones" : tabs.find(([id]) => id === section)[2]);
   document.title = title + " · Esquí en diciembre";
@@ -775,6 +780,11 @@ document.addEventListener("ski-voting-updated", () => {
     document.querySelectorAll("[data-vote-control]").forEach(control => {
       const html = window.SKI_VOTING.button(control.dataset.voteControl);
       control.innerHTML = html;
+    });
+    document.querySelectorAll("[data-vote-count]").forEach(link => {
+      const label = window.SKI_VOTING.countLabel(link.dataset.voteCount);
+      link.hidden = !label;
+      if (link.textContent !== label) link.textContent = label;
     });
   }
   if (focused) document.querySelector(`[data-vote="${CSS.escape(focused)}"]`)?.focus({preventScroll: true});
