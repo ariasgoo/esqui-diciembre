@@ -135,6 +135,11 @@ function picture(key, label, priority = false) {
     "</div>"
   );
 }
+function skiLoading(label, small = false) {
+  return `<div class="ski-loading${small ? ' ski-loading-small' : ''}" role="status">
+    <img src="skier-loading.svg" width="184" height="112" alt=""><p>${e(label)}</p>
+  </div>`;
+}
 function showTheme() {
   const dark = document.documentElement.dataset.theme === "dark";
   const label = dark ? "Usar modo claro" : "Usar modo oscuro";
@@ -674,7 +679,7 @@ function render() {
   if (p) main.innerHTML = detail(p);
   else if (view === "otras") main.innerHTML = item ? archiveDetail(item, Number(key)) : more();
   else if (section === "mapa") main.innerHTML = window.SKI_MAP.render(key);
-  else if (section === "votaciones") main.innerHTML = window.SKI_VOTING?.page(view === "votaciones" ? key : undefined) || heading("Votos", "Cargando votos…");
+  else if (section === "votaciones") main.innerHTML = window.SKI_VOTING?.page(view === "votaciones" ? key : undefined) || heading("Votos") + skiLoading("Cargando votos…");
   else main.innerHTML = window.SKI_STATIONS.page(station?.key);
   const title = p?.title || item?.name || station?.label || (view === "otras" ? "Otras opciones" : tabs.find(([id]) => id === section)[2]);
   document.title = title + " · Esquí en diciembre";

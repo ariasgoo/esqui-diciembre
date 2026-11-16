@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="184" height="112" viewBox="0 0 184 112">
+  <style>
+    .rider { animation: carve 1.55s ease-in-out infinite; }
+    .wind { animation: slipstream 680ms linear infinite; }
+    .snow { animation: slipstream 920ms linear infinite; animation-delay: -420ms; }
+    @keyframes carve {
+      0%, 100% { transform: translate(-9px, -4px); }
+      55% { transform: translate(12px, 5px); }
+    }
+    @keyframes slipstream {
+      from { transform: translate(12px, 5px); opacity: 0; }
+      22%, 55% { opacity: .75; }
+      to { transform: translate(-21px, -9px); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rider, .wind, .snow { animation: none; }
+    }
+  </style>
+  <g fill="none" stroke="#161616" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 60c42 3 86 25 157 34" stroke-width="1.35" opacity=".27"/>
+    <path class="wind" d="m20 49 20 6m-9 5 13 4m79-24 16 5m-13 4 22 7" stroke-width="1.35"/>
+    <g class="snow" stroke-width="1.7">
+      <path d="m36 72 4 1m9 3 6 2m-28-8 2 1m8-5 2 1m113 18 4 1m-6-8 2 1"/>
+    </g>
+    <g class="rider">
+      <g opacity=".52" stroke-width="2.2">
+        <path d="m73 48 23 7-11 16 8 2m-9-35 16 9 18 1m-3 0-39 12m2-5-1 10"/>
+        <path d="m56 68 64 17q7 2 12-2"/>
+      </g>
+      <g stroke-width="2.6">
+        <path d="M70 51c-2-5 3-10 9-14l10-7 6 10-14 12"/>
+        <path d="m77 51 21 8q3 2 0 5l-12 11 9 2m-22-25 4 4"/>
+        <path d="m88 37 12 11 20 5q3 1 3 4-1 3-5 2l-21-4-13-9"/>
+        <path d="m119 57-54 13m4-6 2 11" stroke-width="1.55"/>
+        <path d="m54 73 69 18q7 2 12-2"/>
+        <path d="M96 28c-1-7 5-13 12-13a10 10 0 0 1 10 12l-2 8-8 2-9-3z"/>
+        <path d="m97 25 20 3m-15 2 13 2" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>
