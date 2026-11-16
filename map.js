@@ -46,7 +46,17 @@
   const forAccess = (active) => active ? houses.list.filter((h) => h.accesses.includes(active.id)) : houses.list;
   const selectedHouse = (key = "") => key.startsWith("casa-") ? houses.byId(key.slice(5)) : undefined;
   const houseKey = (h) => "casa-" + h.id;
-  const houseHref = (h) => "#mapa/" + houseKey(h);
+  const stationHref = (a) => "#estacion/" + (a.station || a.id);
+  const houseHref = (h, active) => {
+    const plans = h.options.flatMap((option) => {
+      const plan = window.PLANS.find((p) => option.ref === "plan/" + p.id);
+      return plan ? [plan] : [];
+    });
+    const matching = active ? plans.filter((p) => window.SKI_STATIONS.forPlan(p)?.key === (active.station || active.id)) : [];
+    const choices = matching.length ? matching : plans;
+    const plan = choices.find((p) => !p.id.endsWith("inicio")) || choices[0];
+    return plan ? "#plan/" + plan.id : "#" + h.options[0].ref;
+  };
   const byId = new Map(accesses.map((a) => [a.id, a]));
   const earth =
     "https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/";
@@ -159,7 +169,7 @@
       const name = h.number + ". " + h.name + (h.approximate ? " · zona aproximada" : "");
       return {
         line: '<path class="sm-pin-line" d="M' + x + ',' + y + ' L' + cx + ',' + cy + '"/><circle class="sm-anchor" cx="' + x + '" cy="' + y + '" r="1.8"/>',
-        mark: '<a class="sm-pin' + (h.approximate ? ' sm-pin-zone' : '') + '" href="' + houseHref(h) +
+        mark: '<a class="sm-pin' + (h.approximate ? ' sm-pin-zone' : '') + '" href="' + houseHref(h, active) +
           '" aria-label="' + esc(name) + '"><title>' + esc(name) + '</title><g transform="translate(' + cx + ' ' + cy +
           ')"><rect x="-12" y="-12" width="24" height="28" fill="transparent"/><path class="sm-pin-body" d="M0 13 C-2 9 -9.5 4 -9.5 -1 A9.5 9.5 0 1 1 9.5 -1 C9.5 4 2 9 0 13Z"/><text text-anchor="middle" y="2.5">' +
           h.number + '</text></g></a>',
@@ -245,8 +255,8 @@
                   '"/>'
                 : "";
             labels.push(
-              '<a href="#mapa/' +
-                p.id +
+              '<a href="' +
+                stationHref(byId.get(p.id)) +
                 '" tabindex="-1">' +
                 leader +
                 text +
@@ -293,9 +303,9 @@
             '" r="3.5"/></a>'
           );
         return (
-          '<a href="#mapa/' +
-          p.id +
-          '" aria-label="Ver ruta a ' +
+          '<a class="sm-station-marker" href="' +
+          stationHref(byId.get(p.id)) +
+          '" aria-label="Ver estación ' +
           esc(p.label) +
           '"><circle fill="transparent" cx="' +
           x +
@@ -392,10 +402,8 @@
   }
 
   const routeLink = (a) =>
-    '<a class="sm-choice" ' +
-    (a.active ? 'aria-current="page" ' : "") +
-    'href="#mapa/' +
-    a.id +
+    '<a class="sm-choice' + (a.active ? ' sm-selected' : '') + '" href="' +
+    stationHref(a) +
     '"><span><strong>' +
     esc(a.name) +
     "</strong><small>" +
@@ -403,9 +411,9 @@
     '</small></span><span class="sm-measure">' +
     esc(distance(a)) +
     "</span></a>";
-  function houseIndex(visible) {
+  function houseIndex(visible, active) {
     return '<details class="sm-houses"><summary>Alojamientos <span>' + visible.length + '</span></summary><div>' +
-      visible.map((h) => '<a class="sm-index-row" href="' + houseHref(h) + '"><b>' + h.number +
+      visible.map((h) => '<a class="sm-index-row" href="' + houseHref(h, active) + '"><b>' + h.number +
         '</b><span><strong>' + esc(h.name) + '</strong><small>' + esc(h.town) +
         (h.approximate ? ' · Zona aproximada' : '') + '</small></span></a>').join('') +
       '</div></details>';
@@ -462,12 +470,12 @@
     const trip = active ? '<div class="sm-trip"><div><span>Desde Ecla hasta ' + esc(active.name) +
       '</span><strong>' + esc(distance(active)) + '</strong><small>' + esc(active.access) +
       '</small></div><a class="sm-plans" href="#estacion/' + (active.station || active.id) +
-      '">Ver planes ' + arrow + '</a></div>' : '';
+      '">Ver estación ' + arrow + '</a></div>' : '';
     const map = house ? streetMap(house) : areaMap(active) +
       '<div class="sm-map-key"><span><i class="sm-key-house"></i>Alojamiento</span><span><i class="sm-key-zone"></i>Zona aproximada</span><span><i class="sm-key-stop"></i>Acceso a pistas</span></div>' + trip;
-    return '<div class="heading"><h1>Mapa de rutas y alojamientos</h1><p>Elige una chincheta para ver la casa, su ubicación y los planes que empiezan allí.</p></div>' +
-      chooser(active, house) + '<div class="sm-layout"><div class="sm-left">' + map + houseIndex(visible) +
-      '</div><aside class="sm-list" aria-label="Destinos"><h2>Accesos en coche</h2>' + list +
+    return '<div class="heading"><h1>Mapa de rutas y alojamientos</h1><p>Pulsa una estación para conocerla o un número para abrir el alojamiento.</p></div>' +
+      chooser(active, house) + '<div class="sm-layout"><div class="sm-left">' + map + houseIndex(visible, active) +
+      '</div><aside class="sm-list" aria-label="Destinos"><h2>Estaciones</h2>' + list +
       '<a href="#mapa" class="sm-all">Vista general</a></aside></div>' +
       '<p class="fine sm-footnote">Las rutas a las estaciones salen de Ecla. Distancias de ida y tiempos aproximados sin tráfico ni nieve.</p>';
   }

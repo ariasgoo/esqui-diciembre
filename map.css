@@ -155,10 +155,10 @@
   color: var(--muted);
 }
 .sm-choice:hover,
-.sm-choice[aria-current] {
+.sm-choice.sm-selected {
   background: var(--fill);
 }
-.sm-choice[aria-current] strong {
+.sm-choice.sm-selected strong {
   color: var(--accent);
 }
 .sm-measure {
