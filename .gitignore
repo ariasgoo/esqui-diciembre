@@ -4,3 +4,4 @@ outputs/
 *-debug.log
 .firebase/
 .env*
+.playwright-cli/
