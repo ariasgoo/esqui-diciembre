@@ -18,9 +18,15 @@
 .itinerary-day h3 { display: flex; gap: 10px; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--line); font-size: 19px; }
 .itinerary-day h3 small { font-size: 11px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
 .day-steps { list-style: none; margin: 0; padding: 0; }
-.day-steps li { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.day-steps time { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--accent); padding-top: 1px; }
-.day-steps strong { display: block; font-size: 13px; font-weight: 550; }
+.day-steps li { display: grid; grid-template-columns: 89px minmax(0, 1fr); align-items: baseline; gap: 11px; padding: 11px 9px; border-bottom: 1px solid var(--line); border-left: 2px solid transparent; }
+.day-steps time { white-space: nowrap; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.day-steps strong { display: block; font-size: 13px; font-weight: 450; }
+.day-steps .step-wake strong, .day-steps .step-wake time { font-weight: 600; color: var(--text); }
+.day-steps .step-drive { border-left-color: var(--drive); background: var(--drive-fill); }
+.day-steps .step-drive time, .legend-drive { color: var(--drive); }
+.day-steps .step-ski { border-left-color: var(--ski); background: var(--ski-fill); }
+.day-steps .step-ski time, .legend-ski { color: var(--ski); }
+.day-steps .step-spa strong { color: var(--muted); }
 .day-steps small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .schedule-key { color: var(--muted); font-size: 12px; }
 .itinerary-notes { border-left: 2px solid var(--accent); padding: 0 0 0 16px; margin: 13px 0 0; font-size: 12px; list-style: none; }
@@ -47,12 +53,22 @@
 .station-guide-grid .schematic, .station-guide > .schematic { font-size: 13px; }
 .archivebody .trip-summary > div { padding: 10px; }
 .archivebody .trip-summary dd { font-size: 21px; }
+.weekend-plan { --drive: #325e9b; --drive-fill: #f1f5fb; --ski: #276343; --ski-fill: #f1f7f2; }
+:root[data-theme="dark"] .weekend-plan { --drive: #9abbec; --drive-fill: #222d3c; --ski: #98c5a5; --ski-fill: #23322a; }
+.itinerary-legend { display: flex; gap: 14px; font-size: 11px; }
+.itinerary-legend span { display: inline-flex; gap: 5px; align-items: center; }
+.itinerary-legend span::before { content: ""; width: 5px; height: 5px; background: currentColor; border-radius: 50%; }
+.departure-focus { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 430px; }
+.departure-focus dd, .archivebody .departure-focus dd { font-size: 28px; }
+.departure-focus > div:first-child { background: var(--fill); }
+.departure-focus > div:first-child dd { font-weight: 650; }
+.recommendations-tools { justify-content: flex-end; }
 @media (max-width: 700px) {
   .weekend-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .quick-facts, .trip-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .quick-facts > div:nth-child(3), .trip-summary > div:nth-child(3) { border-left: 0; }
   .quick-facts > div:nth-child(n+3), .trip-summary > div:nth-child(n+3) { border-top: 1px solid var(--line); }
-  .weekend-plan > .sectionhead { display: block; }
+  .weekend-plan > .sectionhead { display: flex; }
   .weekend-plan > .sectionhead .minor { display: block; margin-top: 5px; }
   .itinerary-select { display: grid; gap: 5px; }
   .itinerary-select select { min-width: 0; width: 100%; font-size: 12px; }

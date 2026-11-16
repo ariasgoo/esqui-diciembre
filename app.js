@@ -307,8 +307,8 @@ function recommendationsSection() {
       ${schematic(choice.why)}<div class="rec-detail">${schematic(choice.tradeoff)}</div><span class="card-timing">Salida sáb. ${window.SKI_ITINERARIES.time(window.SKI_ITINERARIES.forPlan(p)[0].departure)}</span></div>
       ${icon("arrow")}</a></li>`;
   }).join("");
-  return `<section id="recomendaciones" aria-labelledby="rec-title">
-    <div class="sectionhead"><h2 id="rec-title">Mis recomendaciones principales</h2>
+  return `<section id="recomendaciones" aria-label="Planes recomendados">
+    <div class="sectionhead recommendations-tools">
     <a class="textlink" href="#comparar/recomendaciones">Comparar las tres ${icon("forward")}</a></div>
     <ol class="recommendations-list">${cards}</ol>
     <details class="rec-question"><summary>¿Y el chalet de seis plazas en Les Gets?</summary>
@@ -326,12 +326,7 @@ function recommendationsSection() {
 }
 function homePage() {
   return (
-    heading(
-      "Esquí en diciembre",
-      "Una noche en los Alpes franceses y dos días en pistas.",
-    ) +
-    facts() +
-    '<p class="trip-constraint">' + icon("gear") + 'Material en la estación y guardado allí si volvéis en coche a dormir.</p>' +
+    heading("Esquí en diciembre") +
     recommendationsSection() +
     '<section><div class="sectionhead"><h2>El precio de un vistazo</h2><a class="textlink" href="#comparar">Comparar planes ' +
     icon("forward") +
