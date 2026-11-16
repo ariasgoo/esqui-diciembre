@@ -121,7 +121,7 @@
       add(morning, firstSun, "Empezar a esquiar", "Estimación tras el paseo y la recogida.");
     } else {
       if (!onFoot) add(morning, or ? ready : Math.max(ready, c.shopOpen), "Recuperar equipo guardado", ce ? "Jeannot Sports abre a las 08:30. 10 min para recoger + 10 min andando." : "Consigna junto al acceso. Prever 10 min.");
-      if (or) add(morning, clock(8,30), "Recoger forfait del domingo", "15 min previstos en taquilla. Horario de apertura por confirmar.");
+      if (or) add(morning, clock(8,40), "Recoger forfait del domingo", "Taquillas desde las 08:40. Prever 15 min y caminar al acceso.");
       add(morning, c.first, "Primera subida prevista", key === "glacier" ? "Teleférico 09:00. Esquí desde las 09:15." : c.name);
     }
     sun.unshift(...morning);

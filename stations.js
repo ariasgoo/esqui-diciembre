@@ -2,7 +2,7 @@
   "use strict";
 
   // The forfait determines the group, even when accommodation is in another resort.
-  const mainStations = [
+  const allMainStations = [
     {
       key: "avoriaz",
       label: "Avoriaz",
@@ -17,7 +17,7 @@
       areas: ["Les Carroz"],
       image: "carroz",
       description:
-        "Dos tipos de forfait desde Les Carroz, iniciación o Villages.",
+        "Pase Villages desde Les Carroz para recorrer los sectores abiertos.",
       access: [{ key: "les-carroz", label: "Kédeuze" }],
     },
     {
@@ -50,6 +50,8 @@
       ],
     },
   ];
+  const mainStations = ["avoriaz", "val-thorens-orelle", "les-carroz", "val-cenis"].map(key => allMainStations.find(station => station.key === key));
+  const secondaryStations = allMainStations.filter(station => !mainStations.includes(station));
   const slug = (name) =>
     name
       .normalize("NFD")
@@ -57,7 +59,7 @@
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/-$/g, "");
-  const otherStations = window.ARCHIVE.filter(
+  const otherStations = [...secondaryStations, ...window.ARCHIVE.filter(
     (entry) => entry.kind === "Estación",
   ).map((entry) => ({
     key: slug(entry.name),
@@ -66,7 +68,7 @@
     reference: entry.name,
     areas: [],
     access: [],
-  }));
+  }))];
   const stations = [...mainStations, ...otherStations];
 
   const resortAlternatives = {
@@ -98,10 +100,10 @@
   };
 
   const forPlan = (plan) =>
-    mainStations.find((station) => station.areas.includes(plan.area));
+    allMainStations.find((station) => station.areas.includes(plan.area));
   const stationHref = (station) => "#estacion/" + station.key;
   const plansFor = (station) =>
-    window.PLANS.filter((plan) => forPlan(plan) === station);
+    window.PLANS.filter((plan) => window.SKI_PLAN_ALLOWED(plan) && forPlan(plan) === station);
   const linksForStation = (station) => {
     const names = new Set([
       station.reference,
@@ -148,17 +150,16 @@
     guideFor(station).trips.map((trip) => trip.label + " · " + trip.value).join(" / ");
 
   function stationGuide(station) {
-    const guide = guideFor(station);
+    const guide = guideFor(station), facts = window.SKI_RESORT_FACTS[station.key];
+    const map = facts?.map || guide.sources.find(([title]) => /plan|mapa|pistas|dominio/i.test(title))?.[1] || guide.sources[0]?.[1];
+    const colors = facts?.colors ? '<div class="piste-colors" aria-label="Número de pistas por color">' + facts.colors.map((count,i) => '<span class="piste-color piste-' + i + '"><i></i>' + count + ' ' + ["verdes","azules","rojas","negras"][i] + '</span>').join("") + '</div><p class="fine">Número de pistas. El operador no publica km por color.</p>' : facts ? '<p class="fine">Villages · 78 pistas. Reparto por color no desglosado de forma coherente.</p>' : '';
     return `<section class="station-guide" aria-labelledby="station-guide-title">
-      <h2 id="station-guide-title">Qué os ofrece esta estación</h2>${schematic(guide.description)}
-      <div class="station-guide-grid"><div><h3>Las pistas</h3>${schematic(guide.terrain)}${schematic(guide.level)}</div>
-      <div><h3>Alojaros junto a pistas</h3>${schematic(guide.lodging)}</div></div>
-      <div class="station-journeys"><h3>Desde Ecla Archamps</h3>
-      ${rows(guide.trips.map((trip) => [trip.label, trip.value]))}
-      <p class="fine">Ida en coche, sin tráfico ni nieve. La referencia de cada trayecto indica si llega al pueblo o al remonte.</p></div>
-      ${reviewTable(guide)}
-      <div class="station-date-note"><strong>Para el 12–13 de diciembre</strong>${schematic(guide.dates)}</div>
-      <button class="quiet station-guide-sources" data-sources>${icon("book")} Recursos de la estación</button></section>`;
+      <div class="station-journeys"><h2 id="station-guide-title">Desde Ecla Archamps</h2>${rows(guide.trips.map(trip => [trip.label, trip.value]))}</div>
+      ${facts ? `<dl class="resort-numbers"><div><dt>Dominio completo</dt><dd>${e(facts.km)}</dd></div><div><dt>12–13 dic · escenario orientativo</dt><dd>${e(facts.opening)}</dd></div></dl><p class="fine opening-scenario">Estimación propia, sin parte oficial todavía. Puede abrir menos según nieve y viento.</p>${colors}` : ''}
+      <ul class="station-highlights">${(facts?.highlights || [guide.pitch]).map(text => `<li>${e(text)}</li>`).join("")}</ul>
+      ${map ? `<details class="station-trail-map"><summary>Mapa de pistas ${icon("arrow")}</summary>${facts?.mapImage ? `<a href="${e(map)}" target="_blank" rel="noopener noreferrer"><img src="${e(facts.mapImage)}" alt="Mapa oficial de pistas de ${e(station.label)}" loading="lazy" referrerpolicy="no-referrer"></a>` : `<iframe title="Mapa oficial de ${e(station.label)}" src="${e(map)}" loading="lazy"></iframe>`}<a class="entrylink" href="${e(map)}" target="_blank" rel="noopener noreferrer">Abrir mapa oficial ${icon("external")}</a></details>` : ''}
+      <details class="station-method"><summary>Fechas y fuentes</summary><p>${e(guide.dates)}</p>${facts ? `<p>${e(facts.basis)}</p><p>Rangos de planificación de baja confianza, basados en calendario, altitud y sectores. No son una previsión meteorológica ni una probabilidad; podrían abrir menos kilómetros o cancelar.</p>` : ''}<button class="quiet" data-sources>${icon("book")} Recursos de la estación</button></details>
+      </section>`;
   }
 
   const plural = (count) => (count === 1 ? "1 plan" : count + " planes");
@@ -169,9 +170,10 @@
       .filter((p) => person(p) === 7)
       .map((p) => budget(p).low)
       .filter((price) => price !== null && Number.isFinite(price));
-    const price = prices.length
-      ? "Desde " + money(Math.min(...prices))
-      : "Pendiente";
+    const partials = plans.filter(p => person(p) === 7).map(p => budget(p).parts.reduce((sum,part) => sum + (part || 0),0));
+    const complete = prices.length > 0;
+    const estimated = plans.filter(p => person(p) === 7 && budget(p).low != null).some(p => p.estimated);
+    const price = complete ? "Desde " + (estimated ? "≈" : "") + money(Math.min(...prices)) : partials.length ? "Desde " + money(Math.min(...partials)) + " + material" : "Consultar tarifas";
     return (
       '<a class="station-row" href="' +
       stationHref(station) +
@@ -179,10 +181,10 @@
       picture(station.image, station.label) +
       '<div class="station-row-title"><h3>' +
       e(station.label) +
-      "</h3><span>" +
-      e(guideFor(station).pitch) +
-      '</span><span class="station-trip-summary">' +
+      '</h3><span class="station-trip-summary">' +
       e(tripSummary(station)) +
+      "</span><span>" +
+      e(window.SKI_RESORT_FACTS[station.key]?.highlights[0] || guideFor(station).pitch) +
       "</span></div>" +
       '<span class="station-price"><b>' +
       e(price) +
@@ -197,12 +199,12 @@
   function indexPage() {
     return (
       heading(
-        "Estaciones y planes",
-        "Pistas, nivel, alojamiento y trayecto desde Ecla para elegir dónde pasar el fin de semana.",
+        "Planes",
+        "Elige una estación y después el alojamiento.",
       ) +
       controls() +
-      '<section class="station-selection"><div class="sectionhead"><h2>Qué ofrece cada estación</h2></div>' +
-      '<p class="fine">Abre una estación para ver sus ventajas y límites. Los precios principales reúnen alojamiento, forfait y material. La consigna se explica en cada plan.</p><div class="station-list">' +
+      '<section class="station-selection"><div class="sectionhead"><h2>Estaciones</h2></div>' +
+      '<p class="fine">Una noche y dos días de esquí. Los importes con «+ material» son una base parcial; los demás incluyen el alquiler. Consigna aparte.</p><div class="station-list">' +
       mainStations.map(mainStationRow).join("") +
       "</div></section>" +
       '<details class="station-other"><summary>Otras estaciones estudiadas <span>' +
@@ -288,12 +290,12 @@
       )
       .join("");
     return (
-      '<div class="station-tools"><a class="back" href="#estaciones">' +
+      '<div class="station-tools"><a class="back" href="#planes">' +
       icon("back") +
       "Todas las estaciones</a>" +
       stationChooser(station.key) +
       "</div>" +
-      heading(station.label, guideFor(station).pitch) +
+      heading(station.label) +
       stationGuide(station) +
       (mapLinks
         ? '<nav aria-label="Rutas desde Ecla" class="station-routes">' +
@@ -333,6 +335,8 @@
     );
     const guide = guideFor(station);
     return [
+      ...(window.SKI_RESORT_FACTS[station.key]?.sources || []),
+      ...(window.SKI_RESORT_FACTS[station.key]?.map ? [["Mapa oficial de pistas", window.SKI_RESORT_FACTS[station.key].map]] : []),
       ...guide.sources,
       ...guide.trips.map((trip) => ["Desde Ecla · " + trip.label, trip.url]),
       ["Cálculo de rutas · OSRM y OpenStreetMap", "https://project-osrm.org/"],

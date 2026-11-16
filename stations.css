@@ -2,6 +2,27 @@
   margin-top: 18px;
   border-top: 1px solid var(--line);
 }
+.station-journeys { margin-top: 0; }
+.station-journeys h2 { font-size: 20px; }
+.resort-numbers { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border: 1px solid var(--line); border-radius: 8px; margin: 18px 0 8px; }
+.resort-numbers > div { padding: 12px 14px; }
+.resort-numbers > div + div { border-left: 1px solid var(--line); }
+.resort-numbers dt { font-size: 11px; color: var(--muted); }
+.resort-numbers dd { margin: 4px 0 0; font-size: 22px; font-weight: 550; letter-spacing: -.04em; }
+.opening-scenario { margin-bottom: 15px; }
+.piste-colors { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 15px 0 7px; font-size: 12px; }
+.piste-color { display: inline-flex; align-items: center; gap: 6px; }
+.piste-color i { width: 8px; height: 8px; border-radius: 50%; background: #3f8b5c; }
+.piste-1 i { background: #457bad; }
+.piste-2 i { background: #b45c5a; }
+.piste-3 i { background: var(--text); }
+.station-highlights { padding-left: 17px; font-size: 13px; margin: 18px 0; }
+.station-highlights li { margin: 6px 0; }
+.station-trail-map, .station-method { border-top: 1px solid var(--line); padding: 12px 0; font-size: 12px; }
+.station-trail-map summary, .station-method summary { cursor: pointer; }
+.station-trail-map summary .ico { width: 13px; height: 13px; }
+.station-trail-map img, .station-trail-map iframe { display: block; width: 100%; height: 400px; object-fit: contain; border: 0; margin: 14px 0; background: var(--fill); }
+.station-method p { margin: 12px 0; color: var(--muted); }
 .station-row {
   display: grid;
   grid-template-columns: 68px 1fr auto 16px;

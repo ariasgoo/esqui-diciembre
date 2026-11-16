@@ -101,9 +101,11 @@
     source: "https://www.montsdugenevois.com/hp-affaires/residence-ecla-archamps-archamps-fr-6486025/",
     options: [alternative("Dos excursiones desde Archamps")], accesses: [],
   };
-  const places = [...list, origin];
+  for (const pin of list) pin.options = pin.options.filter(option => !option.ref.startsWith("plan/") || window.SKI_PLAN_ALLOWED(plans.get(option.ref.slice(5))));
+  const visible = list.filter(pin => pin.options.length);
+  const places = [...visible, origin];
   window.SKI_LODGINGS = {
-    list, origin,
+    list: visible, origin,
     byId: (id) => places.find((p) => p.id === id),
     forOption: (ref) => places.filter((p) => p.options.some((o) => o.ref === ref)),
   };

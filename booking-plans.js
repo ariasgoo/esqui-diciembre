@@ -12,7 +12,7 @@
       kind: "gear",
       label: "Alquilar material",
       url: "https://ski-plus.fr/categorie-produit/ski/",
-      note: "Ski Plus · frente a Kédeuze. Cotizar dos días con casco y confirmar apertura del 12–13.",
+      note: "Ski Plus · frente a Kédeuze. Tarifa publicada intermedia con casco, 92 € por dos días. Confirmar apertura y disponibilidad del 12–13.",
     },
     cenis: {
       kind: "gear",

@@ -74,7 +74,7 @@
     },
     wahou: {
       pros: [
-        "Una cama para cada amigo entre los dos apartamentos de la casa.",
+        "Una cama para cada persona entre los dos apartamentos de la casa.",
         "Unos 30 min en coche desde la casa hasta Les Prodains.",
       ],
       cons: [
@@ -94,7 +94,7 @@
     carroz: {
       pros: [
         "La noche sale a 16,43 € por persona y la cinta de acceso está a 80 m del hotel.",
-        "El pase Villages permite salir del sector de iniciación y explorar las pistas abiertas de Les Carroz y Samoëns.",
+        "El pase Villages cubre las pistas abiertas de Les Carroz y Samoëns.",
       ],
       cons: [openingVillages, saunaTurns],
       links: [grandMassif, tarifs],
@@ -212,10 +212,10 @@
     "chalet-villages": {
       pros: [
         chaletFeatures,
-        "El pase Villages da acceso a más pistas que el de iniciación. Podéis aparcar gratis en Kédeuze.",
+        "El pase Villages permite recorrer las pistas abiertas de Les Carroz y Samoëns. Aparcamiento gratuito en Kédeuze.",
       ],
       cons: [
-        "El forfait cuesta 61 € más por persona que el de iniciación para los mismos dos días.",
+        "Material intermedio con casco, 92 € por persona según catálogo. Consigna para siete, 44 € la noche aparte.",
         openingVillages,
       ],
       links: [grandMassif, tarifs],

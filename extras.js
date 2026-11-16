@@ -264,11 +264,11 @@
         ([label]) => !label.startsWith("Hotel") && !label.startsWith("Sauna"),
       ),
       pro: "Conserváis el jacuzzi privado y esquiáis en el dominio de las pistas cercanas al chalet.",
-      con: "El alquiler de Ski Plus está por cotizar. Dos casilleros de cuatro equipos en Kédeuze cuestan 44 € una noche, aparte del precio principal.",
+      con: "Ski Plus publica material intermedio con casco a 92 € por dos días. Dos casilleros de cuatro equipos cuestan 44 € una noche, aparte del precio principal.",
       when:
         reference === "carroz-inicio"
           ? "Si todos sois principiantes y queréis pasar la tarde en el chalet. El forfait da acceso a una selección de remontes de Les Carroz."
-          : "Si queréis más pistas que con el pase de iniciación y preferís un acceso corto desde el chalet.",
+          : "Si queréis recorrer las pistas abiertas de Villages y tener un acceso corto desde el chalet.",
     });
   }
 })();

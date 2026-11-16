@@ -1,6 +1,6 @@
 "use strict";
 const $ = (s) => document.querySelector(s);
-const plans = window.PLANS;
+const plans = window.PLANS.filter(window.SKI_PLAN_ALLOWED);
 const media = window.MEDIA || {};
 const archive = window.ARCHIVE || [];
 const routes = window.ROUTES || {};
@@ -50,10 +50,8 @@ function icon(k) {
 }
 const tabs = [
   ["inicio", "home", "Resumen"],
-  ["planes", "plans", "Todos los planes", "Planes"],
-  ["estaciones", "mountain", "Por estación", "Estaciones"],
+  ["planes", "mountain", "Planes"],
   ["mapa", "map", "Mapa"],
-  ["comparar", "chart", "Comparador"],
   ["otras", "archive", "Otras opciones", "Otras"],
 ];
 const fmt = new Intl.NumberFormat("es-ES", {
@@ -70,7 +68,6 @@ const state = {
   view: "todos",
   accessFilter: "all",
   archiveAccess: "all",
-  selection: ["chalet", "loft", "orelle"],
   archiveKind: "Todas",
 };
 const spaAmenities = (p) => [
@@ -107,8 +104,8 @@ function range(a, b) {
 }
 function labelPrice(p) {
   const b = budget(p);
-  if (p.gear[0] == null) return "Alquiler por cotizar";
-  return range(b.low, b.high);
+  if (p.gear[0] == null) return money(b.parts.reduce((sum,part) => sum + (part || 0),0)) + " + material";
+  return (p.estimated ? "≈" : "") + range(b.low, b.high);
 }
 function unit(p) {
   return state.unit === "group" ? "grupo de " + person(p) : "persona";
@@ -229,7 +226,7 @@ function facts() {
     icon("calendar") +
     "12–13 dic 2026</span><span>" +
     icon("people") +
-    "7 amigos · 20 años</span><span>" +
+    "7 personas · 20 años</span><span>" +
     icon("pin") +
     "Ecla Archamps</span></div>"
   );
@@ -316,18 +313,16 @@ function recommendationsSection() {
       ${icon("arrow")}</a></li>`;
   }).join("");
   return `<section id="recomendaciones" aria-label="Planes recomendados">
-    <div class="sectionhead recommendations-tools">
-    <a class="textlink" href="#comparar/recomendaciones">Comparar las tres ${icon("forward")}</a></div>
     <ol class="recommendations-list">${cards}</ol>
     <details class="rec-question"><summary>¿Y el chalet de seis plazas en Les Gets?</summary>
     <p>El Fleur des Alpes os acerca a Les Prodains (unos 20 min en coche) e incluye el spa del Hôtel Alpina, a 900 m. Los 241 € eran para seis. Si el propietario acepta a siete por ese importe, la base sería 145,89 € por persona, solo 0,29 € menos que el chalet de Arâches. La consigna en Avoriaz se añade a ambos planes.</p>
     <p>En el calendario para siete, el sábado 12 figura como día de salida. Si se pudiera entrar ese sábado, elegiría Fleur antes que Arâches para esquiar en Avoriaz y pasar menos tiempo en coche.</p>
     <a class="textlink" href="#plan/fleur">Ver Fleur des Alpes ${icon("forward")}</a></details>
     <details class="rec-question"><summary>¿Y si queréis pasar menos tiempo en coche?</summary>
-    <p>Si estáis aprendiendo, el mismo chalet con forfait de Les Carroz os deja a unos 4 min en coche de Kédeuze. Ahora se propone Ski Plus frente al remonte y dos casilleros por 44 € la noche. Falta cotizar el alquiler con esa tienda.</p>
-    <a class="textlink" href="#plan/chalet-inicio">Ver chalet con forfait de iniciación ${icon("forward")}</a>
-    <p>Si preferís ir andando, Flocons Verts permite recoger en Ski Plus y volver al hotel con los esquís a pie. La noche cuesta 115 € para siete. La nueva tarifa de material aún se tiene que cotizar.</p>
-    <a class="textlink" href="#plan/carroz">Ver hotel con forfait Villages ${icon("forward")}</a></details>
+    <p>El mismo chalet con forfait Villages queda a unos 4 min de Kédeuze. Material intermedio y casco en Ski Plus, 92 € por persona según catálogo. Consigna de siete equipos, 44 € la noche aparte.</p>
+    <a class="textlink" href="#plan/chalet-villages">Ver chalet + Villages ${icon("forward")}</a>
+    <p>Flocons Verts permite acceder andando. La noche cuesta 115 € para siete.</p>
+    <a class="textlink" href="#plan/carroz">Ver hotel + Villages ${icon("forward")}</a></details>
     <details class="rec-question"><summary>¿Por qué ha bajado Val Cenis?</summary>
     <p>Su antiguo total usaba alquiler en Orelle, que exigía llevar el material en coche. Jeannot Sports de Lanslevillard sí ofrece recogida local y consigna gratuita, pero falta la tarifa de alquiler para siete. Casa y forfait siguen costando 62,57 € por persona en el plan de Modane.</p>
     <a class="textlink" href="#plan/cenis">Ver Val Cenis corregido ${icon("forward")}</a></details></section>`;
@@ -336,14 +331,12 @@ function homePage() {
   return (
     heading("Esquí en diciembre") +
     recommendationsSection() +
-    '<section><div class="sectionhead"><h2>El precio de un vistazo</h2><a class="textlink" href="#comparar">Comparar planes ' +
-    icon("forward") +
-    "</a></div>" +
+    '<section><div class="sectionhead"><h2>El precio de un vistazo</h2></div>' +
     controls() +
     budgetChart(
-      ["cenis", "carroz-inicio", "loft", "chalet", "orelle"].map(lookup),
+      ["loft", "chalet", "orelle", "carroz", "chalet-villages"].map(lookup),
     ) +
-    schematic("Base = una noche + dos días de forfait + material + cargos conocidos. Consigna y extras se suman aparte. Comida estimada, 30 € por persona aparte. Alquiler local pendiente en Val Cenis, Les Carroz y Flaine.") + '</section>' +
+    schematic("Base = una noche + dos días de forfait + material + cargos conocidos. Consigna y extras se suman aparte. Comida estimada, 30 € por persona aparte. Les Carroz usa tarifa publicada de catálogo. En Val Cenis se muestra la base conocida más material aparte.") + '</section>' +
     '<section class="home-itinerary"><h2>Un horario en cada plan</h2>' + rows([["Sábado", "Coche → forfait y material → esquí → alojamiento"], ["Domingo", "Salida → primera subida → devolver material → Ecla"]]) + '<a class="entrylink" href="#planes">Ver los itinerarios ' + icon("forward") + '</a></section>' +
     '<section class="notes"><h2>Cuándo reservaría</h2><div><b>Ahora</b><p>Elegiría una casa con cancelación para siete y reservaría el material al confirmar las tallas.</p></div><div><b>7–10 de diciembre</b><p>Revisaría qué remontes abren antes de pagar los forfaits o una casa no reembolsable. Las tarifas de apertura pueden agotarse antes.</p></div></section>'
   );
@@ -419,7 +412,7 @@ function planCard(p) {
     '</h3><div class="cardline"><b>' +
     e(labelPrice(p)) +
     "</b>" +
-    (b.low == null ? "" : "<small>/ " + unit(p) + "</small>") +
+    ("<small>/ " + unit(p) + "</small>") +
     '</div><div class="cardmeta">' +
     e(planStatus(p)) +
     '</div><div class="card-access">' + icon("pin") + e(modeLabels[window.SKI_ACCESS.plans[p.id].mode]) + '</div><div class="card-timing">Sáb. salida ' + window.SKI_ITINERARIES.time(itinerary.departure) + ' · Dom. Ecla ≈' + window.SKI_ITINERARIES.time(itinerary.back) + "</div></div></a>"
@@ -439,50 +432,7 @@ function otherAccessOptions() {
   return `<section class="station-catalogue"><h2>Otras opciones con este acceso</h2><div class="station-secondary">${links}</div></section>`;
 }
 function plansPage() {
-  const filters = [
-    ["todos", "Todos"],
-    ["siete", "Para siete"],
-    ["spa", "Con spa del alojamiento"],
-    ["seis", "Solo seis"],
-  ];
-  const matching = plans
-    .filter(
-      (p) =>
-        state.view === "todos" ||
-        (state.view === "siete" && !p.cap6) ||
-        (state.view === "seis" && p.cap6) ||
-        (state.view === "spa" && hasSpa(p)),
-    )
-    .filter((p) => matchesAccess(window.SKI_ACCESS.plans[p.id], state.accessFilter))
-    .sort((a, b) => (budget(a).low ?? Infinity) - (budget(b).low ?? Infinity));
-  return (
-    heading(
-      "Todos los planes",
-      "Abre una ficha para ver fotos, rutas, servicios y precios.",
-    ) +
-    '<a class="entrylink" href="#estaciones">' +
-    icon("mountain") +
-    " Ver planes por estación " +
-    icon("forward") +
-    "</a>" +
-    controls() +
-    '<div class="filterbar">' +
-    filters
-      .map(
-        ([k, v]) =>
-          '<button data-filter="' +
-          k +
-          '" aria-pressed="' +
-          (k === state.view) +
-          '">' +
-          e(v) +
-          "</button>",
-      )
-      .join("") +
-    "</div>" + accessControls("planes") + accessNote(state.accessFilter) +
-    (matching.length ? '<div class="gridcards">' + matching.map(planCard).join("") + "</div>" : emptyOptions()) +
-    otherAccessOptions()
-  );
+  return window.SKI_STATIONS.page();
 }
 function routeRows(p) {
   const r = getRoute(p);
@@ -528,7 +478,7 @@ function priceDetails(p) {
             : money(b.parts[i]),
       ]),
     ) +
-    '<div class="total"><span>Precio principal</span><strong>' +
+    '<div class="total"><span>' + (p.gear[0] == null ? "Base sin material" : "Precio principal") + '</span><strong>' +
     e(labelPrice(p)) +
     "</strong></div>" +
     (p.gear[0] == null ? '<p class="fine">Alojamiento, forfait y cargos conocidos ' + e(money(b.parts.reduce((sum, part) => sum + (part || 0), 0))) + '. Falta añadir el alquiler en la tienda de esta estación.</p>' : "")
@@ -699,7 +649,7 @@ function detail(p) {
   return (
     '<a class="back" href="#planes">' +
     icon("back") +
-    " Todos los planes</a>" +
+    " Estaciones y planes</a>" +
     heading(p.title, p.area + " · Noche en " + p.home) +
     '<section id="presupuesto" class="plan-budget" aria-label="Desglose del precio">' +
     '<div class="headprice"><div><b>' +
@@ -724,8 +674,8 @@ function detail(p) {
           ["Avoriaz", "≈50 min en coche hasta Les Prodains + 4 min en teleférico."],
           ["Les Carroz · Kédeuze", "≈4 min en coche (1,8 km) o ≈23 min a pie (1,7 km)."],
         ]) +
-        schematic("Para disfrutar más la casa y el jacuzzi, elegiría Les Carroz. Necesita su propio forfait y alquiler en Ski Plus, aún por cotizar. Las conexiones con Grand Massif dependen del forfait y de los remontes abiertos. El skibus del 12–13 y el camino a pie en invierno están por comprobar.") +
-        '<div class="planrelated"><a class="entrylink" href="#plan/chalet-inicio">Ver chalet + forfait de iniciación ' + icon("forward") + '</a><a class="entrylink" href="#plan/chalet-villages">Ver chalet + forfait Villages ' + icon("forward") + '</a></div></section>')
+        schematic("Les Carroz queda a unos 4 min del chalet. Villages necesita su propio forfait y alquiler en Ski Plus, 92 € por persona según catálogo. Las conexiones dependen de los remontes abiertos. El skibus y el camino a pie en invierno están por comprobar.") +
+        '<div class="planrelated"><a class="entrylink" href="#plan/chalet-villages">Ver chalet + forfait Villages ' + icon("forward") + '</a></div></section>')
       : "") +
     '<div class="duogallery">' +
     figure(media[p.media], "Alojamiento") +
@@ -761,103 +711,6 @@ function detail(p) {
     " Recursos de este plan " +
     icon("arrow") +
     "</button>"
-  );
-}
-function compare() {
-  const list = state.selection.map(lookup);
-  const sel = list
-    .map(
-      (p, i) =>
-        "<label>Plan " +
-        (i + 1) +
-        '<select data-select="' +
-        i +
-        '">' +
-        plans
-          .map(
-            (q) =>
-              '<option value="' +
-              q.id +
-              '" ' +
-              (q.id === p.id ? "selected" : "") +
-              " " +
-              (q.id !== p.id && state.selection.includes(q.id)
-                ? "disabled"
-                : "") +
-              ">" +
-              e(q.title) +
-              "</option>",
-          )
-          .join("") +
-        "</select></label>",
-    )
-    .join("");
-  const data = [
-    ["Total", (p) => labelPrice(p)],
-    ["Personas cotizadas", (p) => String(person(p))],
-    ["Acceso desde la casa", (p) => modeLabels[window.SKI_ACCESS.plans[p.id].mode]],
-    ["Recogida del material", (p) => window.SKI_GEAR_LOGISTICS.forPlan(p).title],
-    ["Material por la noche · extra", storageSummary],
-    ["Salir de Ecla · sábado", (p) => window.SKI_ITINERARIES.time(window.SKI_ITINERARIES.forPlan(p)[0].departure)],
-    ["Volver a Ecla · domingo", (p) => "≈" + window.SKI_ITINERARIES.time(window.SKI_ITINERARIES.forPlan(p)[0].back)],
-    ["Primer remonte · domingo", (p) => { const m = window.SKI_ITINERARIES.forPlan(p)[0]; return (m.published && m.first === m.firstSun ? "" : "≈") + window.SKI_ITINERARIES.time(m.firstSun) + (m.published ? "" : " · provisional"); }],
-    ["Principal ventaja", (p) => window.SKI_PLAN_REVIEW(p).pros[0] || "—"],
-    [
-      "Principal inconveniente",
-      (p) => window.SKI_PLAN_REVIEW(p).cons[0] || "—",
-    ],
-    ...categories.map((x, i) => [
-      x,
-      (p) => {
-        const b = budget(p);
-        return i === 2
-          ? (b.parts[i] == null ? "Por cotizar" : range(b.parts[i], b.upper))
-          : b.parts[i] == null
-            ? "Sin tarifa"
-            : money(b.parts[i]);
-      },
-    ]),
-    ...(list.some(hasSpa) ? [["Extras", (p) => spaAmenities(p).join(" y ")]] : []),
-    ...routeRows(list[0]).map(([x], i) => [
-      x,
-      (p) => routeRows(p)[i][1] || "Pendiente",
-    ]),
-  ];
-  return (
-    heading(
-      "Comparador",
-      "Elige tres planes para comparar precio, spa y acceso a las pistas.",
-    ) +
-    controls() +
-    '<div class="selectors">' +
-    sel +
-    "</div>" +
-    budgetChart(list) +
-    '<div class="tablewrap" role="region" aria-label="Tabla comparativa" tabindex="0"><table><thead><tr><th>Comparación</th>' +
-    list
-      .map(
-        (p) =>
-          '<th><a href="#plan/' +
-          p.id +
-          '">' +
-          e(p.short) +
-          " " +
-          icon("arrow") +
-          "</a></th>",
-      )
-      .join("") +
-    "</tr></thead><tbody>" +
-    data
-      .map(
-        ([label, fn]) =>
-          '<tr><th scope="row">' +
-          e(label) +
-          "</th>" +
-          list.map((p) => "<td>" + e(fn(p)) + "</td>").join("") +
-          "</tr>",
-      )
-      .join("") +
-    '</tbody></table></div><p class="fine">En móvil puedes desplazar la tabla horizontalmente. Los paquetes para seis mantienen su ocupación original.</p>'
   );
 }
 function archiveLinks(a) {
@@ -1071,8 +924,8 @@ function render() {
   const item =
     view === "otras" && /^\d+$/.test(key) ? archive[Number(key)] : null;
   let tab = view;
-  if (p) tab = "planes";
-  if (view === "estacion") tab = "estaciones";
+  if (view === "plan") tab = "planes";
+  if (["estacion", "estaciones", "comparar"].includes(view)) tab = "planes";
   const current = tabs.find(([id]) => id === tab) || tabs[0];
   const section = current[0];
   $("#nav").innerHTML = tabs
@@ -1085,11 +938,8 @@ function render() {
     .join("");
   const pages = {
     inicio: homePage,
-    planes: plansPage,
-    comparar: compare,
+    planes: () => window.SKI_STATIONS.page(view === "estacion" ? key : undefined),
     otras: more,
-    estaciones: () =>
-      window.SKI_STATIONS.page(view === "estacion" ? key : undefined),
     mapa: () => window.SKI_MAP.render(key),
   };
   $("#main").innerHTML = p
@@ -1186,12 +1036,6 @@ document.addEventListener("change", (ev) => {
     render();
     $("#main [data-access-filter]")?.focus({ preventScroll: true });
   }
-  if (ev.target.hasAttribute("data-select")) {
-    const i = Number(ev.target.dataset.select);
-    state.selection[i] = ev.target.value;
-    render();
-    $('#main [data-select="' + i + '"]')?.focus({ preventScroll: true });
-  }
 });
 document.addEventListener(
   "error",
@@ -1210,8 +1054,6 @@ function enterView() {
     if (section === "otras") state.archiveAccess = filter || "all";
     else state.accessFilter = filter || "all";
   }
-  if (["comparar/recomendaciones", "comparar/podio"].includes(recordHash()))
-    state.selection = recommendations.map((item) => item.id);
   render();
   if (["recomendaciones", "podio"].includes(recordHash()))
     requestAnimationFrame(() =>

@@ -49,7 +49,7 @@
   const stationHref = (a) => "#estacion/" + (a.station || a.id);
   const houseHref = (h, active) => {
     const plans = h.options.flatMap((option) => {
-      const plan = window.PLANS.find((p) => option.ref === "plan/" + p.id);
+      const plan = window.PLANS.find((p) => window.SKI_PLAN_ALLOWED(p) && option.ref === "plan/" + p.id);
       return plan ? [plan] : [];
     });
     const matching = active ? plans.filter((p) => window.SKI_STATIONS.forPlan(p)?.key === (active.station || active.id)) : [];

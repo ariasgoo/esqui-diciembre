@@ -38,10 +38,10 @@
   };
   const carrozDrive = {
     title: "Coche hasta Kédeuze · alquiler al lado del remonte",
-    pickup: "Aparcáis en Kédeuze y vais a pie a Ski Plus, frente a la telecabina. Allí recogéis el material y camináis a la cabina. El nuevo alquiler y la apertura de la tienda el 12–13 están por confirmar.",
+    pickup: "Aparcáis en Kédeuze y vais a pie a Ski Plus, frente a la telecabina. Allí recogéis el material y camináis a la cabina. Tarifa intermedia publicada con casco, 92 € por dos días; apertura y disponibilidad del 12–13 por comprobar.",
     night: "El sábado dejáis el equipo en los casilleros de Kédeuze. Dos casilleros de cuatro cuestan 44 € por una noche para siete. Se pagan aparte del precio principal. Los casilleros se anuncian de 08:30 a 16:30.",
     return: "El domingo recuperáis los esquís en Kédeuze y, al terminar, devolvéis todo en Ski Plus antes de subir al coche. Depositad el equipo el sábado antes de las 16:30.",
-    booking: "Cotizar siete equipos con casco en Ski Plus y reservar dos casilleros de cuatro para una noche.",
+    booking: "Reservar siete equipos intermedios con casco en Ski Plus y dos casilleros de cuatro para una noche.",
     sources: [
       ["Ski Plus · tienda y consigna frente a Kédeuze", "https://ski-plus.fr/le-magasin/"],
       ["Les Carroz · casilleros a 22 € por noche", "https://www.lescarroz.com/equipement/consignes-a-skis-les-carroz-daraches/"],
