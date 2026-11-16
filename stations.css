@@ -147,3 +147,30 @@
     max-width: 51%;
   }
 }
+
+.station-selection { margin-top: 24px; }
+.station-selection > .fine { margin: 4px 0 0; max-width: 72ch; }
+.station-selection .sectionhead { margin-bottom: 7px; }
+.station-row-title .station-trip-summary { color: var(--accent); font-size: 11px; line-height: 1.5; margin-top: 5px; }
+.station-guide { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.station-guide > h2 { font-size: 20px; }
+.station-guide > p { margin: 7px 0 16px; max-width: 76ch; }
+.station-guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.station-guide h3 { font-size: 14px; }
+.station-guide-grid p { font-size: 13px; margin: 6px 0 0; }
+.station-guide-grid .station-level { color: var(--muted); }
+.station-journeys { margin-top: 18px; }
+.station-journeys .datarows { margin-top: 6px; }
+.station-journeys .fine { font-size: 11px; color: var(--muted); margin-top: 6px; }
+.station-guide .option-review { margin-top: 20px; }
+.station-guide .option-review h2 { font-size: 16px; }
+.station-date-note { margin-top: 16px; padding: 11px 13px; background: var(--fill); border-radius: 7px; font-size: 12px; }
+.station-date-note strong { font-weight: 580; }
+.station-date-note p { margin: 4px 0 0; }
+.station-guide-sources { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; margin-top: 12px; }
+@media (max-width: 590px) {
+  .station-guide-grid { grid-template-columns: 1fr; gap: 15px; }
+  .station-row .picture { align-self: start; margin-top: 3px; }
+  .station-row-title .station-trip-summary { font-size: 10.5px; }
+  .station-row { grid-template-columns: 46px minmax(0,1fr) auto 10px; }
+}
