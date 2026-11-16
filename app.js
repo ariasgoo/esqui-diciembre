@@ -137,7 +137,7 @@ function picture(key, label, priority = false) {
 }
 function skiLoading(label, small = false) {
   return `<div class="ski-loading${small ? ' ski-loading-small' : ''}" role="status">
-    <img src="skier-loading.svg" width="184" height="112" alt=""><p>${e(label)}</p>
+    <img src="skier-loading.svg?v=29" width="184" height="112" alt=""><p>${e(label)}</p>
   </div>`;
 }
 function showTheme() {
