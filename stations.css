@@ -29,8 +29,24 @@
 .choice-resort-toggle::-webkit-details-marker { display: none; }
 .choice-resort-toggle > .picture { width: 140px; height: 130px; border-radius: 10px; }
 .choice-resort-toggle:hover .choice-resort-title h2 { text-decoration: underline; text-underline-offset: 4px; }
-.choice-toggle-label { display: inline-flex; flex: none; align-items: center; gap: 12px; font-size: 12px; color: var(--muted); font-weight: 400; }
-.choice-toggle-label > .ico { width: 15px; height: 15px; }
+.choice-toggle-label {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-inline-start: auto;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--fill);
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.choice-toggle-label > .ico { width: 24px; height: 24px; }
+.choice-resort-toggle:hover .choice-toggle-label { background: var(--soft); }
 .choice-group[open] .choice-toggle-label > .ico { transform: rotate(90deg); }
 .choice-expanded { padding: 0 0 24px 164px; }
 .choice-resort-links { display: flex; flex-wrap: wrap; gap: 4px 24px; margin: -8px 0 14px; }
@@ -38,7 +54,7 @@
 .choice-expanded .choice-option { padding-block: 18px; }
 .choice-expanded .choice-option:first-child { border-top: 1px solid var(--line); }
 .choice-expanded .choice-option:last-child { padding-bottom: 0; }
-.choice-resort-title { gap: 8px; margin: 0 0 10px; }
+.choice-resort-title { flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
 .choice-resort-title h2 { font-size: 22px; line-height: 1.25; }
 .choice-resort-title h2 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .choice-resort-title h2 .ico { width: 13px; height: 13px; margin-left: 2px; }
@@ -107,7 +123,6 @@
   .choice-resort-toggle .choice-resort-title h2 { font-size: 20px; }
   .choice-resort-toggle .choice-stats { grid-column: 2; grid-row: 2; margin: 0; gap: 8px 18px; }
   .choice-resort-toggle .choice-trades { grid-column: 1 / -1; }
-  .choice-toggle-label { gap: 6px; font-size: 11px; }
   .choice-expanded { padding: 0 0 22px; }
   .choice-resort-links { margin: -7px 0 10px; gap: 4px 20px; }
   .choice-resort-title { margin-bottom: 8px; }
