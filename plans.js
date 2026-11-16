@@ -94,6 +94,9 @@
   const cen = {
     area: "Val Cenis",
     slope: "cenis",
+    gearInfo:
+      maur.gearInfo +
+      " También podéis alquilar en Jeannot Sports, en Lanslevillard. Falta cotizar allí dos días con casco y las siete tallas.",
     pass: 49,
     passInfo:
       "Tous en Piste incluye los dos días de remontes en el dominio abierto, actividades y concierto. El selector mostraba 343 € para siete. Recogida el sábado de 8:00 a 12:00 en Vieux Moulin.",
@@ -104,6 +107,10 @@
         "https://www.valcenis.com/agenda/agenda-des-evenements/tous-en-piste/",
       ],
       equip,
+      [
+        "Alquiler en la estación · Jeannot Sports de Lanslevillard",
+        "https://www.intersport-rent.fr/fr/stations-ski/maurienne/val-cenis/val-cenis-lanslevillard/rue-de-la-mairie",
+      ],
       [
         "Alquiler alternativo en Modane",
         "https://www.intersport-modane.com/location-de-materiel-de-sport/",

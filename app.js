@@ -34,6 +34,7 @@ const paths = {
   water:
     '<path d="M3 17c2 2 4-2 6 0s4-2 6 0 4-2 6 0M7 3c-3 4 3 5 0 9m5-9c-3 4 3 5 0 9m5-9c-3 4 3 5 0 9"/>',
   mountain: '<path d="m2 20 6.5-11 4 6 3-11L22 20Z"/>',
+  map: '<path d="m2.5 5.8 6-2.4 7 2.8 6-2.4v14.4l-6 2.4-7-2.8-6 2.4Z"/><path d="M8.5 3.4v14.4m7-11.6v14.4"/>',
   camera: '<path d="M3 8h4l2-3h6l2 3h4v12H3Z"/><circle cx="12" cy="13" r="3"/>',
 };
 function icon(k) {
@@ -45,9 +46,11 @@ function icon(k) {
 }
 const tabs = [
   ["inicio", "home", "Resumen"],
-  ["planes", "plans", "Todos los planes"],
+  ["planes", "plans", "Todos los planes", "Planes"],
+  ["estaciones", "mountain", "Por estación", "Estaciones"],
+  ["mapa", "map", "Mapa"],
   ["comparar", "chart", "Comparador"],
-  ["otras", "archive", "Otras opciones"],
+  ["otras", "archive", "Otras opciones", "Otras"],
 ];
 const fmt = new Intl.NumberFormat("es-ES", {
   style: "currency",
@@ -103,7 +106,11 @@ function getRoute(p) {
   return routes[p.route] || {};
 }
 function recordHash() {
-  return decodeURIComponent(location.hash.slice(1)) || "inicio";
+  try {
+    return decodeURIComponent(location.hash.slice(1)) || "inicio";
+  } catch {
+    return "inicio";
+  }
 }
 function imgTag(item, priority = false) {
   if (!item) return "";
@@ -241,54 +248,59 @@ function budgetChart(list) {
     '<p class="fine">Las barras usan el extremo inferior. El intervalo recoge las opciones de material.</p></div>'
   );
 }
+const podium = [
+  {
+    id: "chalet",
+    name: "Chalet con jacuzzi · Avoriaz",
+    why: "Tenéis 160 m², chimenea y jacuzzi privado para los siete. Cuesta 11,86 € más por persona que el loft de Cluses.",
+    tradeoff: "Del chalet a Les Prodains, unos 50 min en coche.",
+  },
+  {
+    id: "cenis",
+    name: "Val Cenis + noche en Modane",
+    why: "Es el más barato. La casa sale a 13,57 € por persona y el forfait incluye el concierto.",
+    tradeoff: "Desde Ecla al festival, unas 2 h 30. Material en Orelle.",
+  },
+  {
+    id: "carroz-inicio",
+    name: "Les Carroz + Flocons Verts",
+    why: "Si estáis aprendiendo, dormís a 80 m de la cinta y tenéis sauna en el hotel.",
+    tradeoff: "Forfait de iniciación, sujeto a apertura. Sauna aparte.",
+  },
+];
+function podiumSection() {
+  const [first, ...runners] = podium;
+  const top = lookup(first.id);
+  const others = runners
+    .map((item, index) => {
+      const p = lookup(item.id);
+      return `<li><a class="podium-runner" href="#plan/${p.id}">
+      <span class="podium-rank" aria-label="Puesto ${index + 2}">${index + 2}</span>
+      <div class="runner-body"><h3>${e(item.name)}</h3><b>${e(labelPrice(p))} <small>/ ${e(unit(p))}</small></b>
+      <p>${e(item.why)}</p><span class="runner-note">${e(item.tradeoff)}</span></div></a></li>`;
+    })
+    .join("");
+  return `<section id="podio" class="podium" aria-labelledby="podium-title">
+    <div class="sectionhead"><h2 id="podium-title">Mi podio para los siete</h2>
+    <a class="textlink" href="#comparar/podio">Comparar los tres ${icon("forward")}</a></div>
+    <ol class="podium-list">
+      <li class="podium-first"><a class="hero" href="#plan/${top.id}">
+      ${picture(top.media, top.home, true)}<div class="heroshade"></div>
+      <div class="heroin"><span class="herotag">Primer puesto</span>
+      <h3>${e(first.name)}</h3><p>${e(first.why)}</p>
+      <div class="herolast"><b>${e(labelPrice(top))} <small>/ ${e(unit(top))}</small></b><span class="circle">${icon("forward")}</span></div>
+      </div></a><div class="podium-tradeoff">${icon("pin")}${e(first.tradeoff)}</div></li>
+      ${others}
+    </ol></section>`;
+}
 function homePage() {
-  const hero = lookup("chalet");
-  const rec = [
-    ["cenis", "El más barato"],
-    ["loft", "Avoriaz al menor precio"],
-    ["orelle", "Para esquiar en altura"],
-  ];
   return (
     heading(
       "Esquí en diciembre",
       "Una noche en los Alpes franceses y dos días en pistas.",
     ) +
     facts() +
-    '<section class="introgrid"><a class="hero" href="#plan/chalet">' +
-    picture("ferme", "Chalet de Arâches", true) +
-    '<div class="heroshade"></div><div class="heroin"><span class="herotag">' +
-    icon("water") +
-    ' Jacuzzi privado</span><h2>Una noche en el chalet</h2><p>160 m² en Arâches · 50 min hasta Les Prodains</p><div class="herolast"><b>' +
-    e(labelPrice(hero)) +
-    " <small>/ " +
-    unit(hero) +
-    '</small></b><span class="circle">' +
-    icon("forward") +
-    "</span></div></div></a>" +
-    '<div class="picks"><h2>Según lo que buscáis</h2>' +
-    rec
-      .map(([id, t]) => {
-        const p = lookup(id);
-        return (
-          '<a class="pick" href="#plan/' +
-          id +
-          '">' +
-          picture(p.slope, p.area, true) +
-          '<div><span class="minor">' +
-          e(t) +
-          "</span><strong>" +
-          e(p.short) +
-          "</strong><span>" +
-          e(labelPrice(p)) +
-          " / " +
-          unit(p) +
-          "</span></div>" +
-          icon("arrow") +
-          "</a>"
-        );
-      })
-      .join("") +
-    "</div></section>" +
+    podiumSection() +
     '<section><div class="sectionhead"><h2>El precio de un vistazo</h2><a class="textlink" href="#comparar">Comparar planes ' +
     icon("forward") +
     "</a></div>" +
@@ -343,6 +355,11 @@ function plansPage() {
       "Todos los planes",
       "Abre una ficha para ver fotos, rutas, servicios y precios.",
     ) +
+    '<a class="entrylink" href="#estaciones">' +
+    icon("mountain") +
+    " Ver planes por estación " +
+    icon("forward") +
+    "</a>" +
     controls() +
     '<div class="filterbar">' +
     filters
@@ -479,8 +496,36 @@ function sameHome(p) {
     "</div></section>"
   );
 }
+const accessBySlope = {
+  avoriaz: "avoriaz",
+  cenis: "val-cenis",
+  carroz: "les-carroz",
+  flaine: "flaine",
+  orelle: "orelle",
+  thorens: "val-thorens",
+};
 function detail(p) {
   const r = getRoute(p);
+  const station = window.SKI_STATIONS.forPlan(p);
+  const roadLink =
+    '<a class="entrylink" href="#mapa/' +
+    accessBySlope[p.slope] +
+    '">' +
+    icon("map") +
+    " Ruta desde Ecla " +
+    icon("forward") +
+    "</a>";
+  const stationLink = station
+    ? '<a class="entrylink" href="#estacion/' +
+      e(station.key) +
+      '">' +
+      icon("mountain") +
+      " Planes en " +
+      e(station.label) +
+      " " +
+      icon("forward") +
+      "</a>"
+    : "";
   return (
     '<a class="back" href="#planes">' +
     icon("back") +
@@ -521,7 +566,10 @@ function detail(p) {
         .filter(Boolean)
         .join(" "),
     ) +
-    "</p></section>" +
+    '</p><div class="planrelated">' +
+    roadLink +
+    stationLink +
+    "</div></section>" +
     sameHome(p) +
     '<section class="notes"><h2>Cuándo lo elegiría</h2><div><b>Lo mejor</b><p>' +
     e(p.pro) +
@@ -639,6 +687,30 @@ function archiveLinks(a) {
     ]),
   ];
 }
+function archiveDetail(item, index) {
+  const photos =
+    (item.media ? figure(media[item.media], "Alojamiento") : "") +
+    (item.slope ? figure(media[item.slope], "Dominio esquiable") : "");
+  return (
+    '<a class="back" href="#otras">' +
+    icon("back") +
+    " Otras opciones</a>" +
+    heading(item.name, [item.area, item.kind].filter(Boolean).join(" · ")) +
+    '<div class="headprice"><b>' +
+    e(item.price || "Sin tarifa cerrada") +
+    '</b></div><p class="archivedesc">' +
+    e(item.description) +
+    "</p>" +
+    (photos ? '<div class="duogallery">' + photos + "</div>" : "") +
+    '<button class="resbtn" data-archive="' +
+    index +
+    '">' +
+    icon("book") +
+    " Recursos de esta opción " +
+    icon("arrow") +
+    "</button>"
+  );
+}
 function more() {
   const kinds = [
     ["Todas", "Todas"],
@@ -739,9 +811,26 @@ function linkList(list) {
 function openSources(index) {
   const here = recordHash(),
     id = here.startsWith("plan/") ? lookup(here.split("/")[1]) : null;
-  const a = index != null ? archive[index] : null;
+  const [view, key] = here.split("/");
+  const station =
+    view === "estacion"
+      ? window.SKI_STATIONS.stations.find((s) => s.key === key)
+      : null;
+  const archiveIndex =
+    index ?? (view === "otras" && /^\d+$/.test(key) ? Number(key) : null);
+  const a = archiveIndex != null ? archive[archiveIndex] : null;
   let content;
   if (a) content = "<h3>" + e(a.name) + "</h3>" + linkList(archiveLinks(a));
+  else if (station)
+    content =
+      "<h3>" +
+      e(station.label) +
+      "</h3>" +
+      linkList(window.SKI_STATIONS.resources(station));
+  else if (view === "mapa")
+    content =
+      "<h3>Rutas desde Ecla Archamps</h3>" +
+      linkList(window.SKI_MAP.resources(key));
   else if (id)
     content = "<h3>" + e(id.title) + "</h3>" + linkList(linksFor(id));
   else
@@ -791,33 +880,44 @@ $("#sources").addEventListener("click", (event) => {
   }
 });
 function render() {
-  const h = recordHash();
-  const p = h.startsWith("plan/") ? lookup(h.split("/")[1]) : null;
-  const k = p ? "planes" : tabs.some((t) => t[0] === h) ? h : "inicio";
-  const current = tabs.find((t) => t[0] === k);
+  const [view, key] = recordHash().split("/");
+  const p = view === "plan" ? lookup(key) : null;
+  const item =
+    view === "otras" && /^\d+$/.test(key) ? archive[Number(key)] : null;
+  let tab = view;
+  if (p) tab = "planes";
+  if (view === "estacion") tab = "estaciones";
+  const current = tabs.find(([id]) => id === tab) || tabs[0];
+  const section = current[0];
   $("#nav").innerHTML = tabs
-    .map(
-      ([id, ic, name]) =>
-        '<a class="navitem ' +
-        (id === k ? "active" : "") +
-        '" ' +
-        (id === k ? 'aria-current="page"' : "") +
-        ' href="#' +
-        id +
-        '">' +
-        icon(ic) +
-        "<span>" +
-        e(name) +
-        "</span></a>",
-    )
+    .map(([id, ic, name, compact]) => {
+      const label = compact
+        ? `<span class="desktop-label">${e(name)}</span><span class="mobile-label">${e(compact)}</span>`
+        : `<span>${e(name)}</span>`;
+      return `<a class="navitem ${id === section ? "active" : ""}" ${id === section ? 'aria-current="page"' : ""} href="#${id}">${icon(ic)}${label}</a>`;
+    })
     .join("");
-  $("#crumb").textContent = p ? p.title : current[2];
-  document.title = (p ? p.title : current[2]) + " · Esquí en diciembre";
+  const pages = {
+    inicio: homePage,
+    planes: plansPage,
+    comparar: compare,
+    otras: more,
+    estaciones: () =>
+      window.SKI_STATIONS.page(view === "estacion" ? key : undefined),
+    mapa: () => window.SKI_MAP.render(key),
+  };
   $("#main").innerHTML = p
     ? detail(p)
-    : { inicio: homePage, planes: plansPage, comparar: compare, otras: more }[
-        k
-      ]();
+    : item
+      ? archiveDetail(item, Number(key))
+      : pages[section]();
+  const selectedStation =
+    view === "estacion"
+      ? window.SKI_STATIONS.stations.find((s) => s.key === key)
+      : null;
+  const title = p?.title || item?.name || selectedStation?.label || current[2];
+  $("#crumb").textContent = title;
+  document.title = title + " · Esquí en diciembre";
 }
 let lightSlides = [],
   lightIndex = 0;
@@ -906,11 +1006,20 @@ document.addEventListener(
   },
   true,
 );
+function enterView() {
+  if (recordHash() === "comparar/podio")
+    state.selection = podium.map((item) => item.id);
+  render();
+  if (recordHash() === "podio")
+    requestAnimationFrame(() =>
+      $("#podio")?.scrollIntoView({ block: "start" }),
+    );
+}
 window.addEventListener("hashchange", () => {
   if ($("#sources").open) $("#sources").close();
   if ($("#lightbox").open) $("#lightbox").close();
-  render();
+  enterView();
   window.scrollTo(0, 0);
   $("#main").focus({ preventScroll: true });
 });
-render();
+enterView();
