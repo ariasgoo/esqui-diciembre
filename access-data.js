@@ -22,7 +22,7 @@
   const plans = {
     cenis: access("drive", "Desde Modane, unos 26 km y 30 min en coche hasta la telecabina Vieux Moulin, donde se recogen los pases del festival. Se vuelve al mismo punto y se regresa en coche al apartamento.", vieuxMoulin),
     loft: driveToProdains("Desde el loft de Cluses son unos 33 km y 40–45 min en coche por trayecto."),
-    chalet: driveToProdains("Desde la zona del chalet en Arâches son unos 36 km y 50 min en coche. Las pistas a 1,5 km de la casa pertenecen a Les Carroz, otro dominio."),
+    chalet: driveToProdains("Desde la zona del chalet en Arâches son unos 36 km y 50 min en coche. Las pistas a 1,5 km son de Les Carroz, en Grand Massif. No existe conexión de pistas ni remontes entre Les Carroz y Avoriaz."),
     orelle: access("drive", "Desde Modane, unos 11 km y 15 min en coche hasta Francoz. Aparcáis junto a la telecabina de Orelle y subís a las pistas. Para volver al valle usáis la telecabina antes de su último descenso.", orelle),
     turche: driveToProdains("Para el forfait de Avoriaz son unos 13 km y 20 min en coche. Desde el apartamento sí podéis caminar unos 6 min (400 m) al telesquí de La Turche si abre y elegís esquiar en Les Gets con su forfait local."),
     wahou: driveToProdains("Desde la casa de Taninges son unos 23 km y 30 min en coche por trayecto."),
@@ -85,6 +85,12 @@
   fermeLocal.sources = [
     ["Ubicación aproximada y distancias del anfitrión", hotelChalet],
     ["Zona del chalet → Kédeuze en coche", routeUrl(fromFerme, kedeuze)],
+  ];
+  plans.chalet.sources = [
+    ["Grand Massif · estaciones conectadas y plano de pistas", "https://www.grand-massif.com/plan-des-pistes/"],
+    ["Les Carroz · apertura prevista y acceso a Kédeuze", "https://www.lescarroz.com/ouverture/"],
+    ["Skibus gratuito · línea de Arâches y calendario publicado", "https://www.arvi-mobilite.fr/bus-cars/skibus/les-carroz/"],
+    ...fermeLocal.sources,
   ];
   plans["carroz-inicio"].sources = [
     ["Del hotel a la cinta Figaro", hotelCarroz],

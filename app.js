@@ -670,6 +670,16 @@ function detail(p) {
     controls() +
     bookingActions(actions) +
     accessPanel("plan/" + p.id, window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null)) +
+    (p.id === "chalet"
+      ? '<section aria-label="Elegir estación desde el chalet"><h2>¿Avoriaz o Les Carroz?</h2>' +
+        rows([
+          ["Avoriaz", "≈50 min en coche hasta Les Prodains + 4 min en teleférico."],
+          ["Les Carroz · Kédeuze", "≈4 min en coche (1,8 km) o ≈23 min a pie (1,7 km)."],
+        ]) +
+        '<p>Para aprovechar más la casa y el jacuzzi, elegiría Les Carroz. Hace falta el forfait correspondiente. Las variantes de abajo incluyen alquiler local. Sus enlaces van hacia otros sectores de Grand Massif, como Flaine y Samoëns.</p>' +
+        '<p class="fine">Esta ficha presupuesta Avoriaz. Les Carroz, Flaine y Samoëns tienen apertura prevista el 12 de diciembre, según la nieve. Las conexiones dependen de los remontes abiertos y del forfait elegido. Hay skibus gratuito por Arâches, pero falta confirmar el servicio del 12–13 de diciembre. Las distancias parten de la ubicación aproximada del chalet. El trayecto a pie incluye un camino cuyo acceso invernal falta comprobar.</p>' +
+        '<div class="planrelated"><a class="entrylink" href="#plan/chalet-inicio">Ver chalet + forfait de iniciación ' + icon("forward") + '</a><a class="entrylink" href="#plan/chalet-villages">Ver chalet + forfait Villages ' + icon("forward") + '</a></div></section>'
+      : "") +
     '<div class="duogallery">' +
     figure(media[p.media], "Alojamiento") +
     figure(media[p.slope], "Dominio esquiable") +

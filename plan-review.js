@@ -49,7 +49,7 @@
         "Con el mismo forfait y material que el loft de Cluses, el chalet cuesta 11,86 € más por persona.",
       ],
       cons: [
-        "Las pistas a 1,5 km son de Les Carroz. Para usar este forfait hay unos 50 min en coche hasta Les Prodains desde el centro de Arâches.",
+        "Las pistas a 1,5 km son de Les Carroz y no conectan con Avoriaz por pistas ni remontes. Para usar este forfait hay unos 50 min en coche hasta Les Prodains desde el centro de Arâches.",
       ],
     },
     orelle: {

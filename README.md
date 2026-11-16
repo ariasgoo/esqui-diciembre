@@ -8,4 +8,6 @@ GitHub Pages sirve esta carpeta desde la rama `main`. Para abrir el visor en loc
 
 La portada ordena las [tres recomendaciones](https://ariasgoo.github.io/esqui-diciembre/#recomendaciones) y explica el caso del chalet de seis plazas. El filtro [A pie hasta las pistas](https://ariasgoo.github.io/esqui-diciembre/#planes/a-pie) tiene en cuenta el sector del forfait del plan. La vista [Por estación](https://ariasgoo.github.io/esqui-diciembre/#estaciones) agrupa los planes por el dominio de su forfait. El [mapa](https://ariasgoo.github.io/esqui-diciembre/#mapa) recoge los accesos en coche desde Ecla y los alojamientos identificados, con el grado de precisión publicado para cada uno.
 
+La ficha del chalet de Arâches compara el acceso a Avoriaz con el de Les Carroz y enlaza las dos variantes locales de forfait. Explica que ambos dominios carecen de conexión por pistas o remontes y deja pendiente confirmar el skibus del 12–13 de diciembre.
+
 Los datos de los planes están en `plans.js`, las rutas en `routes.js`, las fotografías y atribuciones en `media.js` y el catálogo ampliado en `archive.js` y `extras.js`. El acceso al dominio de cada forfait se documenta en `access-data.js`, los horarios en `lift-hours.js` y las ubicaciones en `lodging-pins.js`. Los importes de grupo se calculan con la ocupación de cada oferta antes de redondear.
