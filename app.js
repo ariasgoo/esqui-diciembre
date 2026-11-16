@@ -709,7 +709,7 @@ function detail(p) {
     bookingActions(actions) +
     quickFacts(p) +
     '<p class="storage-summary">' + e(storageSummary(p)) + '</p>' +
-    '<nav class="plan-jumps" aria-label="Ir a una sección"><a href="#itinerario" data-jump="itinerario">Itinerario ↓</a><a href="#presupuesto" data-jump="presupuesto">Precio ↓</a><a href="#opinion" data-jump="opinion">Pros y contras ↓</a></nav>' +
+    '<nav class="plan-jumps" aria-label="Ir a una sección"><a href="#itinerario" data-jump="itinerario">Itinerario ↓</a><a href="#presupuesto" data-jump="presupuesto">Precio ↑</a><a href="#opinion" data-jump="opinion">Pros y contras ↓</a></nav>' +
     (p.id === "chalet"
       ? fold("Mismo chalet · ¿Avoriaz o Les Carroz?", '<section aria-label="Elegir estación desde el chalet">' +
         rows([
