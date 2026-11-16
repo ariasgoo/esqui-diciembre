@@ -84,7 +84,6 @@ function budget(p) {
     pass * scale,
     p.gear[0] == null ? null : p.gear[0] * scale,
     ((p.card || 0) + (p.fee || 0) / n) * scale,
-    p.storagePending ? null : ((p.storageFee || 0) / n) * scale,
   ];
   const upper = parts[2] == null ? null : parts[2] + (p.gear[1] - p.gear[0]) * scale;
   const low = p.night == null || parts[2] == null ? null : parts.reduce((a, b) => a + (b || 0), 0);
@@ -104,8 +103,7 @@ function range(a, b) {
 function labelPrice(p) {
   const b = budget(p);
   if (p.gear[0] == null) return "Alquiler por cotizar";
-  const price = range(b.low, b.high);
-  return p.storagePending && b.low != null ? price + " + consigna" : price;
+  return range(b.low, b.high);
 }
 function unit(p) {
   return state.unit === "group" ? "grupo de " + person(p) : "persona";
@@ -206,7 +204,7 @@ function facts() {
     "Ecla Archamps</span></div>"
   );
 }
-const categories = ["Alojamiento", "Forfait", "Material", "Soporte y gestión", "Consigna"];
+const categories = ["Alojamiento", "Forfait", "Material", "Soporte y gestión"];
 function legend() {
   return (
     '<div class="legend">' +
@@ -253,7 +251,7 @@ function budgetChart(list) {
     '<div class="chart">' +
     legend() +
     list.map((p) => chartRow(p, max)).join("") +
-    '<p class="fine">Las barras usan el extremo inferior. Los importes que indican «+ consigna» necesitan ese suplemento. Las opciones con alquiler por cotizar se consultan en su ficha.</p></div>'
+    '<p class="fine">Las barras usan el extremo inferior. La consigna se explica en la descripción de cada plan y se paga aparte. Las opciones con alquiler por cotizar se consultan en su ficha.</p></div>'
   );
 }
 const recommendations = [
@@ -272,7 +270,7 @@ const recommendations = [
   {
     id: "orelle",
     name: "Orelle · noche en Modane",
-    why: "Conducís 15 min hasta Francoz y recogéis allí el equipo. El precio incluye dos casilleros de cuatro para una noche.",
+    why: "Conducís 15 min hasta Francoz y recogéis allí el equipo. Dos casilleros de cuatro para una noche cuestan 32 € para el grupo, aparte.",
     tradeoff: "El forfait estudiante exige carné y compra en taquilla. Reservad los dos casilleros para siete.",
   },
 ];
@@ -320,7 +318,7 @@ function homePage() {
     budgetChart(
       ["cenis", "carroz-inicio", "loft", "chalet", "orelle"].map(lookup),
     ) +
-    '<p class="fine">El cálculo reúne una noche, dos días de forfait y material. Orelle incluye 32 € de consigna para siete. En Avoriaz falta cotizar ese suplemento. En Val Cenis, Les Carroz y Flaine el nuevo alquiler local está por cotizar. Para incluir la estimación inicial de comida, sumad 30 € por persona. Desplazamientos y extras opcionales van aparte.</p></section>' +
+    '<p class="fine">El precio principal reúne una noche, dos días de forfait, material y cargos conocidos. La consigna se explica en cada descripción y se paga aparte. En Val Cenis, Les Carroz y Flaine el nuevo alquiler local está por cotizar. Para incluir la estimación inicial de comida, sumad 30 € por persona. Desplazamientos y extras opcionales van aparte.</p></section>' +
     '<section class="notes"><h2>Cuándo reservaría</h2><div><b>Ahora</b><p>Elegiría una casa con cancelación para siete y reservaría el material al confirmar las tallas.</p></div><div><b>7–10 de diciembre</b><p>Revisaría qué remontes abren antes de pagar los forfaits o una casa no reembolsable. Las tarifas de apertura pueden agotarse antes.</p></div></section>'
   );
 }
@@ -496,16 +494,14 @@ function priceDetails(p) {
     rows(
       categories.map((x, i) => [
         x,
-        i === 4 && p.storagePending
-          ? "Por cotizar"
-          : i === 2
+        i === 2
           ? (b.parts[i] == null ? "Por cotizar" : range(b.parts[i], b.upper))
           : b.parts[i] == null
             ? "Sin tarifa"
             : money(b.parts[i]),
       ]),
     ) +
-    '<div class="total"><span>' + (p.storagePending ? "Base + consigna" : "Total") + "</span><strong>" +
+    '<div class="total"><span>Precio principal</span><strong>' +
     e(labelPrice(p)) +
     "</strong></div>" +
     (p.gear[0] == null ? '<p class="fine">Alojamiento, forfait y cargos conocidos ' + e(money(b.parts.reduce((sum, part) => sum + (part || 0), 0))) + '. Falta añadir el alquiler en la tienda de esta estación.</p>' : "")
@@ -789,9 +785,7 @@ function compare() {
       x,
       (p) => {
         const b = budget(p);
-        return i === 4 && p.storagePending
-          ? "Por cotizar"
-          : i === 2
+        return i === 2
           ? (b.parts[i] == null ? "Por cotizar" : range(b.parts[i], b.upper))
           : b.parts[i] == null
             ? "Sin tarifa"

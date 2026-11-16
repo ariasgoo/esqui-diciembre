@@ -40,7 +40,6 @@
     pass: 50.5,
     card: 3,
     gear: [57.68, 57.68],
-    storagePending: true,
     fee: 2,
     passInfo:
       "Forfait local Rock On Snow para sábado y domingo. Soporte nuevo, 3 €; reutilizable si ya tenéis uno compatible.",
@@ -105,7 +104,6 @@
     ],
   };
   const ore = {
-    storageFee: 32,
     area: "Val Thorens–Orelle",
     slope: "orelle",
     pass: 92.4,

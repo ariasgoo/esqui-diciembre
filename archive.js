@@ -547,7 +547,7 @@
       name: "Dos excursiones desde Archamps",
       area: "Avoriaz",
       kind: variant,
-      price: "111,47 €/persona + consigna",
+      price: "111,47 €/persona",
       description:
         "Sin pagar alojamiento: 50,50 € de forfait, 3 € de tarjeta y 57,97 € por el equipo con casco. Volver a la residencia implica hacer la ruta hasta Prodains dos veces. Solo encaja si renunciáis a la noche fuera.",
       links: [
@@ -560,7 +560,7 @@
       name: "Añadir sauna al loft",
       area: "Morzine / Avoriaz",
       kind: variant,
-      price: "146–150 €/persona + consigna",
+      price: "146–150 €/persona",
       description:
         "Sobre el plan de Cluses, la piscina con saunas y hammams cuesta 16 € o 12 € entrando la última hora. Sábado de 12 a 19 h según el calendario consultado. Acceso al bienestar desde 18 años y reserva para grupos.",
       links: [

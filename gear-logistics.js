@@ -16,7 +16,7 @@
   const orelle = {
     title: "Alquiler y consigna junto a la telecabina de Orelle",
     pickup: "Conducís hasta Francoz y aparcáis. Recogéis el equipo en Orelle Sports, junto a la telecabina, y lo lleváis en la cabina hasta las pistas. Tienda de 08:30 a 18:00.",
-    night: "El sábado guardáis los siete equipos en dos casilleros de cuatro junto a la telecabina. Una noche cuesta 32 € para el grupo. Esa cantidad está incluida en los planes principales.",
+    night: "El sábado guardáis los siete equipos en dos casilleros de cuatro junto a la telecabina. Una noche cuesta 32 € para el grupo. Se paga aparte del precio principal.",
     return: "El domingo sacáis el equipo de los casilleros y subís en cabina. Al terminar, bajáis con él y lo devolvéis en Orelle Sports antes de volver al coche. Casilleros de 07:30 a 18:00.",
     booking: "Reservar dos casilleros de cuatro, del sábado al domingo. Disponibilidad de ambos pendiente.",
     sources: [
@@ -39,7 +39,7 @@
   const carrozDrive = {
     title: "Coche hasta Kédeuze · alquiler al lado del remonte",
     pickup: "Aparcáis en Kédeuze y vais a pie a Ski Plus, frente a la telecabina. Allí recogéis el material y camináis a la cabina. El nuevo alquiler y la apertura de la tienda el 12–13 están por confirmar.",
-    night: "El sábado dejáis el equipo en los casilleros de Kédeuze. Dos casilleros de cuatro cuestan 44 € por una noche para siete. Esta partida está incluida en el desglose. Los casilleros se anuncian de 08:30 a 16:30.",
+    night: "El sábado dejáis el equipo en los casilleros de Kédeuze. Dos casilleros de cuatro cuestan 44 € por una noche para siete. Se pagan aparte del precio principal. Los casilleros se anuncian de 08:30 a 16:30.",
     return: "El domingo recuperáis los esquís en Kédeuze y, al terminar, devolvéis todo en Ski Plus antes de subir al coche. Depositad el equipo el sábado antes de las 16:30.",
     booking: "Cotizar siete equipos con casco en Ski Plus y reservar dos casilleros de cuatro para una noche.",
     sources: [
@@ -102,8 +102,8 @@
     "Cómo cambiaba la noche de 6 a 7": avoriaz,
     "Dos excursiones desde Archamps": avoriaz,
     "Añadir sauna al loft": avoriaz,
-    "Auberge HI Valmeinier": { ...orelle, night: orelle.night.replace("Esa cantidad está incluida en los planes principales.", "Añadid esos 32 € al presupuesto de esta variante.") },
-    "Le Shantoné": { ...orelle, night: orelle.night.replace("Esa cantidad está incluida en los planes principales.", "Añadid esos 32 € al presupuesto de esta variante.") },
+    "Auberge HI Valmeinier": orelle,
+    "Le Shantoné": orelle,
     "Dos reservas de Esquiades": thorens,
     "UCPA · Pack Mini": {
       title: "Equipo del propio centro UCPA",

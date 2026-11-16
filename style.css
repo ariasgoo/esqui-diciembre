@@ -13,7 +13,6 @@
   --s1: #79948e;
   --s2: #b2c5bd;
   --s3: #e3c38c;
-  --s4: #bdafcc;
   --shadow: 0 2px 6px #20282209;
   font-family:
     Inter,
@@ -40,7 +39,6 @@
   --s1: #86a49a;
   --s2: #b7cabe;
   --s3: #dfbd86;
-  --s4: #c3afd9;
 }
 * {
   box-sizing: border-box;
@@ -523,7 +521,6 @@ th a:hover {
 .s3 {
   background: var(--s3);
 }
-.s4 { background: var(--s4); }
 .chartrow {
   display: grid;
   grid-template-columns: minmax(132px, 185px) minmax(40px, 1fr) 130px;

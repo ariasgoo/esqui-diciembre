@@ -152,7 +152,7 @@
       .map((p) => budget(p).low)
       .filter((price) => price !== null && Number.isFinite(price));
     const price = prices.length
-      ? "Desde " + money(Math.min(...prices)) + (station.areas.includes("Avoriaz") ? " + consigna" : "")
+      ? "Desde " + money(Math.min(...prices))
       : "Pendiente";
     return (
       '<a class="station-row" href="' +
