@@ -1,0 +1,60 @@
+.schematic { margin: 9px 0; padding-left: 17px; }
+.schematic li { margin: 4px 0; }
+.quick-facts, .trip-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 18px 0; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.quick-facts > div, .trip-summary > div { padding: 12px 14px; border-left: 1px solid var(--line); }
+.quick-facts > div:first-child, .trip-summary > div:first-child { border: 0; }
+.quick-facts dt, .trip-summary dt { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.quick-facts dd, .trip-summary dd { margin: 0; font-size: 13px; font-weight: 550; }
+.trip-summary dd { font-size: 23px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.plan-jumps { display: flex; flex-wrap: wrap; gap: 18px; font-size: 12px; color: var(--accent); margin: -3px 0 18px; }
+.plan-jumps a:hover { text-decoration: underline; }
+.storage-summary { margin: -7px 0 18px; color: var(--muted); font-size: 12px; }
+#itinerario, #presupuesto, #opinion { scroll-margin-top: 24px; }
+.weekend-plan { margin: 25px 0 32px; }
+.weekend-plan > .sectionhead { align-items: baseline; gap: 10px; }
+.weekend-plan > .sectionhead h2 { font-size: 22px; }
+.weekend-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 30px; margin-top: 24px; }
+.itinerary-day { margin: 0; min-width: 0; }
+.itinerary-day h3 { display: flex; gap: 10px; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--line); font-size: 19px; }
+.itinerary-day h3 small { font-size: 11px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+.day-steps { list-style: none; margin: 0; padding: 0; }
+.day-steps li { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.day-steps time { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--accent); padding-top: 1px; }
+.day-steps strong { display: block; font-size: 13px; font-weight: 550; }
+.day-steps small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.schedule-key { color: var(--muted); font-size: 12px; }
+.itinerary-notes { border-left: 2px solid var(--accent); padding: 0 0 0 16px; margin: 13px 0 0; font-size: 12px; list-style: none; }
+.itinerary-notes li { margin: 5px 0; }
+.planning-assumptions { margin-top: 16px; font-size: 12px; color: var(--muted); }
+.planning-assumptions summary { width: fit-content; cursor: pointer; color: var(--text); }
+.planning-assumptions ul { padding-left: 18px; }
+.planning-assumptions li { margin: 6px 0; }
+.itinerary-select { display: flex; align-items: center; gap: 12px; font-size: 12px; margin: 16px 0; }
+.itinerary-select select { max-width: 100%; background: var(--fill); border: 1px solid var(--line); border-radius: 6px; padding: 7px; }
+.detail-fold { margin: 0; border-top: 1px solid var(--line); }
+.detail-fold > summary { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 15px 0; font-size: 13px; font-weight: 500; list-style: none; gap: 15px; }
+.detail-fold > summary::-webkit-details-marker { display: none; }
+.detail-fold > summary .ico { width: 13px; height: 13px; }
+.detail-fold[open] > summary .ico { transform: rotate(90deg); }
+.fold-body { padding: 0 0 20px; font-size: 13px; }
+.fold-body > section:first-child { margin-top: 6px; }
+.fold-body h2 { font-size: 18px; }
+.fold-body h3:not(:first-child) { margin-top: 20px; }
+.hours-item { margin-top: 12px; font-size: 12px; }
+.card-timing { display: block; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.recommendation-body .schematic { font-size: 13px; }
+.rec-detail .schematic { color: var(--muted); font-size: 12px; }
+.station-guide-grid .schematic, .station-guide > .schematic { font-size: 13px; }
+.archivebody .trip-summary > div { padding: 10px; }
+.archivebody .trip-summary dd { font-size: 21px; }
+@media (max-width: 700px) {
+  .weekend-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .quick-facts, .trip-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quick-facts > div:nth-child(3), .trip-summary > div:nth-child(3) { border-left: 0; }
+  .quick-facts > div:nth-child(n+3), .trip-summary > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .weekend-plan > .sectionhead { display: block; }
+  .weekend-plan > .sectionhead .minor { display: block; margin-top: 5px; }
+  .itinerary-select { display: grid; gap: 5px; }
+  .itinerary-select select { min-width: 0; width: 100%; font-size: 12px; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }

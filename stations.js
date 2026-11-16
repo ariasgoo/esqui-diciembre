@@ -150,14 +150,14 @@
   function stationGuide(station) {
     const guide = guideFor(station);
     return `<section class="station-guide" aria-labelledby="station-guide-title">
-      <h2 id="station-guide-title">Qué os ofrece esta estación</h2><p>${e(guide.description)}</p>
-      <div class="station-guide-grid"><div><h3>Las pistas</h3><p>${e(guide.terrain)}</p><p class="station-level">${e(guide.level)}</p></div>
-      <div><h3>Alojaros junto a pistas</h3><p>${e(guide.lodging)}</p></div></div>
+      <h2 id="station-guide-title">Qué os ofrece esta estación</h2>${schematic(guide.description)}
+      <div class="station-guide-grid"><div><h3>Las pistas</h3>${schematic(guide.terrain)}${schematic(guide.level)}</div>
+      <div><h3>Alojaros junto a pistas</h3>${schematic(guide.lodging)}</div></div>
       <div class="station-journeys"><h3>Desde Ecla Archamps</h3>
       ${rows(guide.trips.map((trip) => [trip.label, trip.value]))}
       <p class="fine">Ida en coche, sin tráfico ni nieve. La referencia de cada trayecto indica si llega al pueblo o al remonte.</p></div>
       ${reviewTable(guide)}
-      <div class="station-date-note"><strong>Para el 12–13 de diciembre</strong><p>${e(guide.dates)}</p></div>
+      <div class="station-date-note"><strong>Para el 12–13 de diciembre</strong>${schematic(guide.dates)}</div>
       <button class="quiet station-guide-sources" data-sources>${icon("book")} Recursos de la estación</button></section>`;
   }
 

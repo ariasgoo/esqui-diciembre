@@ -170,6 +170,28 @@ function heading(title, sub) {
     "</div>"
   );
 }
+function schematic(text) {
+  const points = String(text || "").split(/(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ0-9¿])/).filter(Boolean);
+  return '<ul class="schematic">' + points.map(point => '<li>' + e(point) + '</li>').join("") + '</ul>';
+}
+function fold(title, content, extra = "") {
+  return '<details class="detail-fold ' + e(extra) + '"><summary>' + e(title) + icon("arrow") + '</summary><div class="fold-body">' + content + '</div></details>';
+}
+function quickFacts(p) {
+  const r = getRoute(p), access = window.SKI_ACCESS.plans[p.id];
+  const approach = access.mode === "ski" ? "Directo con esquís" : access.mode === "walk" ? "≈12 min andando" : r.homeLift;
+  return '<dl class="quick-facts">' + [
+    ["Ecla → acceso", r.originLift], ["Casa → acceso", approach],
+    ["Sauna", p.sauna], ["Jacuzzi", p.jacuzzi],
+  ].map(([label,value]) => '<div><dt>' + e(label) + '</dt><dd>' + e(value) + '</dd></div>').join("") + '</dl>';
+}
+function storageSummary(p) {
+  if (p.slope === "avoriaz") return "Consigna en Avoriaz · suplemento por cotizar, aparte.";
+  if (p.slope === "orelle") return "Consigna en Orelle · 32 € para los siete por una noche, aparte.";
+  if (p.slope === "carroz") return p.media === "ferme" ? "Consigna en Kédeuze · 44 € para los siete por una noche, aparte." : "Guardar material en el hotel · espacio por acordar. Casilleros opcionales, 44 € por grupo.";
+  if (p.slope === "cenis" || p.slope === "flaine") return "Consigna gratuita anunciada en la tienda · reservar espacio para siete.";
+  return "Guardaesquís en la residencia · reservar espacio para siete.";
+}
 function controls() {
   return (
     '<div class="controls"><div class="switch" role="group" aria-label="Importes">' +
@@ -282,7 +304,7 @@ function recommendationsSection() {
       ${picture(p.media, p.home, index === 0)}
       <div class="recommendation-body"><span class="rec-order">${ordinals[index]}</span><h3>${e(choice.name)}</h3>
       <b>${e(labelPrice(p))} <small>/ ${e(unit(p))}</small></b>
-      <p>${e(choice.why)}</p><p class="rec-detail">${e(choice.tradeoff)}</p></div>
+      ${schematic(choice.why)}<div class="rec-detail">${schematic(choice.tradeoff)}</div><span class="card-timing">Salida sáb. ${window.SKI_ITINERARIES.time(window.SKI_ITINERARIES.forPlan(p)[0].departure)}</span></div>
       ${icon("arrow")}</a></li>`;
   }).join("");
   return `<section id="recomendaciones" aria-labelledby="rec-title">
@@ -318,7 +340,8 @@ function homePage() {
     budgetChart(
       ["cenis", "carroz-inicio", "loft", "chalet", "orelle"].map(lookup),
     ) +
-    '<p class="fine">El precio principal reúne una noche, dos días de forfait, material y cargos conocidos. La consigna se explica en cada descripción y se paga aparte. En Val Cenis, Les Carroz y Flaine el nuevo alquiler local está por cotizar. Para incluir la estimación inicial de comida, sumad 30 € por persona. Desplazamientos y extras opcionales van aparte.</p></section>' +
+    schematic("Base = una noche + dos días de forfait + material + cargos conocidos. Consigna y extras se suman aparte. Comida estimada, 30 € por persona aparte. Alquiler local pendiente en Val Cenis, Les Carroz y Flaine.") + '</section>' +
+    '<section class="home-itinerary"><h2>Un horario en cada plan</h2>' + rows([["Sábado", "Despertar → coche → forfait y material → esquí → alojamiento"], ["Domingo", "Desayuno y salida → primera subida → devolver material → Ecla"]]) + '<a class="entrylink" href="#planes">Ver los itinerarios ' + icon("forward") + '</a></section>' +
     '<section class="notes"><h2>Cuándo reservaría</h2><div><b>Ahora</b><p>Elegiría una casa con cancelación para siete y reservaría el material al confirmar las tallas.</p></div><div><b>7–10 de diciembre</b><p>Revisaría qué remontes abren antes de pagar los forfaits o una casa no reembolsable. Las tarifas de apertura pueden agotarse antes.</p></div></section>'
   );
 }
@@ -369,15 +392,16 @@ function accessPanel(key, access, hours) {
   ).join("");
   return `<section class="slope-access" aria-label="Acceso y horarios"><div class="access-summary">
     <h2>Del alojamiento a las pistas</h2><strong>${e(modeLabels[access.mode])}</strong>
-    <p>${e(access.text)}</p>${mapLinks ? '<div class="planrelated">' + mapLinks + '</div>' : ""}</div>
+    ${schematic(access.text)}${mapLinks ? '<div class="planrelated">' + mapLinks + '</div>' : ""}</div>
     <div class="lift-hours"><h2>Horario de pistas y remontes</h2><span class="minor">Sábado 12 y domingo 13 de diciembre</span>
-    ${hours.map((row) => `<p><b>${e(row.label)}</b>${e(row.text)}</p>`).join("")}</div></section>`;
+    ${hours.map((row) => `<div class="hours-item"><b>${e(row.label)}</b>${schematic(row.text)}</div>`).join("")}</div></section>`;
 }
 function emptyOptions() {
   return '<p class="empty-options">Ninguna opción coincide con estos filtros.</p>';
 }
 function planCard(p) {
   const b = budget(p);
+  const itinerary = window.SKI_ITINERARIES.forPlan(p)[0];
   return (
     '<a class="plancard" href="#plan/' +
     p.id +
@@ -395,7 +419,7 @@ function planCard(p) {
     (b.low == null ? "" : "<small>/ " + unit(p) + "</small>") +
     '</div><div class="cardmeta">' +
     e(p.status || p.tag || p.capacity) +
-    '</div><div class="card-access">' + icon("pin") + e(modeLabels[window.SKI_ACCESS.plans[p.id].mode]) + "</div></div></a>"
+    '</div><div class="card-access">' + icon("pin") + e(modeLabels[window.SKI_ACCESS.plans[p.id].mode]) + '</div><div class="card-timing">Sáb. salida ' + window.SKI_ITINERARIES.time(itinerary.departure) + ' · Dom. Ecla ≈' + window.SKI_ITINERARIES.time(itinerary.back) + "</div></div></a>"
   );
 }
 function otherAccessOptions() {
@@ -640,9 +664,9 @@ function reviewTable(review, when = "") {
 function gearPanel(logistics) {
   return `<section class="gear-logistics" aria-label="Material sin llevar esquís en el coche"><h2>Alquiler y noche del sábado</h2>
   <strong>${e(logistics.title)}</strong><dl>
-  <div><dt>Recogida</dt><dd>${e(logistics.pickup)}</dd></div>
-  <div><dt>Sábado al acabar</dt><dd>${e(logistics.night)}</dd></div>
-  <div><dt>Domingo</dt><dd>${e(logistics.return)}</dd></div></dl>
+  <div><dt>Recogida</dt><dd>${schematic(logistics.pickup)}</dd></div>
+  <div><dt>Sábado al acabar</dt><dd>${schematic(logistics.night)}</dd></div>
+  <div><dt>Domingo</dt><dd>${schematic(logistics.return)}</dd></div></dl>
   <p class="fine">${e(logistics.booking)}</p></section>`;
 }
 function detail(p) {
@@ -683,26 +707,25 @@ function detail(p) {
     "</span></div>" +
     controls() +
     bookingActions(actions) +
-    gearPanel(window.SKI_GEAR_LOGISTICS.forPlan(p)) +
-    accessPanel("plan/" + p.id, window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null)) +
+    quickFacts(p) +
+    '<p class="storage-summary">' + e(storageSummary(p)) + '</p>' +
+    '<nav class="plan-jumps" aria-label="Ir a una sección"><a href="#itinerario" data-jump="itinerario">Itinerario ↓</a><a href="#presupuesto" data-jump="presupuesto">Precio ↓</a><a href="#opinion" data-jump="opinion">Pros y contras ↓</a></nav>' +
     (p.id === "chalet"
-      ? '<section aria-label="Elegir estación desde el chalet"><h2>¿Avoriaz o Les Carroz?</h2>' +
+      ? fold("Mismo chalet · ¿Avoriaz o Les Carroz?", '<section aria-label="Elegir estación desde el chalet">' +
         rows([
           ["Avoriaz", "≈50 min en coche hasta Les Prodains + 4 min en teleférico."],
           ["Les Carroz · Kédeuze", "≈4 min en coche (1,8 km) o ≈23 min a pie (1,7 km)."],
         ]) +
-        '<p>Para aprovechar más la casa y el jacuzzi, elegiría Les Carroz. Hace falta el forfait correspondiente. Las variantes de abajo proponen alquiler en Ski Plus, junto a Kédeuze, con tarifa por cotizar. Desde Les Carroz se puede esquiar hacia otros sectores de Grand Massif cuando las conexiones estén abiertas y el forfait los cubra.</p>' +
-        '<p class="fine">Esta ficha presupuesta Avoriaz. Les Carroz, Flaine y Samoëns tienen apertura prevista el 12 de diciembre, según la nieve. Las conexiones dependen de los remontes abiertos y del forfait elegido. Hay skibus gratuito por Arâches, pero falta confirmar el servicio del 12–13 de diciembre. Las distancias parten de la ubicación aproximada del chalet. El trayecto a pie incluye un camino cuyo acceso invernal falta comprobar.</p>' +
-        '<div class="planrelated"><a class="entrylink" href="#plan/chalet-inicio">Ver chalet + forfait de iniciación ' + icon("forward") + '</a><a class="entrylink" href="#plan/chalet-villages">Ver chalet + forfait Villages ' + icon("forward") + '</a></div></section>'
+        schematic("Para disfrutar más la casa y el jacuzzi, elegiría Les Carroz. Necesita su propio forfait y alquiler en Ski Plus, aún por cotizar. Las conexiones con Grand Massif dependen del forfait y de los remontes abiertos. El skibus del 12–13 y el camino a pie en invierno están por comprobar.") +
+        '<div class="planrelated"><a class="entrylink" href="#plan/chalet-inicio">Ver chalet + forfait de iniciación ' + icon("forward") + '</a><a class="entrylink" href="#plan/chalet-villages">Ver chalet + forfait Villages ' + icon("forward") + '</a></div></section>')
       : "") +
     '<div class="duogallery">' +
     figure(media[p.media], "Alojamiento") +
     figure(media[p.slope], "Dominio esquiable") +
     "</div>" +
-    reviewTable(review, p.when) +
-    '<section class="detailsgrid"><div><h2>La estancia</h2><p>' +
-    e(p.house) +
-    "</p>" +
+    '<div id="itinerario">' + window.SKI_ITINERARIES.panel("plan/" + p.id, window.SKI_ITINERARIES.forPlan(p)) + '</div>' +
+    '<div id="presupuesto"><section class="detailsgrid"><div><h2>La estancia</h2>' +
+    schematic(p.house) +
     rows([
       ["Capacidad", p.capacity],
       ["Noche completa", p.night == null ? "Sin tarifa" : money(p.night)],
@@ -714,8 +737,10 @@ function detail(p) {
     priceDetails(p) +
     '<p class="fine">Importes para ' +
     person(p) +
-    " personas, sujetos a disponibilidad. Comidas y desplazamientos aparte.</p></div></section>" +
-    "<section><h2>Distancias desde Ecla y el alojamiento</h2>" +
+    " personas, sujetos a disponibilidad. Comidas y desplazamientos aparte.</p></div></section></div>" +
+    '<div id="opinion">' + reviewTable(review, p.when) + '</div>' +
+    fold("Acceso, horarios y material · detalles", gearPanel(window.SKI_GEAR_LOGISTICS.forPlan(p)) + accessPanel("plan/" + p.id, window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null))) +
+    fold("Distancias y rutas · detalles", "<section><h2>Distancias desde Ecla y el alojamiento</h2>" +
     rows(routeRows(p)) +
     '<p class="fine">' +
     e(
@@ -726,13 +751,9 @@ function detail(p) {
     '</p><div class="planrelated">' +
     roadLink +
     stationLink +
-    "</div></section>" +
+    "</div></section>") +
     sameHome(p) +
-    "<section><h2>Forfait y alquiler</h2><p>" +
-    e(p.passInfo) +
-    "</p><p>" +
-    e(p.gearInfo) +
-    "</p></section>" +
+    fold("Forfait y alquiler · condiciones", '<h3>Forfait</h3>' + schematic(p.passInfo) + '<h3>Material</h3>' + schematic(p.gearInfo)) +
     '<button class="resbtn" data-sources>' +
     icon("book") +
     " Recursos de este plan " +
@@ -772,10 +793,12 @@ function compare() {
   const data = [
     ["Total", (p) => labelPrice(p)],
     ["Personas cotizadas", (p) => String(person(p))],
-    ["Del alojamiento a las pistas", (p) => window.SKI_ACCESS.plans[p.id].text],
-    ["Recogida del material", (p) => window.SKI_GEAR_LOGISTICS.forPlan(p).pickup],
-    ["Material el sábado por la noche", (p) => window.SKI_GEAR_LOGISTICS.forPlan(p).night],
-    ["Horario de pistas y remontes", (p) => window.skiLiftHours(p.id, null).map((row) => row.label + " · " + row.text).join(" ")],
+    ["Acceso desde la casa", (p) => modeLabels[window.SKI_ACCESS.plans[p.id].mode]],
+    ["Recogida del material", (p) => window.SKI_GEAR_LOGISTICS.forPlan(p).title],
+    ["Material por la noche · extra", storageSummary],
+    ["Salir de Ecla · sábado", (p) => window.SKI_ITINERARIES.time(window.SKI_ITINERARIES.forPlan(p)[0].departure)],
+    ["Volver a Ecla · domingo", (p) => "≈" + window.SKI_ITINERARIES.time(window.SKI_ITINERARIES.forPlan(p)[0].back)],
+    ["Primer remonte · domingo", (p) => { const m = window.SKI_ITINERARIES.forPlan(p)[0]; return (m.published && m.first === m.firstSun ? "" : "≈") + window.SKI_ITINERARIES.time(m.firstSun) + (m.published ? "" : " · provisional"); }],
     ["Principal ventaja", (p) => window.SKI_PLAN_REVIEW(p).pros[0] || "—"],
     [
       "Principal inconveniente",
@@ -840,6 +863,7 @@ function archiveLinks(a) {
   const images = [...(media[a.media] || []), ...(media[a.slope] || [])];
   const review = window.SKI_ARCHIVE_REVIEW(a);
   return [
+    ...window.SKI_ITINERARIES.forArchive(a, archive.indexOf(a)).flatMap(m => m.sources),
     ...window.SKI_GEAR_LOGISTICS.forArchive(a).sources,
     ...accessSourceLinks(window.SKI_ACCESS.archive[archive.indexOf(a)], window.skiLiftHours(null, archive.indexOf(a))),
     ...(a.links || []),
@@ -858,14 +882,12 @@ function archiveBody(item, index, compact = false) {
     (item.slope ? figure(media[item.slope], "Dominio esquiable") : "");
   return (
     bookingActions(review.actions, review.bookingNote) +
-    '<p class="archivedesc">' +
-    e(item.description) +
-    "</p>" +
+    fold("Resumen de la opción", schematic(item.description)) +
     (photos ? '<div class="duogallery">' + photos + "</div>" : "") +
-    gearPanel(window.SKI_GEAR_LOGISTICS.forArchive(item)) +
-    accessPanel("otras/" + index, window.SKI_ACCESS.archive[index], window.skiLiftHours(null, index)) +
+    window.SKI_ITINERARIES.panel("otras/" + index, window.SKI_ITINERARIES.forArchive(item, index)) +
     (item.sauna ? rows([["Sauna del alojamiento", item.sauna], ["Jacuzzi del alojamiento", item.jacuzzi]]) : "") +
     reviewTable(review) +
+    fold("Acceso, horarios y material · detalles", gearPanel(window.SKI_GEAR_LOGISTICS.forArchive(item)) + accessPanel("otras/" + index, window.SKI_ACCESS.archive[index], window.skiLiftHours(null, index))) +
     `<button class="${compact ? "quiet" : "resbtn"}" data-archive="${index}">${icon("book")} Recursos de esta opción</button>`
   );
 }
@@ -1104,6 +1126,12 @@ $("#lightbox").addEventListener("keydown", (ev) => {
   if (ev.key === "ArrowRight") lightMove(1);
 });
 document.addEventListener("click", (ev) => {
+  const jump = ev.target.closest("[data-jump]");
+  if (jump) {
+    ev.preventDefault();
+    document.getElementById(jump.dataset.jump)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+    return;
+  }
   const el = ev.target.closest("button");
   if (!el) return;
   if (el.hasAttribute("data-zoom")) {
