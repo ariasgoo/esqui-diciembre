@@ -13,7 +13,7 @@
     "Material · tarifas Orelle Sports",
     "https://orelle-sports.com/materiels-tarifs/",
   ];
-  const hotel = ["Hotel · Esquiades, precios para siete", esq(162, 7)];
+  const hotel = ["Hotel · Esquiades, precios para siete", esq(162, 7, 510746)];
   const aqua = [
     "Sauna municipal · horarios y tarifas",
     "https://www.mairie-morzine-avoriaz.com/espace-aquatique/",
@@ -162,6 +162,14 @@
       ],
     ],
   };
+  const esquiadesSources = (hotelId) => [
+    ["Esquiades · buscar para seis", esq(8, 6, hotelId)],
+    ["Esquiades · la misma búsqueda para siete", esq(8, 7, hotelId)],
+    [
+      "Alquiler · Sport 2000 Eskiador",
+      "https://location-ski.sport2000.fr/magasins/204-sport-2000-eskiador-val-thorens",
+    ],
+  ];
   const vt = {
     area: "Val Thorens",
     home: "Val Thorens",
@@ -176,14 +184,6 @@
       "40–50 € estimados para dos días en el plan original de Sport 2000. Casco y precio final pendientes de confirmar.",
     sauna: "Sin confirmar",
     jacuzzi: "Sin confirmar",
-    sources: [
-      ["Esquiades · buscar para seis", esq(8, 6, 520929)],
-      ["Esquiades · la misma búsqueda para siete", esq(8, 7, 520929)],
-      [
-        "Alquiler propuesto · Sport 2000",
-        "https://location-ski.sport2000.fr/rent?shop=204",
-      ],
-    ],
   };
   window.PLANS = [
     {
@@ -368,6 +368,7 @@
     {
       ...vt,
       id: "cosy",
+      sources: esquiadesSources(520929),
       route: "cosy",
       title: "Cosy Val Tho Ski aux Pieds",
       short: "Val Thorens · Cosy",
@@ -388,6 +389,7 @@
     {
       ...vt,
       id: "cheval",
+      sources: esquiadesSources(1300789),
       route: "cheval",
       title: "Résidence Cheval Blanc V24",
       short: "Val Thorens · Cheval Blanc",

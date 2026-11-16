@@ -41,13 +41,14 @@
       id +
       "?check_in=2026-12-12&check_out=2026-12-13&adults=7&currency=EUR",
   ];
-  const split = (n) => [
+  const split = (n, hotelId) => [
     "Esquiades · " + n + (n === 1 ? " persona" : " personas"),
     "https://www.esquiades.com/book/hoteles?idioma=1&inicio=2026-12-12&final=2026-12-13&inif=2026-12-12&fif=2026-12-13&nHa=1&nA=" +
       n +
       "&nA-1=" +
       n +
-      "&nNe=0&nNe-1=0&pi=8",
+      "&nNe=0&nNe-1=0&pi=8&hD=" +
+      hotelId,
   ];
   const route = (dest) => [
     "Ruta en coche desde Ecla Archamps",
@@ -134,6 +135,10 @@
       description:
         "Siete plazas, tres dormitorios y tres baños. Sauna y hammam comunes en el edificio. Pistas locales a 250 m y parada a 20 m. Ecla–Les Gets centro ≈65 km. Para ir a Avoriaz hace falta trasladarse a Prodains.",
       links: [
+        [
+          "Reservar el apartamento · Sun Location (FR-1-598-153)",
+          "https://www.sunlocation.com/location-vacances/967047",
+        ],
         [
           "Alojamiento y fotos · Poplidays FR-1-598-153",
           "https://www.poplidays.com/fr/location-vacances-les-gets_5483/19919383834-appartement-les-gets-4-pieces-7-personnes/",
@@ -477,13 +482,13 @@
       description:
         "Seis en Cheval Blanc a 185 € y una plaza individual en Hôtel des 3 Vallées a 457 € darían ≈224 € por persona. Cuatro en Cosy a 260 € y tres en Cheval Blanc a 258 € darían ≈259 €. Incluyen forfait; falta material. Son búsquedas separadas: revisad ambas disponibilidades antes de pagar.",
       links: [
-        split(6),
-        split(1),
-        split(4),
-        split(3),
+        split(6, 1300789),
+        split(1, 77890),
+        split(4, 520929),
+        split(3, 1300789),
         [
           "Material · Sport 2000 Val Thorens",
-          "https://location-ski.sport2000.fr/rent?shop=204",
+          "https://location-ski.sport2000.fr/magasins/204-sport-2000-eskiador-val-thorens",
         ],
       ],
     },
@@ -572,7 +577,7 @@
         ["Fidelidad · Intersport", "https://www.intersport-rent.fr/fr/faq"],
         [
           "Tienda · Skimium Avoriaz Sports",
-          "https://www.skimium.fr/station/avoriaz/magasin/avoriaz-sports",
+          "https://www.avoriaz-sports.fr/hiver/",
         ],
         [
           "Descuento TRIBU · Sport 2000",
@@ -580,7 +585,7 @@
         ],
         [
           "Servicio · SkiTruck Annemasse",
-          "https://www.lokki.rent/loueur/skitruck-decathlon-annemasse",
+          "https://skitruck-decathlon-annemasse.lokki.rent/",
         ],
         passAv,
       ],

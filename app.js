@@ -35,6 +35,10 @@ const paths = {
     '<path d="M3 17c2 2 4-2 6 0s4-2 6 0 4-2 6 0M7 3c-3 4 3 5 0 9m5-9c-3 4 3 5 0 9m5-9c-3 4 3 5 0 9"/>',
   mountain: '<path d="m2 20 6.5-11 4 6 3-11L22 20Z"/>',
   map: '<path d="m2.5 5.8 6-2.4 7 2.8 6-2.4v14.4l-6 2.4-7-2.8-6 2.4Z"/><path d="M8.5 3.4v14.4m7-11.6v14.4"/>',
+  bed: '<path d="M3 19V7m18 12V9m-18 6h18M6 11V7h4a3 3 0 0 1 3 3v1m-10 0h15a3 3 0 0 1 3 3"/>',
+  gear: '<path d="m4 18 11-13c1.6-1.8 3.2-1.5 3.6-.7M5 21 17 7M4 6l13 13m-2-1.3 3.3-3.1M3 4l2 2"/>',
+  ticket:
+    '<path d="M3 6h18v4a2 2 0 0 0 0 4v4H3v-4a2 2 0 0 0 0-4Z"/><path d="M15 7.5V9m0 2v2m0 2v1.5"/>',
   camera: '<path d="M3 8h4l2-3h6l2 3h4v12H3Z"/><circle cx="12" cy="13" r="3"/>',
 };
 function icon(k) {
@@ -504,8 +508,64 @@ const accessBySlope = {
   orelle: "orelle",
   thorens: "val-thorens",
 };
+const bookingIcons = {
+  stay: "bed",
+  package: "bed",
+  gear: "gear",
+  pass: "ticket",
+};
+
+function bookingActions(actions, bookingNote = "") {
+  if (!actions.length && !bookingNote) return "";
+  const compactLabels = {
+    "Ver alojamiento": "Alojamiento",
+    "Alquilar material": "Material",
+    "Comprar forfait": "Forfait",
+  };
+  const buttons = actions
+    .map((action) => {
+      const short = compactLabels[action.label];
+      const title = short
+        ? '<span class="booking-full">' +
+          e(action.label) +
+          '</span><span class="booking-short">' +
+          e(short) +
+          "</span>"
+        : "<span>" + e(action.label) + "</span>";
+      return `<a class="book-action" aria-label="${e(action.label)}" data-booking-kind="${e(action.kind)}" href="${e(action.url)}" target="_blank" rel="noopener noreferrer">
+      ${icon(bookingIcons[action.kind])}${title}${icon("external")}</a>`;
+    })
+    .join("");
+  const withNotes = actions.filter((action) => action.note);
+  const notes = withNotes.length
+    ? `<details class="booking-notes"><summary>Detalles de reserva</summary><ul>${withNotes.map((action) => `<li><strong>${e(action.label)}</strong> · ${e(action.note)}</li>`).join("")}</ul></details>`
+    : "";
+  return `<div class="booking-block">${buttons ? '<nav aria-label="Enlaces de reserva" class="book-actions">' + buttons + "</nav>" : ""}${bookingNote ? '<p class="booking-hint">' + e(bookingNote) + "</p>" : ""}${notes}</div>`;
+}
+
+function reviewTable(review, when = "") {
+  const sides = [
+    ["Pros", "+", review.pros],
+    ["Contras", "−", review.cons],
+  ].filter(([, , points]) => points?.length);
+  if (!sides.length) return "";
+  const rows = sides
+    .map(
+      ([label, sign, points]) =>
+        `<tr><th scope="row"><span class="review-sign" aria-hidden="true">${sign}</span>${label}</th>
+      <td><ul>${points.map((point) => "<li>" + e(point) + "</li>").join("")}</ul></td></tr>`,
+    )
+    .join("");
+  return `<section class="option-review" aria-label="Pros y contras">
+    <h2>Pros y contras</h2><div class="review-frame"><table class="review-table" aria-label="Pros y contras de esta opción"><tbody>${rows}</tbody></table></div>
+    ${when ? '<p class="review-when"><strong>Cuándo lo elegiría</strong> ' + e(when) + "</p>" : ""}
+    </section>`;
+}
+
 function detail(p) {
   const r = getRoute(p);
+  const review = window.SKI_PLAN_REVIEW(p);
+  const actions = window.SKI_PLAN_BOOKING(p, { student: state.student });
   const station = window.SKI_STATIONS.forPlan(p);
   const roadLink =
     '<a class="entrylink" href="#mapa/' +
@@ -539,10 +599,12 @@ function detail(p) {
     e(p.status || p.tag || p.capacity) +
     "</span></div>" +
     controls() +
+    bookingActions(actions) +
     '<div class="duogallery">' +
     figure(media[p.media], "Alojamiento") +
     figure(media[p.slope], "Dominio esquiable") +
     "</div>" +
+    reviewTable(review, p.when) +
     '<section class="detailsgrid"><div><h2>La estancia</h2><p>' +
     e(p.house) +
     "</p>" +
@@ -571,13 +633,6 @@ function detail(p) {
     stationLink +
     "</div></section>" +
     sameHome(p) +
-    '<section class="notes"><h2>Cuándo lo elegiría</h2><div><b>Lo mejor</b><p>' +
-    e(p.pro) +
-    "</p></div><div><b>A tener en cuenta</b><p>" +
-    e(p.con) +
-    "</p></div><div><b>Encaja si…</b><p>" +
-    e(p.when) +
-    "</p></div></section>" +
     "<section><h2>Forfait y alquiler</h2><p>" +
     e(p.passInfo) +
     "</p><p>" +
@@ -622,6 +677,11 @@ function compare() {
   const data = [
     ["Total", (p) => labelPrice(p)],
     ["Personas cotizadas", (p) => String(person(p))],
+    ["Principal ventaja", (p) => window.SKI_PLAN_REVIEW(p).pros[0] || "—"],
+    [
+      "Principal inconveniente",
+      (p) => window.SKI_PLAN_REVIEW(p).cons[0] || "—",
+    ],
     ...categories.map((x, i) => [
       x,
       (p) => {
@@ -679,18 +739,33 @@ function compare() {
 }
 function archiveLinks(a) {
   const images = [...(media[a.media] || []), ...(media[a.slope] || [])];
+  const review = window.SKI_ARCHIVE_REVIEW(a);
   return [
     ...(a.links || []),
+    ...(review.links || []),
+    ...review.actions.map((action) => [action.label, action.url]),
     ...images.flatMap((m) => [
       [m.credit || m.alt, m.source],
       ...(m.license ? [["Licencia de fotografía", m.license]] : []),
     ]),
   ];
 }
-function archiveDetail(item, index) {
+function archiveBody(item, index, compact = false) {
+  const review = window.SKI_ARCHIVE_REVIEW(item);
   const photos =
     (item.media ? figure(media[item.media], "Alojamiento") : "") +
     (item.slope ? figure(media[item.slope], "Dominio esquiable") : "");
+  return (
+    bookingActions(review.actions, review.bookingNote) +
+    '<p class="archivedesc">' +
+    e(item.description) +
+    "</p>" +
+    (photos ? '<div class="duogallery">' + photos + "</div>" : "") +
+    reviewTable(review) +
+    `<button class="${compact ? "quiet" : "resbtn"}" data-archive="${index}">${icon("book")} Recursos de esta opción</button>`
+  );
+}
+function archiveDetail(item, index) {
   return (
     '<a class="back" href="#otras">' +
     icon("back") +
@@ -698,17 +773,8 @@ function archiveDetail(item, index) {
     heading(item.name, [item.area, item.kind].filter(Boolean).join(" · ")) +
     '<div class="headprice"><b>' +
     e(item.price || "Sin tarifa cerrada") +
-    '</b></div><p class="archivedesc">' +
-    e(item.description) +
-    "</p>" +
-    (photos ? '<div class="duogallery">' + photos + "</div>" : "") +
-    '<button class="resbtn" data-archive="' +
-    index +
-    '">' +
-    icon("book") +
-    " Recursos de esta opción " +
-    icon("arrow") +
-    "</button>"
+    "</b></div>" +
+    archiveBody(item, index)
   );
 }
 function more() {
@@ -737,10 +803,6 @@ function more() {
     .map((a, i) => {
       if (state.archiveKind !== "Todas" && a.kind !== state.archiveKind)
         return "";
-      const photos = [
-        a.media ? figure(media[a.media], "Alojamiento") : "",
-        a.slope ? figure(media[a.slope], "Dominio esquiable") : "",
-      ].join("");
       return (
         '<details><summary><div><span class="minor">' +
         e([a.area, a.kind].filter(Boolean).join(" · ")) +
@@ -750,15 +812,9 @@ function more() {
         e(a.price || "Sin tarifa cerrada") +
         "</span>" +
         icon("arrow") +
-        '</summary><div class="archivebody"><p>' +
-        e(a.description) +
-        "</p>" +
-        photos +
-        '<button class="quiet" data-archive="' +
-        i +
-        '">' +
-        icon("book") +
-        " Recursos</button></div></details>"
+        '</summary><div class="archivebody">' +
+        archiveBody(a, i, true) +
+        "</div></details>"
       );
     })
     .join("");
@@ -777,6 +833,10 @@ function linksFor(p) {
   const r = getRoute(p);
   return [
     p.houseLink,
+    ...window
+      .SKI_PLAN_BOOKING(p, { student: state.student })
+      .map((action) => [action.label, action.url]),
+    ...(window.SKI_PLAN_REVIEW(p).links || []),
     ...(p.sources || []),
     ...(p.extra || []),
     ...(r.links || []),
