@@ -421,7 +421,7 @@ function planCard(p) {
 function otherAccessOptions() {
   if (state.accessFilter === "all") return "";
   const matches = archive.map((item, index) => ({ item, index }))
-    .filter(({ index }) => matchesAccess(window.SKI_ACCESS.archive[index], state.accessFilter));
+    .filter(({ item, index }) => window.SKI_ARCHIVE_ALLOWED(item) && matchesAccess(window.SKI_ACCESS.archive[index], state.accessFilter));
   if (!matches.length) return "";
   if (state.view !== "todos") {
     return '<a class="entrylink" href="#otras/' + state.accessFilter + '">Otras opciones con este acceso ' + icon("forward") + '</a>';
@@ -781,7 +781,7 @@ function more() {
     "</div>";
   const items = archive
     .map((a, i) => {
-      if ((state.archiveKind !== "Todas" && a.kind !== state.archiveKind) || !matchesAccess(window.SKI_ACCESS.archive[i], state.archiveAccess)) return "";
+      if (!window.SKI_ARCHIVE_ALLOWED(a) || (state.archiveKind !== "Todas" && a.kind !== state.archiveKind) || !matchesAccess(window.SKI_ACCESS.archive[i], state.archiveAccess)) return "";
       return (
         '<details><summary><div><span class="minor">' +
         e([a.area, a.kind].filter(Boolean).join(" · ")) +
@@ -922,7 +922,7 @@ function render() {
   const [view, key] = recordHash().split("/");
   const p = view === "plan" ? lookup(key) : null;
   const item =
-    view === "otras" && /^\d+$/.test(key) ? archive[Number(key)] : null;
+    view === "otras" && /^\d+$/.test(key) && window.SKI_ARCHIVE_ALLOWED(archive[Number(key)]) ? archive[Number(key)] : null;
   let tab = view;
   if (view === "plan") tab = "planes";
   if (["estacion", "estaciones", "comparar"].includes(view)) tab = "planes";

@@ -1,6 +1,7 @@
 (() => {
   "use strict";
   window.SKI_PLAN_ALLOWED = plan => !!plan && plan.night != null && !plan.id.endsWith("inicio");
+  window.SKI_ARCHIVE_ALLOWED = entry => !!entry && (entry.kind !== "Alojamiento" || /\d/.test(entry.price || ""));
   // Published Ski Plus catalogue: intermediate equipment 80 € + helmet 12 €.
   // This is a planning price, not a confirmed dated reservation or promotion.
   for (const plan of window.PLANS.filter(p => p.slope === "carroz" && window.SKI_PLAN_ALLOWED(p))) {

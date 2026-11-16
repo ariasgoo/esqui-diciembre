@@ -6,6 +6,8 @@ Una noche y dos días de esquí para siete personas de 20 años desde Ecla Archa
 
 «Planes» reúne estaciones y alojamientos. Las cuatro estaciones principales son Avoriaz, Val Thorens–Orelle, Les Carroz y Val Cenis. Flaine se conserva en «Otras estaciones estudiadas», plegada. Las antiguas rutas de estaciones siguen abriendo el mismo catálogo. Se ha retirado el comparador y los planes exclusivos de iniciación o sin tarifa de alojamiento. `catalogue.js` aplica estos criterios sin borrar las fuentes históricas.
 
+Los alojamientos alternativos sin precio de noche tampoco aparecen en las fichas, «Otras» ni en las chinchetas. Se conservan los números de las ubicaciones restantes.
+
 Cada estación empieza por distancia y tiempo desde Ecla. El perfil resume dominio, colores por número de pistas, un escenario propio de kilómetros abiertos para el 12–13, mapa oficial y dos puntos clave. Los escenarios tienen baja confianza y no son un parte oficial ni previsión de nieve. `resort-facts.js` recoge las fuentes. El operador no publica kilómetros por cada color; no se convierten recuentos a longitudes. Villages tiene fuentes discrepantes de recuento y no se inventa su reparto por colores.
 
 Precios orientativos consultados el 16 de noviembre. La ficha empieza por el desglose. El selector cambia persona/grupo; las tarifas de estudiante se aplican cuando corresponden. Ski Plus publica 80 € de material intermedio +12 € de casco por dos días; se usa 92 €, sin descontar una promoción no validada. Eskiador mostró 53,58 € intermedio con botas y casco para el 12–13; no confirma siete equipos disponibles ni bastones. Val Cenis conserva su subtotal conocido con «+ material», porque no hay una cotización local verificable; nunca se presenta como total completo.

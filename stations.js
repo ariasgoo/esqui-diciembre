@@ -110,7 +110,7 @@
       ...(resortAlternatives[station.key] || []),
     ]);
     return window.ARCHIVE.flatMap((entry, index) =>
-      names.has(entry.name) ? [{ entry, index }] : [],
+      names.has(entry.name) && window.SKI_ARCHIVE_ALLOWED(entry) ? [{ entry, index }] : [],
     );
   };
 
