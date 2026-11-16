@@ -74,7 +74,14 @@ const state = {
   selection: ["chalet", "loft", "orelle"],
   archiveKind: "Todas",
 };
-const hasSpa = (p) => [p.sauna, p.jacuzzi].some((value) => value && value !== "No");
+const spaAmenities = (p) => [
+  ["sauna", p.sauna], ["jacuzzi", p.jacuzzi],
+].filter(([, value]) => value && value !== "No").map(([name]) => name);
+const hasSpa = (p) => spaAmenities(p).length > 0;
+const planStatus = (p) => {
+  const status = p.status || p.tag || p.capacity;
+  return /sauna|jacuzzi|\bspa\b/i.test(status) ? p.capacity : status;
+};
 function budget(p) {
   const n = person(p),
     scale = state.unit === "group" ? n : 1;
@@ -177,12 +184,17 @@ function schematic(text) {
 function fold(title, content, extra = "") {
   return '<details class="detail-fold ' + e(extra) + '"><summary>' + e(title) + icon("arrow") + '</summary><div class="fold-body">' + content + '</div></details>';
 }
+function spaExtra(p) {
+  const amenities = spaAmenities(p);
+  if (!amenities.length) return "";
+  const details = rows([["Sauna", p.sauna], ["Jacuzzi", p.jacuzzi]].filter(([, value]) => value && value !== "No")) + (p.spa ? '<p class="fine">' + e(p.spa) + '</p>' : "");
+  return '<div class="stay-extra"><p>Extra · Tiene ' + e(amenities.join(" y ")) + '</p>' + fold("Detalles del extra", details) + '</div>';
+}
 function quickFacts(p) {
   const r = getRoute(p), access = window.SKI_ACCESS.plans[p.id];
   const approach = access.mode === "ski" ? "Directo con esquís" : access.mode === "walk" ? "≈12 min andando" : r.homeLift;
   return '<dl class="quick-facts">' + [
     ["Ecla → acceso", r.originLift], ["Casa → acceso", approach],
-    ["Sauna", p.sauna], ["Jacuzzi", p.jacuzzi],
   ].map(([label,value]) => '<div><dt>' + e(label) + '</dt><dd>' + e(value) + '</dd></div>').join("") + '</dl>';
 }
 function storageSummary(p) {
@@ -336,7 +348,7 @@ function homePage() {
       ["cenis", "carroz-inicio", "loft", "chalet", "orelle"].map(lookup),
     ) +
     schematic("Base = una noche + dos días de forfait + material + cargos conocidos. Consigna y extras se suman aparte. Comida estimada, 30 € por persona aparte. Alquiler local pendiente en Val Cenis, Les Carroz y Flaine.") + '</section>' +
-    '<section class="home-itinerary"><h2>Un horario en cada plan</h2>' + rows([["Sábado", "Despertar → coche → forfait y material → esquí → alojamiento"], ["Domingo", "Desayuno y salida → primera subida → devolver material → Ecla"]]) + '<a class="entrylink" href="#planes">Ver los itinerarios ' + icon("forward") + '</a></section>' +
+    '<section class="home-itinerary"><h2>Un horario en cada plan</h2>' + rows([["Sábado", "Coche → forfait y material → esquí → alojamiento"], ["Domingo", "Salida → primera subida → devolver material → Ecla"]]) + '<a class="entrylink" href="#planes">Ver los itinerarios ' + icon("forward") + '</a></section>' +
     '<section class="notes"><h2>Cuándo reservaría</h2><div><b>Ahora</b><p>Elegiría una casa con cancelación para siete y reservaría el material al confirmar las tallas.</p></div><div><b>7–10 de diciembre</b><p>Revisaría qué remontes abren antes de pagar los forfaits o una casa no reembolsable. Las tarifas de apertura pueden agotarse antes.</p></div></section>'
   );
 }
@@ -413,7 +425,7 @@ function planCard(p) {
     "</b>" +
     (b.low == null ? "" : "<small>/ " + unit(p) + "</small>") +
     '</div><div class="cardmeta">' +
-    e(p.status || p.tag || p.capacity) +
+    e(planStatus(p)) +
     '</div><div class="card-access">' + icon("pin") + e(modeLabels[window.SKI_ACCESS.plans[p.id].mode]) + '</div><div class="card-timing">Sáb. salida ' + window.SKI_ITINERARIES.time(itinerary.departure) + ' · Dom. Ecla ≈' + window.SKI_ITINERARIES.time(itinerary.back) + "</div></div></a>"
   );
 }
@@ -699,7 +711,7 @@ function detail(p) {
     "</b><span> / " +
     unit(p) +
     '</span></div><span class="pill">' +
-    e(p.status || p.tag || p.capacity) +
+    e(planStatus(p)) +
     "</span></div>" +
     controls() +
     priceDetails(p) +
@@ -729,10 +741,8 @@ function detail(p) {
     rows([
       ["Capacidad", p.capacity],
       ["Noche completa", p.night == null ? "Sin tarifa" : money(p.night)],
-      ["Sauna", p.sauna],
-      ["Jacuzzi", p.jacuzzi],
     ]) +
-    (p.spa ? '<p class="fine">' + e(p.spa) + "</p>" : "") +
+    spaExtra(p) +
     "</section>" +
     '<div id="opinion">' + reviewTable(review, p.when) + '</div>' +
     fold("Acceso, horarios y material · detalles", gearPanel(window.SKI_GEAR_LOGISTICS.forPlan(p)) + accessPanel("plan/" + p.id, window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null))) +
@@ -811,8 +821,7 @@ function compare() {
             : money(b.parts[i]);
       },
     ]),
-    ["Sauna", (p) => p.sauna],
-    ["Jacuzzi", (p) => p.jacuzzi],
+    ...(list.some(hasSpa) ? [["Extras", (p) => spaAmenities(p).join(" y ")]] : []),
     ...routeRows(list[0]).map(([x], i) => [
       x,
       (p) => routeRows(p)[i][1] || "Pendiente",
@@ -881,7 +890,7 @@ function archiveBody(item, index, compact = false) {
     fold("Resumen de la opción", schematic(item.description)) +
     (photos ? '<div class="duogallery">' + photos + "</div>" : "") +
     window.SKI_ITINERARIES.panel("otras/" + index, window.SKI_ITINERARIES.forArchive(item, index)) +
-    (item.sauna ? rows([["Sauna del alojamiento", item.sauna], ["Jacuzzi del alojamiento", item.jacuzzi]]) : "") +
+    spaExtra(item) +
     reviewTable(review) +
     fold("Acceso, horarios y material · detalles", gearPanel(window.SKI_GEAR_LOGISTICS.forArchive(item)) + accessPanel("otras/" + index, window.SKI_ACCESS.archive[index], window.skiLiftHours(null, index))) +
     `<button class="${compact ? "quiet" : "resbtn"}" data-archive="${index}">${icon("book")} Recursos de esta opción</button>`

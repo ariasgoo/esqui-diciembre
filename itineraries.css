@@ -1,6 +1,6 @@
 .schematic { margin: 9px 0; padding-left: 17px; }
 .schematic li { margin: 4px 0; }
-.quick-facts, .trip-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 18px 0; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.quick-facts, .trip-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin: 18px 0; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
 .quick-facts > div, .trip-summary > div { padding: 12px 14px; border-left: 1px solid var(--line); }
 .quick-facts > div:first-child, .trip-summary > div:first-child { border: 0; }
 .quick-facts dt, .trip-summary dt { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
@@ -21,7 +21,6 @@
 .day-steps li { display: grid; grid-template-columns: 89px minmax(0, 1fr); align-items: baseline; gap: 11px; padding: 11px 9px; border-bottom: 1px solid var(--line); border-left: 2px solid transparent; }
 .day-steps time { white-space: nowrap; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--muted); }
 .day-steps strong { display: block; font-size: 13px; font-weight: 450; }
-.day-steps .step-wake strong, .day-steps .step-wake time { font-weight: 600; color: var(--text); }
 .day-steps .step-drive { border-left-color: var(--drive); background: var(--drive-fill); }
 .day-steps .step-drive time, .legend-drive { color: var(--drive); }
 .day-steps .step-ski { border-left-color: var(--ski); background: var(--ski-fill); }
@@ -58,10 +57,12 @@
 .itinerary-legend { display: flex; gap: 14px; font-size: 11px; }
 .itinerary-legend span { display: inline-flex; gap: 5px; align-items: center; }
 .itinerary-legend span::before { content: ""; width: 5px; height: 5px; background: currentColor; border-radius: 50%; }
-.departure-focus { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 430px; }
+.trip-summary.departure-focus { grid-template-columns: minmax(0, 1fr); max-width: 215px; }
 .departure-focus dd, .archivebody .departure-focus dd { font-size: 28px; }
 .departure-focus > div:first-child { background: var(--fill); }
 .departure-focus > div:first-child dd { font-weight: 650; }
+.stay-extra { margin-top: 20px; color: var(--muted); font-size: 13px; }
+.stay-extra > p { margin-bottom: 6px; }
 .recommendations-tools { justify-content: flex-end; }
 @media (max-width: 700px) {
   .weekend-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }

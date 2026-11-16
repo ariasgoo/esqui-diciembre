@@ -58,7 +58,6 @@
     if (av) arrival = clock(8,15);
     if (ce) arrival = clock(7,45);
     const departure = arrival - c.drive - 30;
-    add(sat, departure - 45, "Despertar en Ecla", "Prepararse y recoger las bolsas.");
     add(sat, departure, "Salir en coche", `${c.drive} min de ruta + 30 min de margen.`);
     add(sat, arrival, "Aparcar en el acceso", c.name);
     let firstSat;
@@ -106,14 +105,12 @@
     }
     add(sat, homeAt, l.homeEcla ? "Llegar a Ecla" : "Entrar y dejar las bolsas", l.homeEcla ? "Esta variante duerme en casa." : l.name + ". Hora de entrada acordada al reservar.");
     if (onFoot) add(sat, homeAt + 5, "Guardar los esquís", "Guardaesquís del alojamiento, con espacio reservado para siete.");
-    if (l.spa) add(sat, Math.max(clock(18), homeAt + 30), "Sauna / jacuzzi opcional", l.spa);
 
     // Target the first published ascent Sunday, allowing checkout before skiing.
     let ready = av ? clock(8,15) : or ? clock(8,15) : ce ? clock(8,15) : c.first - 30;
     const transfer = l.transfer + (onFoot ? 5 : l.homeEcla ? 30 : 15);
     const sundayDeparture = ready - transfer;
     const morning = [];
-    add(morning, sundayDeparture - (l.homeEcla ? 45 : 65), "Despertar", l.homeEcla ? "Preparar la salida." : "Cerrar alojamiento y cargar las bolsas antes de esquiar.");
     add(morning, sundayDeparture, onFoot ? "Salir andando del alojamiento" : "Salir en coche", onFoot ? `${l.transfer} min a pie + 5 min de margen. Material del guardaesquís.` : `${l.transfer} min de ruta + ${l.homeEcla ? 30 : 15} min de margen. Sin esquís.`);
     add(morning, ready, onFoot ? "Llegar al acceso" : "Aparcar junto al remonte", c.name);
     let firstSun = c.first;
@@ -218,7 +215,6 @@
     m.first = c.first;
     m.published = !!c.published;
     m.sunday = [
-      add(out - 65, "Despertar", "Dejar el loft y cargar las bolsas."),
       add(out, "Salir de Cluses en coche", "Modelo de 60 min por Saint-Pierre-en-Faucigny + 15 min de margen. Ruta por verificar. Evitar el col de la Colombière."),
       add(clock(8,15), "Aparcar junto al acceso", c.name),
       add(clock(8,30), "Recoger el segundo alquiler", "Tienda junto al remonte por elegir. Apertura 08:30 supuesta; 30 min para siete."),
@@ -249,9 +245,7 @@
     for (let i = 0; i < list.length; i++) {
       const row = list[i], a = row.action, next = list[i + 1];
       let step = { at: row.at, label: a, kind: "transfer" };
-      if (/^Despertar/.test(a)) {
-        step = { ...step, label: "Levantarse", kind: "wake" };
-      } else if (/coche|^Conducir/.test(a) && !/^Aparcar/.test(a)) {
+      if (/coche|^Conducir/.test(a) && !/^Aparcar/.test(a)) {
         const arrival = next && /^(Aparcar|Entrar|Llegar)/.test(next.action) ? next : null;
         const target = /Ecla/.test(a) ? "Ecla" : /sauna de Morzine/.test(a) ? "sauna · Morzine" : /loft de Cluses/.test(a) ? "loft · Cluses" : /al alojamiento/.test(a) ? `alojamiento · ${m.lodging}` : /Salir de Cluses/.test(a) ? m.station.split("domingo ")[1] : m.station;
         step = { ...step, label: `Coche → ${target}`, kind: "drive", until: arrival?.at };
@@ -294,10 +288,10 @@
       ${models.length > 1 ? `<label class="itinerary-select">Elegir variante<select data-itinerary-select="${e(key)}">${models.map((m,i) => `<option value="${i}" ${i === index ? "selected" : ""}>${e(m.label)}</option>`).join("")}</select></label>` : ""}`;
     if (m.unavailable) return head + `<p class="itinerary-notes"><strong>${e(m.station)} · apertura prevista el 19.</strong><br>No hay itinerario de esquí viable el 12–13 con el calendario publicado. Elegid Les Houches en el selector, sujeto a su preapertura.</p>`;
     return head + `
-      <dl class="trip-summary departure-focus"><div><dt>Levantarse · sábado</dt><dd>${time(m.saturday[0].at)}</dd></div><div><dt>Salir de Ecla</dt><dd>${time(m.departure)}</dd></div></dl>
+      <dl class="trip-summary departure-focus"><div><dt>Salir de Ecla · sábado</dt><dd>${time(m.departure)}</dd></div></dl>
       <div class="weekend-grid"><section class="itinerary-day"><h3>Sábado</h3>${listHTML(compactSteps(m, "saturday"))}</section><section class="itinerary-day"><h3>Domingo</h3>${listHTML(compactSteps(m, "sunday"))}</section></div>
       <p class="schedule-key">Horas orientativas${!m.published || m.saturdayUnknown ? " · apertura exacta por confirmar" : ""}.</p>
-      <details class="planning-assumptions"><summary>Horarios y condiciones</summary><p>${m.openingText ? e(m.openingText) : `${m.published ? "Apertura publicada" : "Apertura por publicar"} · ${e(m.station)}${m.published ? ` · ${time(m.first)}${m.saturdayUnknown ? " solo el domingo" : ""}` : ""}`}.</p><ul>${m.notes.map(n => `<li>${e(n)}</li>`).join("")}<li>Margen de ida de 30 min desde Ecla, 15 min desde una casa del valle y 5 min a pie.</li><li>30 min para siete equipos y 15 min para forfaits, según colas.</li><li>Dejar las bolsas en el coche antes de esquiar el domingo. Entrada al alojamiento prevista desde las 17:00, por acordar.</li><li>Sauna y jacuzzi opcionales, sujetos a horario y reserva.</li><li>Los trayectos incluyen margen. Material guardado antes de ir en coche a dormir y devuelto antes de volver a Ecla.</li></ul></details>`;
+      <details class="planning-assumptions"><summary>Horarios y condiciones</summary><p>${m.openingText ? e(m.openingText) : `${m.published ? "Apertura publicada" : "Apertura por publicar"} · ${e(m.station)}${m.published ? ` · ${time(m.first)}${m.saturdayUnknown ? " solo el domingo" : ""}` : ""}`}.</p><ul>${m.notes.map(n => `<li>${e(n)}</li>`).join("")}<li>Margen de ida de 30 min desde Ecla, 15 min desde una casa del valle y 5 min a pie.</li><li>30 min para siete equipos y 15 min para forfaits, según colas.</li><li>Dejar las bolsas en el coche antes de esquiar el domingo. Entrada al alojamiento prevista desde las 17:00, por acordar.</li><li>Los trayectos incluyen margen. Material guardado antes de ir en coche a dormir y devuelto antes de volver a Ecla.</li></ul></details>`;
   }
   function panel(key, models) {
     cache.set(key, models);
