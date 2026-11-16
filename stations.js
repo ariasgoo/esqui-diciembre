@@ -5,7 +5,7 @@
     {key: "avoriaz", label: "Avoriaz", areas: ["Avoriaz"], image: "avoriaz", access: "avoriaz",
       pro: "El forfait de apertura cuesta 50,50 € los dos días.", con: "Se duerme en el valle y se sube por Prodains."},
     {key: "val-thorens-orelle", label: "Val Thorens · Orelle", areas: ["Val Thorens–Orelle", "Val Thorens"], image: "orelle", access: "orelle",
-      pro: "150 km de dominio y esquí de altura.", con: "Es el viaje más largo desde Ecla."},
+      pro: "150 km esquiables y esquí de altura.", con: "Es el viaje más largo desde Ecla."},
     {key: "les-carroz", label: "Les Carroz", areas: ["Les Carroz"], image: "carroz", access: "les-carroz",
       pro: "El trayecto más corto. Podéis dormir a pie de remonte.", con: "Morillon y Sixt abren después del viaje."},
     {key: "val-cenis", label: "Val Cenis", areas: ["Val Cenis"], image: "cenis", access: "val-cenis",
@@ -83,9 +83,9 @@
   function stationFacts(station) {
     const trip = guideFor(station).trips[0], facts = factsFor(station);
     const [distance, duration] = trip.value.split(" · ");
-    const journey = duration ? duration + " · " + distance : distance;
+    const journey = duration ? duration + " en coche · " + distance : distance + " en coche";
     return `<dl class="choice-stats"><div><dt>${station.key === "val-thorens-orelle" ? 'Ecla Archamps → Orelle' : 'Desde Ecla Archamps'}</dt><dd>${e(journey)}</dd></div>
-      ${facts ? `<div><dt>12–13 dic · estimación propia</dt><dd>${e(facts.opening)} <small>de ${e(facts.km.split(" · ")[0])}</small></dd></div>` : ""}</dl>`;
+      ${facts ? `<div><dt>12–13 dic · estimación propia</dt><dd>${e(facts.opening)} esquiables <small>de ${e(facts.km.split(" · ")[0])} totales</small></dd></div>` : ""}</dl>`;
   }
 
   function mapLink(station) {
@@ -126,7 +126,7 @@
       <div class="choice-list">${selected.length ? featuredResorts.map(s => choiceGroup(s, selected.filter(p => forPlan(p) === s))).join("") :
         `<p class="choice-empty">Ninguna opción principal tiene este acceso. <a href="#planes">Ver todos los accesos</a></p>`}</div>
       <div class="choice-foot"><a href="#otras${state.accessFilter !== "all" ? "/" + state.accessFilter : ""}">${icon("archive")} Otras opciones ${icon("arrow")}</a>
-      <small>Precios orientativos. Kilómetros abiertos según estimación propia.</small></div>`;
+      <small>Precios orientativos. Kilómetros esquiables abiertos según estimación propia.</small></div>`;
   }
 
   function skiInfo(station) {
@@ -135,8 +135,8 @@
     const colors = facts?.colors ? `<div class="choice-colors">${facts.colors.map((count,i) =>
       `<span><i class="piste-${i}"></i>${count} ${["verdes","azules","rojas","negras"][i]}</span>`).join("")}</div>
       <p class="fine">Número de pistas del dominio completo. El operador no desglosa los kilómetros por color.</p>` : "";
-    const villages = station.key === "les-carroz" ? "<p>Villages suma 145 km y 78 pistas. El sector local de Les Carroz tiene 34 km.</p>" : "";
-    const additionalTrips = guide.trips.slice(1).map(t => `<p>${e(t.label)} desde Ecla · ${e(t.value)}</p>`).join("");
+    const villages = station.key === "les-carroz" ? "<p>Villages suma 145 km esquiables y 78 pistas. El sector local de Les Carroz tiene 34 km esquiables.</p>" : "";
+    const additionalTrips = guide.trips.slice(1).map(t => `<p>${e(t.label)} desde Ecla · ${e(t.value)} en coche</p>`).join("");
     return `${station.image ? picture(station.image, station.label) : ""}<div>${trail}${colors}${villages}<p>${e(guide.dates)}</p>
       ${facts ? '<p class="fine">El rango de apertura es una estimación propia. El operador aún no ha confirmado los kilómetros de ese fin de semana.</p>' : ""}
       ${additionalTrips}<button class="choice-route" data-sources>${icon("book")} Recursos</button></div>`;
