@@ -67,7 +67,6 @@ const person = (p) => p.n || 7;
 const lookup = (id) => plans.find((p) => p.id === id);
 const state = {
   unit: "person",
-  student: true,
   view: "todos",
   accessFilter: "all",
   archiveAccess: "all",
@@ -85,10 +84,9 @@ const planStatus = (p) => {
 function budget(p) {
   const n = person(p),
     scale = state.unit === "group" ? n : 1;
-  const pass = p.adultPass && !state.student ? p.adultPass : p.pass;
   const parts = [
     p.night == null ? null : (p.night / n) * scale,
-    pass * scale,
+    p.pass * scale,
     p.gear[0] == null ? null : p.gear[0] * scale,
     ((p.card || 0) + (p.fee || 0) / n) * scale,
   ];
@@ -222,9 +220,7 @@ function controls() {
           "</button>",
       )
       .join("") +
-    '</div><label class="student"><input type="checkbox" data-student ' +
-    (state.student ? "checked" : "") +
-    "> Carné de estudiante</label></div>"
+    '</div></div>'
   );
 }
 function facts() {
@@ -679,7 +675,7 @@ function gearPanel(logistics) {
 function detail(p) {
   const r = getRoute(p);
   const review = window.SKI_PLAN_REVIEW(p);
-  const actions = window.SKI_PLAN_BOOKING(p, { student: state.student });
+  const actions = window.SKI_PLAN_BOOKING(p);
   const station = window.SKI_STATIONS.forPlan(p);
   const roadLink =
     '<a class="entrylink" href="#mapa/' +
@@ -964,7 +960,7 @@ function linksFor(p) {
     ...accessSourceLinks(window.SKI_ACCESS.plans[p.id], window.skiLiftHours(p.id, null)),
     p.houseLink,
     ...window
-      .SKI_PLAN_BOOKING(p, { student: state.student })
+      .SKI_PLAN_BOOKING(p)
       .map((action) => [action.label, action.url]),
     ...(window.SKI_PLAN_REVIEW(p).links || []),
     ...(p.sources || []),
@@ -1189,11 +1185,6 @@ document.addEventListener("change", (ev) => {
     }
     render();
     $("#main [data-access-filter]")?.focus({ preventScroll: true });
-  }
-  if (ev.target.hasAttribute("data-student")) {
-    state.student = ev.target.checked;
-    render();
-    $("#main [data-student]")?.focus({ preventScroll: true });
   }
   if (ev.target.hasAttribute("data-select")) {
     const i = Number(ev.target.dataset.select);

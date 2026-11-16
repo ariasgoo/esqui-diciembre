@@ -16,7 +16,7 @@ Cada ficha explica la recogida del equipo, su almacenamiento la noche del sábad
 
 Los datos de los planes están en `plans.js`, las rutas en `routes.js`, las fotografías y atribuciones en `media.js` y el catálogo ampliado en `archive.js` y `extras.js`. El acceso al dominio de cada forfait se documenta en `access-data.js`, los horarios en `lift-hours.js` y las ubicaciones en `lodging-pins.js`. Los importes de grupo se calculan con la ocupación de cada oferta antes de redondear.
 
-Cada plan muestra primero el desglose del precio, antes de los botones de reserva, las fotos, la estancia y el itinerario. Los controles por persona o grupo actualizan ese mismo desglose.
+Cada plan muestra primero el desglose del precio, antes de los botones de reserva, las fotos, la estancia y el itinerario. Los controles por persona o grupo actualizan ese mismo desglose. Se aplica siempre la tarifa de estudiante cuando corresponde al plan, sin casilla para alternar con la tarifa adulta.
 
 `itineraries.js` prepara los itinerarios de sábado y domingo de los 20 planes y las 28 fichas alternativas. Las fichas que agrupan estaciones permiten cambiar de variante. Incluyen trayecto, forfait, alquiler, primer remonte, almacenamiento, alojamiento, devolución y vuelta a Ecla. Las aperturas publicadas se distinguen de los objetivos provisionales. Lélex y Thollon no muestran un viaje viable el 12–13 con el calendario actual.
 
