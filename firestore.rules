@@ -21,6 +21,37 @@ service cloud.firestore {
         && p.name is string && p.name.size() >= 2 && p.name.size() <= 50
         && p.updatedAt == request.time;
     }
+    function suggestionsPath() {
+      return /databases/$(database)/documents/skiTrips/diciembre-2026/catalogue/suggestions;
+    }
+    function publisher() {
+      return request.auth != null && request.auth.uid == 'esqui-suggestions-publisher-v1'
+        && request.auth.token.firebase.sign_in_provider == 'custom'
+        && !('tenant' in request.auth.token.firebase);
+    }
+    function publishedSuggestions(ids) {
+      return ids.size() == 0 || (exists(suggestionsPath()) && ids.hasOnly(get(suggestionsPath()).data.ids));
+    }
+    function validSuggestion(item) {
+      return item.keys().hasOnly(['id','title','station','kind','url','priceCents','checkedOn'])
+        && item.id is string && item.id.matches('suggestion-[a-f0-9]{20}')
+        && item.title is string && item.title.size() >= 3 && item.title.size() <= 85
+        && item.title.matches("[0-9A-Za-zÀ-ÿ][0-9A-Za-zÀ-ÿ .,’'()&-]*")
+        && item.station in ['Avoriaz','Val Thorens–Orelle','Les Carroz','Val Cenis','Flaine']
+        && item.kind in ['lodging','equipment']
+        && item.url is string && item.url.size() <= 220
+        && item.url.matches('https://(www\\.(booking\\.com|airbnb\\.com|esquiades\\.com|skimium\\.fr|intersport-rent\\.fr|ski-plus\\.fr)|location-ski\\.sport2000\\.fr)/[a-z0-9/_.-]+')
+        && item.priceCents is int && item.priceCents >= 500 && item.priceCents <= 350000
+        && item.checkedOn is string && item.checkedOn.matches('2026-(11|12)-[0-3][0-9]');
+    }
+    function appendsSuggestion() {
+      let next = request.resource.data;
+      let item = next.items[next.items.size() - 1];
+      return next.keys().hasOnly(['ids','items']) && next.items is list && next.ids is list
+        && next.items.size() == resource.data.items.size() + 1 && next.items.size() <= 12
+        && validSuggestion(item) && !(item.id in resource.data.ids)
+        && next.items == resource.data.items.concat([item]) && next.ids == resource.data.ids.concat([item.id]);
+    }
     function validBallot(key) {
       let b = request.resource.data;
       let profile = getAfter(/databases/$(database)/documents/skiTrips/diciembre-2026/profiles/$(key)).data;
@@ -29,10 +60,14 @@ service cloud.firestore {
         && b.name is string && b.name.size() >= 2 && b.name.size() <= 50
         && b.suffix is string && b.suffix.matches('[0-9]{4}')
         && request.auth.token.phone_number.matches('.*' + b.suffix)
-        && b.planIds is list && b.planIds.size() > 0 && b.planIds.size() <= 17
+        && b.planIds is list && b.planIds.size() > 0 && b.planIds.size() <= 29
         && b.planIds.toSet().size() == b.planIds.size()
-        && b.planIds.hasOnly(["cenis","loft","chalet","orelle","turche","wahou","grinza","carroz","flaine","cosy","cheval","fleur","saintmichel","four-seasons","lesgets50","saintmichel-apto","chalet-villages"])
+        && publishedSuggestions(b.planIds.removeAll(["cenis","loft","chalet","orelle","turche","wahou","grinza","carroz","flaine","cosy","cheval","fleur","saintmichel","four-seasons","lesgets50","saintmichel-apto","chalet-villages"]))
         && b.updatedAt == request.time;
+    }
+    match /skiTrips/diciembre-2026/catalogue/suggestions {
+      allow get: if signedPhone() || publisher();
+      allow update: if publisher() && appendsSuggestion();
     }
     match /skiTrips/diciembre-2026/members/{key} {
       allow get: if signedPhone() && key == phoneKey();

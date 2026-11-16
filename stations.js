@@ -125,6 +125,7 @@
       <div class="choice-toolbar"><p>Precio por persona · Una noche, dos días de forfait y material. Consigna aparte.</p>${filterControl("planes")}</div>
       <div class="choice-list">${selected.length ? featuredResorts.map(s => choiceGroup(s, selected.filter(p => forPlan(p) === s))).join("") :
         `<p class="choice-empty">Ninguna opción principal tiene este acceso. <a href="#planes">Ver todos los accesos</a></p>`}</div>
+      <div id="group-suggestions">${window.SKI_VOTING?.suggestions() || ""}</div>
       <div class="choice-foot"><a href="#otras${state.accessFilter !== "all" ? "/" + state.accessFilter : ""}">${icon("archive")} Otras opciones ${icon("arrow")}</a>
       <small>Precios orientativos.</small></div>`;
   }

@@ -1,8 +1,11 @@
 import {escapeHtml as esc,normalizePhoneES,cleanName,validName,phoneKey,summarizeVotes,authError} from './voting-core.mjs';
+import {suggestionBookingLink,validSuggestion} from './suggestions.mjs';
 const state={ready:false,user:null,key:null,member:false,profile:null,ballots:[],saving:false,error:'',phase:'loading',busy:false,draftName:'',phone:'',confirmation:null,cooldown:0};
-let sdk,auth,db,config,recaptcha,recaptchaNode,stopMember,stopBallots,authVersion=0,booting=false;
+let sdk,auth,db,config,recaptcha,recaptchaNode,stopMember,stopBallots,stopSuggestions,authVersion=0,booting=false;
+let publishedSuggestions = [];
+let catalogueLoaded = false;
 const root=()=>['skiTrips',config.tripId];
-const allPlans=()=>window.PLANS.filter(window.SKI_PLAN_ALLOWED);
+const allPlans=()=>[...window.PLANS.filter(window.SKI_PLAN_ALLOWED), ...publishedSuggestions];
 const ownBallot=()=>state.ballots.find(b=>b.key===state.key);
 const selected=id=>(ownBallot()?.planIds||[]).includes(id);
 function notify(){document.dispatchEvent(new Event('ski-voting-updated'));updateAccount();}
@@ -39,18 +42,33 @@ function countLabel(id) {
   return formatCount(state.ballots.filter(ballot => ballot.planIds?.includes(id)).length);
 }
 
+function suggestions() {
+  if (!publishedSuggestions.length) return "";
+  const money = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'});
+  const cards = publishedSuggestions.map(plan => `<article class="group-suggestion">
+    <div><span class="vote-area">${esc(plan.station)} · ${plan.kind === 'lodging' ? 'Alojamiento' : 'Material'}</span>
+      <h3 id="choice-title-${esc(plan.id)}">${esc(plan.title)}</h3>
+      <p>${money.format(plan.priceCents / 100)} para siete · ${plan.kind === 'lodging' ? 'Una noche' : 'Dos días'}</p>
+      <a class="vote-options" href="${esc(plan.source)}" target="_blank" rel="noopener noreferrer">Ver oferta ↗</a>
+    </div>
+    <div class="group-suggestion-votes">${voteCountControl(plan.id)}${voteControl(plan.id)}</div>
+  </article>`);
+  return `<section class="group-suggestions"><h2>Sugerencias del grupo</h2>${cards.join('')}</section>`;
+}
+
 function resultRow({plan, voters}) {
   const count = voters.length;
   const width = Math.min(100, count / config.electorate * 100);
   const featured = window.SKI_STATIONS?.featuredIds;
-  const secondary = featured && !featured.includes(plan.id);
+  const category = plan.source ? ' · Sugerencias del grupo' : featured && !featured.includes(plan.id) ? ' · Otras opciones' : '';
+  const link = plan.source ? esc(plan.source) : `#plan/${esc(plan.id)}`;
   const names = voters.map(voter => esc(voter.name)).join(", ") || "Todavía no hay votos para este plan.";
   return `<li class="vote-result">
     <div class="vote-result-top">
-      <a class="vote-result-link" href="#plan/${esc(plan.id)}">
-        ${picture(plan.media, "")}
+      <a class="vote-result-link" href="${link}"${plan.source ? ' target="_blank" rel="noopener noreferrer"' : ''}>
+        ${plan.media ? picture(plan.media, "") : ''}
         <div>
-          <span class="vote-area">${esc(plan.area)}${secondary ? ' · Otras opciones' : ''}</span>
+          <span class="vote-area">${esc(plan.area)}${category}</span>
           <h2>${esc(voteTitle(plan))}</h2>
         </div>
       </a>
@@ -88,7 +106,7 @@ function page(planId) {
   return heading + error + `<div class="vote-summary"><p>${participation}</p>${options}</div>
     <ol class="vote-results">${voted.map(resultRow).join("")}</ol>`;
 }
-window.SKI_VOTING={button,page,selectionHint,countLabel};
+window.SKI_VOTING={button,page,selectionHint,countLabel,suggestions};
 function clearCaptcha(){try{recaptcha?.clear();}catch{}recaptcha=null;recaptchaNode?.remove();recaptchaNode=null;}
 function renderGate(){
  const gate=document.querySelector('#auth-gate');
@@ -125,8 +143,21 @@ function watchMembership(){
   notify();
  },error=>{state.ready=true;state.member=false;state.ballots=[];state.error=authError(error);notify();});
 }
+function watchSuggestions(){
+ stopSuggestions?.();
+ stopSuggestions=sdk.onSnapshot(sdk.doc(db,...root(),'catalogue','suggestions'), snapshot => {
+  const items=snapshot.data()?.items;
+  publishedSuggestions=(Array.isArray(items)?items.slice(0,12):[]).filter(validSuggestion).map(item=>({
+   ...item,area:item.station,source:suggestionBookingLink(item),
+  }));
+  catalogueLoaded=true;
+  document.dispatchEvent(new Event('ski-suggestions-updated'));
+  notify();
+ });
+}
 async function acceptedUser(user){
- const ticket=++authVersion;stopMember?.();stopBallots?.();state.ballots=[];state.member=false;state.ready=false;state.user=user;state.profile=null;
+ const ticket=++authVersion;stopMember?.();stopBallots?.();stopSuggestions?.();catalogueLoaded=false;publishedSuggestions=[];
+ state.ballots=[];state.member=false;state.ready=false;state.user=user;state.profile=null;
  if(!user){state.key=null;state.phase='phone';state.error='';renderGate();notify();return;}
  try{
   const key=await phoneKey(user.phoneNumber);if(ticket!==authVersion)return;state.key=key;
@@ -134,7 +165,7 @@ async function acceptedUser(user){
   if(profile.exists())state.profile={name:profile.data().name};
   else if(validName(state.draftName))await saveProfile(state.draftName);
   else {state.phase='profile';state.error='';renderGate();return;}
-  state.phase='done';state.error='';state.busy=false;renderGate();watchMembership();notify();
+  state.phase='done';state.error='';state.busy=false;renderGate();watchMembership();watchSuggestions();notify();
  }catch(error){state.phase='failed';state.error=authError(error);state.busy=false;renderGate();}
 }
 async function boot(){
@@ -183,7 +214,9 @@ async function vote(id){
  try{
   const ref=sdk.doc(db,...root(),'ballots',state.key);
   await sdk.runTransaction(db,async tx=>{
-   const snap=await tx.get(ref),ids=new Set(snap.exists()?snap.data().planIds:[]);
+   const snap=await tx.get(ref);
+   const previous=snap.data()?.planIds||[];
+   const ids=new Set(catalogueLoaded?previous.filter(id=>allPlans().some(plan=>plan.id===id)):previous);
    if(include)ids.add(id);else ids.delete(id);
    if(!ids.size){tx.delete(ref);return;}
    tx.set(ref,{name:state.profile.name,suffix:state.user.phoneNumber.slice(-4),planIds:[...ids],updatedAt:sdk.serverTimestamp()});
@@ -210,7 +243,7 @@ document.addEventListener('submit',async event=>{
  else if(form.id==='sms-confirm')void confirmSms(form);
  else{
   const button=form.querySelector('button');button.disabled=true;
-  try{await saveProfile(form.elements.name.value);if(form.id==='profile-first'){state.phase='done';renderGate();watchMembership();}else document.querySelector('#profile-dialog').close();notify();}
+  try{await saveProfile(form.elements.name.value);if(form.id==='profile-first'){state.phase='done';renderGate();watchMembership();watchSuggestions();}else document.querySelector('#profile-dialog').close();notify();}
   catch(error){form.querySelector('.auth-error').textContent=authError(error);button.disabled=false;}
  }
 });

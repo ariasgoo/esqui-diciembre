@@ -770,6 +770,11 @@ window.addEventListener("hashchange", () => {
 });
 enterView();
 
+document.addEventListener("ski-suggestions-updated", () => {
+  const section = $("#group-suggestions");
+  if (section) section.innerHTML = window.SKI_VOTING.suggestions();
+});
+
 document.addEventListener("ski-voting-updated", () => {
   const focused = document.activeElement?.dataset.vote;
   document.querySelectorAll("[data-selection-hint]").forEach(node => { node.textContent = window.SKI_VOTING.selectionHint(); });

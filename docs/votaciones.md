@@ -30,7 +30,7 @@ El puente de WhatsApp puede exportar los siete participantes actuales mediante P
 
 El operador del Mac conserva los recibos y el despliegue administrativo en .private/operator/, ignorado por Git y con permisos privados. Su script usa exclusivamente la sesión existente de Firebase CLI de CP. verify consulta configuración y permisos; publish-rules crea y publica una versión de las reglas; seed-members exige el registro de siete identidades verificadas. No imprimir claves, tokens ni el archivo de teléfonos. No sustituir credenciales ni iniciar otro login.
 
-Una modificación de los planes votables requiere actualizar y probar firestore.rules antes de publicar la web. El número de participantes de la configuración pública debe coincidir con la lista verificada.
+Cambiar los planes originales requiere actualizar y probar `firestore.rules`. Las sugerencias verificadas se añaden al registro `skiTrips/diciembre-2026/catalogue/suggestions`, cuyo listado de IDs también validan las reglas de voto. La identidad de la VPS solo puede leer ese documento y añadirle una ficha validada, hasta 12. Los participantes no pueden modificar el registro. El número de participantes de la configuración pública debe coincidir con la lista verificada.
 
 ## Validación
 

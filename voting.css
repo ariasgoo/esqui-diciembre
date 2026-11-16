@@ -118,6 +118,12 @@
 .vote-meter span { display: block; height: 100%; background: var(--accent); }
 .vote-people { font-size: 14px; overflow-wrap: anywhere; }
 .vote-result-bottom .vote-button { flex-shrink: 0; }
+.group-suggestions { margin: 24px 0; }
+.group-suggestions h2 { margin-bottom: 12px; font-size: 19px; }
+.group-suggestion { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 18px; border-top: 1px solid var(--line); padding: 12px 0; }
+.group-suggestion h3 { margin: 2px 0; }
+.group-suggestion p { color: var(--muted); font-size: 13px; }
+.group-suggestion-votes { display: flex; align-items: center; gap: 8px; margin-inline-start: auto; }
 @media(max-width:760px){
   #account-trigger{max-width:82px;padding-inline:8px}
   #top .crumb{font-size:12px}
