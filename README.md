@@ -19,3 +19,5 @@ La consigna se explica y se suma aparte del precio principal. Orelle usa dos cas
 El mapa mantiene las chinchetas y rutas. Clic en estación abre su perfil; clic en número abre el plan del alojamiento. Las casas con varios pases priorizan el dominio seleccionado. Se conservan los números de las casas restantes. El selector permite ver ubicaciones y rutas.
 
 Datos originales en `plans.js`, `extras.js`, `archive.js`; viajes en `routes.js`; fotos/atribuciones en `media.js`; acceso en `access-data.js`, horas en `lift-hours.js`, ubicaciones en `lodging-pins.js`.
+
+El acceso requiere SMS a un móvil español. La sesión de Firebase queda recordada en ese navegador. «Votaciones» sustituye al comparador: solo los siete teléfonos verificados del grupo pueden votar varios planes, cambiar sus votos y consultar quién ha elegido cada opción. Firestore guarda la lista privada y los votos, con reglas de servidor. Configuración, límites, pruebas y operación en [Acceso y votaciones](docs/votaciones.md).

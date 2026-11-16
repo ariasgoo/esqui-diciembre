@@ -51,6 +51,7 @@ function icon(k) {
 const tabs = [
   ["inicio", "home", "Resumen"],
   ["planes", "mountain", "Planes"],
+  ["votaciones", "chart", "Votaciones", "Votos"],
   ["mapa", "map", "Mapa"],
   ["otras", "archive", "Otras opciones", "Otras"],
 ];
@@ -399,7 +400,7 @@ function planCard(p) {
   const b = budget(p);
   const itinerary = window.SKI_ITINERARIES.forPlan(p)[0];
   return (
-    '<a class="plancard" href="#plan/' +
+    '<div class="plan-option"><a class="plancard" href="#plan/' +
     p.id +
     '">' +
     picture(p.media, p.home) +
@@ -415,7 +416,7 @@ function planCard(p) {
     ("<small>/ " + unit(p) + "</small>") +
     '</div><div class="cardmeta">' +
     e(planStatus(p)) +
-    '</div><div class="card-access">' + icon("pin") + e(modeLabels[window.SKI_ACCESS.plans[p.id].mode]) + '</div><div class="card-timing">Sáb. salida ' + window.SKI_ITINERARIES.time(itinerary.departure) + ' · Dom. Ecla ≈' + window.SKI_ITINERARIES.time(itinerary.back) + "</div></div></a>"
+    '</div><div class="card-access">' + icon("pin") + e(modeLabels[window.SKI_ACCESS.plans[p.id].mode]) + '</div><div class="card-timing">Sáb. salida ' + window.SKI_ITINERARIES.time(itinerary.departure) + ' · Dom. Ecla ≈' + window.SKI_ITINERARIES.time(itinerary.back) + '</div></div></a><div class="plan-vote">' + (window.SKI_VOTING?.button(p.id) || '<button class="vote-button" disabled>Cargando votos…</button>') + "</div></div>"
   );
 }
 function otherAccessOptions() {
@@ -664,6 +665,7 @@ function detail(p) {
     '<p class="fine">Importes para ' +
     person(p) +
     " personas, sujetos a disponibilidad. Comidas y desplazamientos aparte.</p></section>" +
+    '<div class="vote-strip">' + (window.SKI_VOTING?.button(p.id) || "") + '<a class="entrylink" href="#votaciones">Ver votaciones →</a></div>' +
     bookingActions(actions) +
     quickFacts(p) +
     '<p class="storage-summary">' + e(storageSummary(p)) + '</p>' +
@@ -924,8 +926,9 @@ function render() {
   const item =
     view === "otras" && /^\d+$/.test(key) && window.SKI_ARCHIVE_ALLOWED(archive[Number(key)]) ? archive[Number(key)] : null;
   let tab = view;
+  if (view === "comparar") tab = "votaciones";
   if (view === "plan") tab = "planes";
-  if (["estacion", "estaciones", "comparar"].includes(view)) tab = "planes";
+  if (["estacion", "estaciones"].includes(view)) tab = "planes";
   const current = tabs.find(([id]) => id === tab) || tabs[0];
   const section = current[0];
   $("#nav").innerHTML = tabs
@@ -939,6 +942,7 @@ function render() {
   const pages = {
     inicio: homePage,
     planes: () => window.SKI_STATIONS.page(view === "estacion" ? key : undefined),
+    votaciones: () => window.SKI_VOTING?.page() || heading("Votaciones", "Cargando votos…"),
     otras: more,
     mapa: () => window.SKI_MAP.render(key),
   };
@@ -1068,3 +1072,5 @@ window.addEventListener("hashchange", () => {
   $("#main").focus({ preventScroll: true });
 });
 enterView();
+
+document.addEventListener("ski-voting-updated", () => { const id = document.activeElement?.dataset?.vote; render(); if (id) document.querySelector('[data-vote="' + id + '"]')?.focus({preventScroll:true}); });

@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedPhone() {
+      return request.auth != null
+        && request.auth.token.phone_number is string
+        && request.auth.token.firebase.sign_in_provider == 'phone'
+        && !('tenant' in request.auth.token.firebase);
+    }
+    function phoneKey() {
+      return hashing.sha256(request.auth.token.phone_number.toUtf8()).toHexString().lower();
+    }
+    function member() {
+      return signedPhone()
+        && exists(/databases/$(database)/documents/skiTrips/diciembre-2026/members/$(phoneKey()))
+        && get(/databases/$(database)/documents/skiTrips/diciembre-2026/members/$(phoneKey())).data.enabled == true;
+    }
+    function validProfile() {
+      let p = request.resource.data;
+      return p.keys().hasOnly(['name','updatedAt'])
+        && p.name is string && p.name.size() >= 2 && p.name.size() <= 50
+        && p.updatedAt == request.time;
+    }
+    function validBallot(key) {
+      let b = request.resource.data;
+      let profile = getAfter(/databases/$(database)/documents/skiTrips/diciembre-2026/profiles/$(key)).data;
+      return b.keys().hasOnly(['name','suffix','planIds','updatedAt'])
+        && b.name == profile.name
+        && b.name is string && b.name.size() >= 2 && b.name.size() <= 50
+        && b.suffix is string && b.suffix.matches('[0-9]{4}')
+        && request.auth.token.phone_number.matches('.*' + b.suffix)
+        && b.planIds is list && b.planIds.size() > 0 && b.planIds.size() <= 17
+        && b.planIds.toSet().size() == b.planIds.size()
+        && b.planIds.hasOnly(["cenis","loft","chalet","orelle","turche","wahou","grinza","carroz","flaine","cosy","cheval","fleur","saintmichel","four-seasons","lesgets50","saintmichel-apto","chalet-villages"])
+        && b.updatedAt == request.time;
+    }
+    match /skiTrips/diciembre-2026/members/{key} {
+      allow get: if signedPhone() && key == phoneKey();
+      allow list, write: if false;
+    }
+    match /skiTrips/diciembre-2026/profiles/{key} {
+      allow get: if signedPhone() && key == phoneKey();
+      allow create, update: if signedPhone() && key == phoneKey() && validProfile();
+    }
+    match /skiTrips/diciembre-2026/ballots/{key} {
+      allow get, list: if member();
+      allow create, update: if member() && key == phoneKey() && validBallot(key);
+      allow delete: if member() && key == phoneKey();
+    }
+    match /{other=**} { allow read, write: if false; }
+  }
+}

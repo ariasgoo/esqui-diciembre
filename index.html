@@ -10,7 +10,8 @@
     />
     <title>Esquí en diciembre · Cuaderno de viaje</title>
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="style.css?v=18" />
+    <link rel="stylesheet" href="style.css?v=20" />
+    <link rel="stylesheet" href="voting.css?v=20" />
     <link rel="stylesheet" href="itineraries.css?v=15" />
     <link rel="stylesheet" href="map.css?v=13" />
     <link rel="stylesheet" href="stations.css?v=18" />
@@ -33,11 +34,13 @@
     <script defer src="map-data.js"></script>
     <script defer src="lodging-pins.js?v=19"></script>
     <script defer src="map.js?v=18"></script>
-    <script defer src="app.js?v=19"></script>
+    <script defer src="app.js?v=20"></script>
+    <script type="module" src="voting.js?v=20"></script>
   </head>
   <body>
     <a class="skip" href="#main">Saltar al contenido</a>
-    <div id="shell">
+    <section id="auth-gate" aria-label="Acceso por SMS"><div class="auth-panel"><div class="auth-brand"><img src="icon.svg" width="27" height="27" alt="">Esquí · diciembre</div><p role="status">Recuperando tu sesión…</p></div></section>
+    <div id="shell" hidden>
       <aside id="side">
         <a href="#inicio" class="brand"
           ><img src="icon.svg" width="33" height="33" alt="" /><span
@@ -58,6 +61,7 @@
           <div class="crumb">
             Viajes <span>/</span> <strong id="crumb"></strong>
           </div>
+          <button class="quiet" id="account-trigger">Tu cuenta</button>
           <button class="quiet" id="sourceTop"></button>
         </header>
         <main id="main" tabindex="-1"></main>
@@ -67,6 +71,8 @@
         </footer>
       </div>
     </div>
+    <div id="voting-notice" role="status" hidden></div>
+    <dialog id="profile-dialog" aria-label="Tu cuenta"></dialog>
     <dialog id="sources" aria-labelledby="resourcetitle">
       <div class="dialogtop">
         <h2 id="resourcetitle">Recursos</h2>

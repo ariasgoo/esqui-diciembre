@@ -1,0 +1,53 @@
+[hidden]{display:none!important}
+#auth-gate{min-height:100dvh;display:grid;place-items:center;padding:26px;background:var(--paper)}
+.auth-panel{width:min(100%,360px);margin:auto}
+.auth-brand{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin-bottom:56px}
+.auth-panel h1{font-size:34px;letter-spacing:-1.2px;margin:0 0 12px}
+.auth-panel p{font-size:14px;line-height:1.55;color:var(--muted)}
+.auth-panel form{margin-top:28px}
+.auth-panel label{display:block;font-size:13px;margin:18px 0 8px}
+.auth-panel input{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--paper);color:var(--text);font:inherit;font-size:16px;min-height:46px}
+.phone-field{display:flex;border:1px solid var(--line);border-radius:8px;align-items:center;overflow:hidden}
+.phone-field span{padding:0 13px;color:var(--muted);font-size:14px;border-right:1px solid var(--line)}
+.phone-field input{border:0;border-radius:0;min-width:0}
+.auth-primary{margin-top:22px;width:100%;background:var(--text);color:var(--paper);border:0;border-radius:8px;padding:12px 18px;font:inherit;font-weight:550;min-height:46px}
+.auth-panel .auth-note{font-size:12px;margin-top:24px}
+.auth-error,.vote-error{font-size:13px;color:#ad4236;margin:14px 0}
+.auth-code{letter-spacing:8px;font-variant-numeric:tabular-nums;text-align:center;font-size:22px!important}
+.auth-panel .auth-edit{margin-top:16px;border:0;padding:8px 0;color:var(--accent);background:transparent;font:inherit;font-size:13px}
+.auth-panel button:disabled,.vote-button:disabled{opacity:.5;cursor:default}
+.auth-captcha{margin-top:14px}
+#account-trigger{font-size:12px;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#top{gap:10px}
+#top .crumb{margin-right:auto}
+#profile-dialog{width:min(400px,calc(100vw - 32px));padding:24px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--text)}
+#profile-dialog::backdrop{background:#151b164d}
+#profile-dialog .auth-panel{width:100%}
+#profile-dialog h2{font-size:23px;margin:0}
+#profile-dialog .profile-head{display:flex;justify-content:space-between;align-items:center}
+.vote-strip{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:0 0 24px}
+.vote-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:7px;background:var(--paper);color:var(--text);font:inherit;font-size:13px;font-weight:550;padding:8px 13px;min-height:39px;white-space:nowrap}
+.vote-button[aria-pressed=true]{background:var(--soft);border-color:var(--accent);color:var(--accent)}
+.vote-count{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px}
+.plan-option{min-width:0;display:flex;flex-direction:column}
+.plan-option .plancard{flex:1;border-radius:11px 11px 0 0}
+.plan-vote{padding:10px 14px;border:1px solid var(--line);border-top:0;border-radius:0 0 11px 11px}
+.plan-vote .vote-button{width:100%}
+.vote-summary{display:flex;align-items:baseline;gap:10px;margin:26px 0 10px}
+.vote-summary strong{font-size:27px;letter-spacing:-.7px}
+.vote-summary span{color:var(--muted);font-size:13px}
+.vote-results{border-top:1px solid var(--line);margin-top:22px}
+.vote-result{padding:20px 0;border-bottom:1px solid var(--line)}
+.vote-result-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.vote-result h2{font-size:17px;margin:2px 0 8px;letter-spacing:-.35px}
+.vote-result .minor{font-size:11px}
+.vote-meter{height:5px;border-radius:3px;background:var(--soft);overflow:hidden;margin:12px 0 9px}
+.vote-meter span{display:block;height:100%;background:var(--accent)}
+.vote-people{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.vote-person{font-size:12px;line-height:1.5;padding:3px 8px;background:var(--fill);border-radius:4px}
+.vote-empty{font-size:13px;color:var(--muted);margin:10px 0 0}
+.vote-more{margin-top:24px}
+.vote-more>summary{cursor:pointer;font-size:14px;padding:12px 0}
+@media(max-width:760px){#account-trigger{max-width:82px;padding-inline:8px}#top .crumb{font-size:12px}#sourceTop{font-size:12px;padding-inline:8px}.vote-result-top{gap:9px}.vote-result h2{font-size:16px}.auth-brand{margin-bottom:42px}}
+
+#voting-notice{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:100;padding:12px 18px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--text);box-shadow:var(--shadow);font-size:13px;max-width:calc(100vw - 32px);text-align:center}#voting-notice.is-error{color:#ad4236}

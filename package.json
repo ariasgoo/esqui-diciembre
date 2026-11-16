@@ -1,0 +1,13 @@
+{
+  "name": "esqui-diciembre",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/voting-core.test.mjs",
+    "test:rules": "node --test tests/firestore.rules.test.mjs"
+  },
+  "devDependencies": {
+    "firebase": "13.2.0",
+    "@firebase/rules-unit-testing": "6.0.0"
+  }
+}
