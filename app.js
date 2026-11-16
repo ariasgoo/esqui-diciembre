@@ -393,6 +393,19 @@ function planCard(p) {
     '</div><div class="card-access">' + icon("pin") + e(modeLabels[window.SKI_ACCESS.plans[p.id].mode]) + "</div></div></a>"
   );
 }
+function otherAccessOptions() {
+  if (state.accessFilter === "all") return "";
+  const matches = archive.map((item, index) => ({ item, index }))
+    .filter(({ index }) => matchesAccess(window.SKI_ACCESS.archive[index], state.accessFilter));
+  if (!matches.length) return "";
+  if (state.view !== "todos") {
+    return '<a class="entrylink" href="#otras/' + state.accessFilter + '">Otras opciones con este acceso ' + icon("forward") + '</a>';
+  }
+  const links = matches.map(({ item, index }) =>
+    `<a href="#otras/${index}"><span><strong>${e(item.name)}</strong><small>${e(item.price)}</small></span>${icon("arrow")}</a>`,
+  ).join("");
+  return `<section class="station-catalogue"><h2>Otras opciones con este acceso</h2><div class="station-secondary">${links}</div></section>`;
+}
 function plansPage() {
   const filters = [
     ["todos", "Todos"],
@@ -436,9 +449,7 @@ function plansPage() {
       .join("") +
     "</div>" + accessControls("planes") + accessNote(state.accessFilter) +
     (matching.length ? '<div class="gridcards">' + matching.map(planCard).join("") + "</div>" : emptyOptions()) +
-    (state.accessFilter !== "all" && archive.some((_, index) => matchesAccess(window.SKI_ACCESS.archive[index], state.accessFilter))
-      ? '<a class="entrylink" href="#otras/' + state.accessFilter + '">Más opciones con este acceso ' + icon("forward") + '</a>'
-      : "")
+    otherAccessOptions()
   );
 }
 function routeRows(p) {
